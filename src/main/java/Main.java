@@ -6,10 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Panel extends Application {
+public class Main extends Application {
 
-    public final int WIDTH = 1024;
-    public final int HEIGHT = 576;
+    public static final int WIDTH = 1024;
+    public static final int HEIGHT = 576;
 
     @Override
     public void start(Stage primaryStage) throws Exception {

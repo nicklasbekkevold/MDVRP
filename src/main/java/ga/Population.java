@@ -7,8 +7,8 @@ import java.util.List;
 public class Population implements Iterable<Chromosome> {
 
     private int generation = 0;
-    private double averageFitness = 0.0;
-    private double diversity = 0.0;
+    private float averageFitness = 0.0F;
+    private float diversity = 0.0F;
 
     private List<Chromosome> population;
 
@@ -33,11 +33,11 @@ public class Population implements Iterable<Chromosome> {
         return generation;
     }
 
-    public double getMaxFitness() {
+    public float getMaxFitness() {
         return averageFitness;
     }
 
-    public double getDiversity() {
+    public float getDiversity() {
         return diversity;
     }
 

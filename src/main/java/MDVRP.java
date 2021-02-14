@@ -26,11 +26,11 @@ public class MDVRP {
     public void assignCustomersToNearestDepot() {
         for (Customer customer : customers) {
 
-            double minimumDistance = Double.MAX_VALUE;
+            float minimumDistance = Float.MAX_VALUE;
             Depot nearestDepot = null;
 
             for (Depot depot : depots) {
-                double distance = customer.distance(depot);
+                float distance = customer.distance(depot);
                 if (distance < minimumDistance) {
                     minimumDistance = distance;
                     nearestDepot = depot;
@@ -102,8 +102,8 @@ public class MDVRP {
     public void addDepot(Depot depot) {
         minX = Math.min(minX, depot.getX());
         minY = Math.min(minY, depot.getY());
-        maxX = Math.min(maxX, depot.getX());
-        maxY = Math.min(maxY, depot.getY());
+        maxX = Math.max(maxX, depot.getX());
+        maxY = Math.max(maxY, depot.getY());
 
         depots.add(depot);
     }
@@ -111,8 +111,8 @@ public class MDVRP {
     public void addCustomer(Customer customer) {
         minX = Math.min(minX, customer.getX());
         minY = Math.min(minY, customer.getY());
-        maxX = Math.min(maxX, customer.getX());
-        maxY = Math.min(maxY, customer.getY());
+        maxX = Math.max(maxX, customer.getX());
+        maxY = Math.max(maxY, customer.getY());
 
         customers.add(customer);
     }

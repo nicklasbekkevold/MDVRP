@@ -2,9 +2,9 @@ package main.java.ga;
 
 import java.util.List;
 
-interface Chromosome extends Iterable<Gene> {
+public interface Chromosome extends Iterable<Gene> {
 
-    public double getFitness();
+    public float getFitness();
     public List<Gene> getChromosome();
 
     // public Chromosome insertion (Chromosome chromosome);

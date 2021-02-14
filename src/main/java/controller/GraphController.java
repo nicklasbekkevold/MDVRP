@@ -3,20 +3,23 @@ package main.java.controller;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.MDVRP;
 import main.java.MDVRPSerializer;
+import main.java.Main;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
+import main.java.ga.Chromosome;
 
 import java.awt.*;
 import java.util.List;
 
-import static java.lang.Math.min;
 
 public class GraphController {
 
@@ -54,12 +57,16 @@ public class GraphController {
     public CheckBox elitismCheckBox;
 
     private int populationSize = 100;
-    private double mutationRate = 0.05;
-    private double crossoverRate = 0.8;
+    private float mutationRate = 0.05F;
+    private float crossoverRate = 0.8F;
     private boolean elitism = false;
 
     private boolean running = false;
     private MDVRP problemInstance = null;
+
+    public void run() {
+        render(null);
+    }
 
     @FXML
     public void initialize() {
@@ -78,32 +85,32 @@ public class GraphController {
                 }
             }
         });
-        mutationRateField.setPromptText(Double.toString(mutationRate));
+        mutationRateField.setPromptText(Float.toString(mutationRate));
         mutationRateField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("")) {
-                mutationRate = 0.01;
+                mutationRate = (float) 0.01;
             } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
-                mutationRate = Double.parseDouble(newValue);
+                mutationRate = Float.parseFloat(newValue);
                 if (mutationRate > 1) {
                     mutationRate = 1;
-                    mutationRateField.setText(Double.toString(mutationRate));
+                    mutationRateField.setText(Float.toString(mutationRate));
                 }
             } else {
-                mutationRateField.setText(Double.toString(mutationRate));
+                mutationRateField.setText(Float.toString(mutationRate));
             }
         });
-        crossoverRateField.setPromptText(Double.toString(crossoverRate));
+        crossoverRateField.setPromptText(Float.toString(crossoverRate));
         crossoverRateField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("")) {
-                crossoverRate = 0.08;
+                crossoverRate = (float) 0.08;
             } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
-                crossoverRate = Double.parseDouble(newValue);
+                crossoverRate = Float.parseFloat(newValue);
                 if (crossoverRate > 1) {
                     crossoverRate = 1;
-                    crossoverRateField.setText(Double.toString(crossoverRate));
+                    crossoverRateField.setText(Float.toString(crossoverRate));
                 }
             } else {
-                crossoverRateField.setText(Double.toString(crossoverRate));
+                crossoverRateField.setText(Float.toString(crossoverRate));
             }
         });
         elitismCheckBox.setSelected(elitism);
@@ -122,15 +129,18 @@ public class GraphController {
         onProblemSelect(dataFileNames.get(0));
     }
 
-    private void onProblemSelect(String problem) {
+    private void onProblemSelect(final String problem) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         problemInstance = MDVRPSerializer.readFromFile(problem);
+
+        transformNodes();
+        render(null);
     }
 
     private void transformNodes() {
-        int horizontalChange = problemInstance.getMinX();
-        int verticalChange = problemInstance.getMinY();
-        double scalingFactor = Panel.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
+        int horizontalChange = 0 - problemInstance.getMinX();
+        int verticalChange = 0 - problemInstance.getMinY();
+        float scalingFactor = (float) Main.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
 
         for (Customer customer : problemInstance.getCustomers()) {
             customer.translate(horizontalChange, verticalChange);
@@ -143,7 +153,27 @@ public class GraphController {
         }
     }
 
-    public void run() {
+    private void render(final Chromosome chromosome) {
+        GraphicsContext context = canvas.getGraphicsContext2D();
+        context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        renderCustomers(context);
+        renderDepots(context);
+        // renderVehicles(context, chromosome);
     }
+
+    private void renderCustomers(final GraphicsContext context) {
+        context.setFill(Color.BLACK);
+        for (Customer customer : problemInstance.getCustomers()) {
+            context.fillOval(customer.getTransformedX(), customer.getTransformedY(), 5, 5);
+        }
+    }
+
+    private void renderDepots(final GraphicsContext context) {
+        context.setFill(Color.RED);
+        for (Depot depot : problemInstance.getDepots()) {
+            context.fillRect(depot.getTransformedX(), depot.getTransformedY(), 5, 5);
+        }
+    }
+
 }

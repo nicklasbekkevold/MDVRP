@@ -8,7 +8,7 @@ public class Vehicle extends Node {
     private final Depot endDepot;
     private final List<Customer> customers;
 
-    private Double duration = null; //d
+    private Float duration = null; //d
     private Integer load = null; //q
 
     public Vehicle(int id, int x, int y) {
@@ -25,12 +25,12 @@ public class Vehicle extends Node {
         customers = null;
     }
 
-    public double getDuration() {
+    public float getDuration() {
         if (duration != null) {
            return duration;
         }
 
-        double totalDuration = startDepot.distance(customers.get(0));
+        float totalDuration = startDepot.distance(customers.get(0));
         for (int i = 0; i < customers.size() - 1; i++) {
             totalDuration += customers.get(i).distance(customers.get(i + 1));
         }
@@ -44,7 +44,7 @@ public class Vehicle extends Node {
         return duration;
     }
 
-    public double getLoad() {
+    public float getLoad() {
         if (load != null) {
            return load;
         }
