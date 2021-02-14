@@ -22,24 +22,24 @@
          <font>
             <Font size="14.0" />
          </font></Button>
-        <Pane layoutX="576.0" layoutY="50.0" prefHeight="180.0" prefWidth="448.0">
+        <Pane layoutX="576.0" layoutY="94.0" prefHeight="180.0" prefWidth="448.0">
             <children>
-                <Text fx:id="generationText" layoutX="40.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <Text fx:id="generationText" layoutX="20.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Text>
-                <Text fx:id="maxFitnessText" layoutX="40.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max fitness:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <Text fx:id="maxFitnessText" layoutX="20.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max fitness:" wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Text>
-            <Text fx:id="averageFitnessText" layoutX="40.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average fitness:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+            <Text fx:id="averageFitnessText" layoutX="20.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average fitness:" wrappingWidth="400.4589233398438">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text fx:id="diversityText" layoutX="40.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diversity:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+            <Text fx:id="diversityText" layoutX="20.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diversity:" wrappingWidth="400.4589233398438">
                <font>
                   <Font size="20.0" />
                </font>
@@ -48,9 +48,9 @@
         </Pane>
         <Pane layoutX="576.0" layoutY="307.0" prefHeight="270.0" prefWidth="448.0" style="-fx-background-color: skyblue;">
             <children>
-            <Text fx:id="generationText1" layoutX="154.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-style: italic;" text="Paramters" textAlignment="CENTER" wrappingWidth="140.45898437500006">
+            <Text fx:id="generationText1" layoutX="154.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-style: italic; -fx-font-weight: bold;" text="Paramters" textAlignment="CENTER" wrappingWidth="140.45898437500006">
                <font>
-                  <Font size="20.0" />
+                  <Font size="23.0" />
                </font>
             </Text>
                 <Text layoutX="40.0" layoutY="83.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Population size:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">

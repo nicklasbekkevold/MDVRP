@@ -16,8 +16,8 @@ import main.java.Main;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.ga.Chromosome;
+import main.java.ga.Population;
 
-import java.awt.*;
 import java.util.List;
 
 
@@ -61,17 +61,29 @@ public class GraphController {
     private float crossoverRate = 0.8F;
     private boolean elitism = false;
 
-    private boolean running = false;
+    private boolean isRunning = false;
     private MDVRP problemInstance = null;
-
-    public void run() {
-        render(null);
-    }
 
     @FXML
     public void initialize() {
         setFXMLParameters();
         setProblem();
+    }
+
+    public void run() {
+        isRunning = !isRunning;
+        changeRunButton();
+        render(new Population());
+    }
+
+    private void changeRunButton() {
+        if (isRunning) {
+            runButton.setText("Stop");
+            runButton.setStyle("-fx-background-color: red;");
+        } else {
+            runButton.setText("Run");
+            runButton.setStyle("-fx-background-color: green;");
+        }
     }
 
     private void setFXMLParameters() {
@@ -153,13 +165,14 @@ public class GraphController {
         }
     }
 
-    private void render(final Chromosome chromosome) {
+    private void render(final Population population) {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        renderText(population);
         renderCustomers(context);
         renderDepots(context);
-        // renderVehicles(context, chromosome);
+        // renderVehicles(context, population.getAlpha());
     }
 
     private void renderCustomers(final GraphicsContext context) {
@@ -174,6 +187,25 @@ public class GraphController {
         for (Depot depot : problemInstance.getDepots()) {
             context.fillRect(depot.getTransformedX(), depot.getTransformedY(), 5, 5);
         }
+    }
+
+    private void renderText(Population population) {
+        String generationTextString = "Generation: ";
+        String diversityTextString = "Diversity: ";
+        String maxFitnessTextString = "Max fitness: ";
+        String averageFitnessTextString = "Average fitness: ";
+
+        if (population != null)  {
+            generationTextString += population.getGeneration();
+            diversityTextString += population.getDiversity();
+            maxFitnessTextString += population.getMaxFitness();
+            averageFitnessTextString += population.getAverageFitnessFitness();
+        }
+
+        generationText.setText(generationTextString);
+        diversityText.setText(diversityTextString);
+        maxFitnessText.setText(maxFitnessTextString);
+        averageFitnessText.setText(averageFitnessTextString);
     }
 
 }

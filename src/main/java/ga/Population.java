@@ -20,13 +20,13 @@ public class Population implements Iterable<Chromosome> {
         this.population = population;
     }
 
+    public void update() {
+        generation++;
+    }
+
     public Population selection() {
         // roulette wheel
         return null;
-    }
-
-    public void update() {
-        generation++;
     }
 
     public int getGeneration() {
@@ -36,6 +36,8 @@ public class Population implements Iterable<Chromosome> {
     public float getMaxFitness() {
         return averageFitness;
     }
+
+    public float getAverageFitnessFitness() { return averageFitness; }
 
     public float getDiversity() {
         return diversity;
