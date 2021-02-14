@@ -18,7 +18,12 @@ public class MDVRP {
     private final List<Depot> depots = new ArrayList<>();
     private final List<Customer> customers = new ArrayList<>();
 
-    public void assignCustomersToDepots() {
+    private int minX = Integer.MAX_VALUE;
+    private int minY = Integer.MAX_VALUE;
+    private int maxX = Integer.MIN_VALUE;
+    private int maxY = Integer.MIN_VALUE;
+
+    public void assignCustomersToNearestDepot() {
         for (Customer customer : customers) {
 
             double minimumDistance = Double.MAX_VALUE;
@@ -65,6 +70,13 @@ public class MDVRP {
         return customers;
     }
 
+    public int getMinX() { return minX; }
+
+    public int getMinY() { return minY; }
+
+    public int getMaxX() { return maxX; }
+
+    public int getMaxY() { return maxY; }
 
     // Setters:
     public void setNumberOfVehiclesPerDepot(int numberOfVehiclesPerDepot) {
@@ -88,10 +100,20 @@ public class MDVRP {
     }
 
     public void addDepot(Depot depot) {
+        minX = Math.min(minX, depot.getX());
+        minY = Math.min(minY, depot.getY());
+        maxX = Math.min(maxX, depot.getX());
+        maxY = Math.min(maxY, depot.getY());
+
         depots.add(depot);
     }
 
     public void addCustomer(Customer customer) {
+        minX = Math.min(minX, customer.getX());
+        minY = Math.min(minY, customer.getY());
+        maxX = Math.min(maxX, customer.getX());
+        maxY = Math.min(maxY, customer.getY());
+
         customers.add(customer);
     }
 }

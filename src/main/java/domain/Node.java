@@ -6,10 +6,15 @@ public abstract class Node {
     private final int x;
     private final int y;
 
+    private double transformedX;
+    private double transformedY;
+
     public Node(int id, int x, int y) {
         this.id = id;
         this.x = x;
         this.y = y;
+        transformedX = x;
+        transformedY = y;
     }
 
     @Override
@@ -25,11 +30,21 @@ public abstract class Node {
         return y;
     }
 
-    public double distance (final Node other) {
-        return Math.sqrt(
-                Math.pow(x - other.getX(), 2) +
-                Math.pow(y - other.getY(), 2)
-        );
+    public double distance (final Node other) { return Math.hypot(x - other.getX(), y - other.getY()); }
+
+    public double getTransformedX() { return transformedX; }
+
+    public double getTransformedY() { return transformedY; }
+
+    public void translate(final int horizontalChange, final int verticalChange) {
+        transformedX += horizontalChange;
+        transformedY += verticalChange;
     }
+
+    public void scale(final double scalingFactor) {
+        transformedX *= scalingFactor;
+        transformedY *= scalingFactor;
+    }
+
 
 }

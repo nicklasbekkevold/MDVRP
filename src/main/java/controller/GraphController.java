@@ -10,8 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import main.java.MDVRP;
 import main.java.MDVRPSerializer;
+import main.java.domain.Customer;
+import main.java.domain.Depot;
 
+import java.awt.*;
 import java.util.List;
+
+import static java.lang.Math.min;
 
 public class GraphController {
 
@@ -54,7 +59,7 @@ public class GraphController {
     private boolean elitism = false;
 
     private boolean running = false;
-    private MDVRP MDVRPInstance = null;
+    private MDVRP problemInstance = null;
 
     @FXML
     public void initialize() {
@@ -119,7 +124,23 @@ public class GraphController {
 
     private void onProblemSelect(String problem) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        MDVRPInstance = MDVRPSerializer.readFromFile(problem);
+        problemInstance = MDVRPSerializer.readFromFile(problem);
+    }
+
+    private void transformNodes() {
+        int horizontalChange = problemInstance.getMinX();
+        int verticalChange = problemInstance.getMinY();
+        double scalingFactor = Panel.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
+
+        for (Customer customer : problemInstance.getCustomers()) {
+            customer.translate(horizontalChange, verticalChange);
+            customer.scale(scalingFactor);
+        }
+
+        for (Depot depot : problemInstance.getDepots()) {
+            depot.translate(horizontalChange, verticalChange);
+            depot.scale(scalingFactor);
+        }
     }
 
     public void run() {
