@@ -1,8 +1,83 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<GridPane fx:controller="main.java.controller.GraphController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.GraphController">
+    <children>
+        <Pane layoutY="0.5" prefHeight="576.0" prefWidth="576.0" style="-fx-background-color: white;">
+            <children>
+                <Canvas fx:id="canvas" height="576.0" layoutX="5.0" layoutY="5.0" width="576.0" />
+            </children>
+        </Pane>
+        <ChoiceBox fx:id="fileSelectChoiceBox" layoutX="600.0" layoutY="20.0" prefHeight="28.0" prefWidth="300.0" />
+        <Button fx:id="runButton" alignment="CENTER" defaultButton="true" layoutX="920.0" layoutY="20.0" mnemonicParsing="false" onAction="#run" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: green;" text="Run" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Pane layoutX="576.0" layoutY="50.0" prefHeight="180.0" prefWidth="448.0">
+            <children>
+                <Text fx:id="generationText" layoutX="40.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="maxFitnessText" layoutX="40.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max fitness:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+            <Text fx:id="averageFitnessText" layoutX="40.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average fitness:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="diversityText" layoutX="40.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diversity:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            </children>
+        </Pane>
+        <Pane layoutX="576.0" layoutY="307.0" prefHeight="270.0" prefWidth="448.0" style="-fx-background-color: skyblue;">
+            <children>
+            <Text fx:id="generationText1" layoutX="154.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-style: italic;" text="Paramters" textAlignment="CENTER" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+                <Text layoutX="40.0" layoutY="83.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Population size:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+                <TextField fx:id="populationSizeField" layoutX="190.0" layoutY="65.0" prefHeight="26.0" prefWidth="50.0" />
+                <Text layoutX="40.0" layoutY="123.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+                <TextField fx:id="mutationRateField" layoutX="190.0" layoutY="105.0" prefHeight="26.0" prefWidth="50.0" />
+                <Text layoutX="40.0" layoutY="163.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Crossover rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+                <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="145.0" prefHeight="26.0" prefWidth="54.0" />
+            <Text layoutX="40.0" layoutY="203.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="190.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>
