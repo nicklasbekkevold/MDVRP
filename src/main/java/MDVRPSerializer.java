@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,13 +17,14 @@ import java.util.Scanner;
  */
 public class MDVRPSerializer {
 
+    static String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
+
     /**
      * @param problem Name of problem file to encode a main.java.MDVRP instance from
      * @return main.java.MDVRP problem instance
      */
     public static MDVRP readFromFile(final String problem) {
 
-        String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
         String problemPath = dataFilesPath + File.separator + problem;
 
         System.out.println("Reading from file...");
@@ -91,17 +93,21 @@ public class MDVRPSerializer {
         return numbers;
     }
 
+    public static List<String> getDataFileNames() {
+        List<String> dataFileNames= new ArrayList<>();
+
+        final File dataFilesFolder = new File(dataFilesPath);
+        for (final File dataFile : dataFilesFolder.listFiles()) {
+            if (!dataFile.isDirectory()) {
+                dataFileNames.add(dataFile.getName());
+            }
+        }
+
+        Collections.sort(dataFileNames);
+        return dataFileNames;
+    }
+
     private MDVRPSerializer () {}
 
-    public static void main(String[] args) {
-        String directory = System.getProperty("user.home") + File.separator + "IdeaProjects";
-        String folderName = "main.java.MDVRP" + File.separator + "src" + File.separator + "main/resources/data_files";
-        String fileName = "p23";
-        String absolutePath = directory + File.separator + folderName + File.separator + fileName;
-
-        MDVRP mdvrp = MDVRPSerializer.readFromFile(absolutePath);
-        System.out.println(mdvrp.getCustomers().get(10).getDemand());
-
-    }
 }
 
