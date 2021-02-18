@@ -1,5 +1,7 @@
 package main.java.domain;
 
+import java.util.Objects;
+
 public abstract class Node {
 
     private final int id;
@@ -15,6 +17,19 @@ public abstract class Node {
         this.y = y;
         transformedX = x;
         transformedY = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return id == node.id && x == node.x && y == node.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, x, y);
     }
 
     @Override
