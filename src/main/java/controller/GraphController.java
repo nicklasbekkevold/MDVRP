@@ -56,8 +56,11 @@ public class GraphController {
     @FXML
     public CheckBox elitismCheckBox;
 
-    private boolean running = false;
     private AnimationTimer animationTimer;
+    private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
+
+    private boolean running = false;
+    private final float FRAME_DELAY = 0.5F;
 
     private int populationSize = 100;
     private float mutationRate = 0.05F;
@@ -72,8 +75,14 @@ public class GraphController {
         setFXMLParameters();
         setProblem();
         animationTimer = new AnimationTimer() {
+            final long sleepDuration = (long) (FRAME_DELAY * NANO_SECONDS_IN_SECOND);
+            long lastUpdate = 0;
+
             @Override
             public void handle(long now) {
+                if ((now - lastUpdate < sleepDuration)) { return; }
+                lastUpdate = now;
+
                 render(population);
                 population.update();
             }
