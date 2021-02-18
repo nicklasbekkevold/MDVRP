@@ -1,8 +1,10 @@
 package main.java.ga;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import main.java.Util;
+import main.java.domain.Depot;
+import main.java.domain.Vehicle;
+
+import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
@@ -25,8 +27,18 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public Population selection() {
-        // roulette wheel
+        List<Chromosome> parents = Util.randomChoice(population, 2);
         return null;
+    }
+
+    private List<Chromosome> BestCostRouteCrossover(List<Chromosome> parents) {
+        assert parents.size() == 2;
+        Chromosome parentA = parents.get(0);
+        Chromosome parentB = parents.get(1);
+        int depotIndex = new Random().nextInt(parentA.getChromosome().size());
+        List<Depot> a = parentA.getRoutes().get();
+        Vehicle vehicleA = Util.randomChoice(parentA.ge, 1).get(0);
+        parents.get(1).getChromosome().get(depotIndex);
     }
 
     public int getGeneration() {

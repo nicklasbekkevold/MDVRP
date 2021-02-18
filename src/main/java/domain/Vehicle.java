@@ -1,59 +1,45 @@
 package main.java.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Vehicle extends Node {
+public class Vehicle {
 
-    private final Depot startDepot;
-    private final Depot endDepot;
-    private final List<Customer> customers;
+    private Depot depot;
+    private List<Customer> customers;
+    private float routeDuration = 0.0F;
+    private int load = 0;
 
-    private Float duration = null; //d
-    private Integer load = null; //q
+    public List<Customer> getCustomers() { return customers; }
 
-    public Vehicle(int id, int x, int y) {
-        super(id, x, y);
-        startDepot = null;
-        endDepot = null;
-        customers = null;
+    public Customer getLastCustomer() { return customers.get(customers.size() - 1); }
+
+    public Depot getDepot() { return depot; }
+
+    public float getDuration() { return routeDuration; }
+
+    public int getLoad() { return load; }
+
+    public void setDepot(Depot depot) { this.depot = depot; }
+
+    public void setDuration(float routeDuration) { this.routeDuration = routeDuration; }
+
+    public void setLoad(int load) { this.load = load; }
+
+    public void addCustomer(Customer customer) { customers.add(customer); }
+
+    public void addCustomer(Customer customer, float routeDuration, int load) {
+        customers.add(customer);
+        this.routeDuration += routeDuration;
+        this.load += load;
     }
 
-    public Vehicle(int id, Depot depot) {
-        super(id, depot.getX(), depot.getY());
-        this.startDepot = depot;
-        endDepot = startDepot;
-        customers = null;
+    public Vehicle() {
+        customers = new ArrayList<>();
     }
-
-    public float getDuration() {
-        if (duration != null) {
-           return duration;
-        }
-
-        float totalDuration = startDepot.distance(customers.get(0));
-        for (int i = 0; i < customers.size() - 1; i++) {
-            totalDuration += customers.get(i).distance(customers.get(i + 1));
-        }
-        totalDuration += customers.get(-1).distance(endDepot);
-
-        totalDuration += customers
-                .stream()
-                .reduce(0, (total, customer) -> total + customer.getServiceDuration(), Integer::sum);
-
-        duration = totalDuration;
-        return duration;
-    }
-
-    public float getLoad() {
-        if (load != null) {
-           return load;
-        }
-
-        int totalLoad = customers
-                .stream()
-                .reduce(0, (total, customer) -> total + customer.getDemand(), Integer::sum);
-
-        load = totalLoad;
-        return load;
+    public Vehicle(final Vehicle vehicle) {
+        this.customers = vehicle.getCustomers();
+        this.routeDuration = vehicle.getDuration();
+        this.load = vehicle.getLoad();
     }
 }

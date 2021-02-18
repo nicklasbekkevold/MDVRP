@@ -1,8 +1,7 @@
 package main.java.ga;
 
-import main.java.domain.Customer;
 import main.java.domain.Depot;
-import main.java.domain.Route;
+import main.java.domain.Vehicle;
 
 import java.util.*;
 
@@ -11,35 +10,37 @@ public class Chromosome implements Iterable<Depot> {
     private static final int ALPHA = 100;
     private static final float BETA = 0.001F;
 
-    private Map<Depot, List<Customer>> chromosome; // Genotype
-    private Map<Depot, List<Route>> routes; // Phenotype
+    private List<Depot> chromosome; // Genotype
+    private List<List<Vehicle>> routes; // Phenotype
 
     private float fitness = 0.0F;
 
     public float getFitness() {
         if (fitness == 0) {
-            for (List<Route> depotRoutes : routes.values()) {
-                fitness += ALPHA * depotRoutes.size();
-                for (Route route : depotRoutes) {
-                    fitness += BETA * route.getDuration();
+            for (List<Vehicle> depotVehicles : routes) {
+                fitness += ALPHA * depotVehicles.size();
+                for (Vehicle vehicle : depotVehicles) {
+                    fitness += BETA * vehicle.getDuration();
                 }
             }
         }
         return fitness;
     }
-    public  Map<Depot, List<Customer>> getChromosome() { return chromosome; }
+    public List<Depot> getChromosome() { return chromosome; }
+
+    public List<List<Vehicle>> getRoutes() { return routes; }
 
     @Override
     public Iterator<Depot> iterator() {
-        return chromosome.keySet().iterator();
+        return chromosome.iterator();
     }
 
-    public Chromosome(final Map<Depot, List<Customer>> chromosome) {
+    public Chromosome(final List<Depot> chromosome) {
         this.chromosome = chromosome;
         for (Depot depot : this) {
-            Collections.shuffle(chromosome.get(depot));
+            Collections.shuffle(depot.getCustomers());
         }
-        routes = RouteScheduler.schedule(this.chromosome);
+        routes = RouteScheduler.schedule(this);
     }
 
 
