@@ -169,6 +169,7 @@ public class GraphController {
     private void onProblemSelect(final String problem) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         problemInstance = MDVRPSerializer.readFromFile(problem);
+        problemInstance.assignCustomersToNearestDepot();
 
         transformNodes();
         render(null);

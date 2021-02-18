@@ -47,7 +47,7 @@ public class MDVRP {
             for (Depot depot : depots) {
                 if (!depot.equals(nearestDepot)) {
                     float distance = customer.distance(depot);
-                    if (distance - minimumDistance / minimumDistance <= BOUND) {
+                    if ((distance - minimumDistance / minimumDistance) <= BOUND) {
                         customer.addCandidateDepot(depot);
                         swappableCustomerList.add(customer);
                     }
