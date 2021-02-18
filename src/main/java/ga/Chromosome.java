@@ -1,11 +1,35 @@
 package main.java.ga;
 
-import java.util.List;
+import main.java.domain.Customer;
+import main.java.domain.Depot;
+import main.java.domain.Route;
 
-public interface Chromosome extends Iterable<Gene> {
+import java.util.*;
 
-    public float getFitness();
-    public List<Gene> getChromosome();
+public class Chromosome implements Iterable<Depot> {
+
+    private Map<Depot, List<Customer>> chromosome; // Genotype
+    private Map<Depot, List<Route>> routes; // Phenotype
+
+    private float fitness = 0.0F;
+
+    public float getFitness() { return fitness; }
+    public  Map<Depot, List<Customer>> getChromosome() { return chromosome; }
+
+    @Override
+    public Iterator<Depot> iterator() {
+        return chromosome.keySet().iterator();
+    }
+
+    public Chromosome(final Map<Depot, List<Customer>> chromosome) {
+        this.chromosome = chromosome;
+        for (Depot depot : this) {
+            Collections.shuffle(chromosome.get(depot));
+        }
+        routes = RouteScheduler.schedule(this.chromosome);
+    }
+
+
 
     // public Chromosome insertion (Chromosome chromosome);
     // public Chromosome deletion (Chromosome chromosome);
