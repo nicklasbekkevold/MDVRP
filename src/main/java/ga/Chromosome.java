@@ -8,12 +8,25 @@ import java.util.*;
 
 public class Chromosome implements Iterable<Depot> {
 
+    private static final int ALPHA = 100;
+    private static final float BETA = 0.001F;
+
     private Map<Depot, List<Customer>> chromosome; // Genotype
     private Map<Depot, List<Route>> routes; // Phenotype
 
     private float fitness = 0.0F;
 
-    public float getFitness() { return fitness; }
+    public float getFitness() {
+        if (fitness == 0) {
+            for (List<Route> depotRoutes : routes.values()) {
+                fitness += ALPHA * depotRoutes.size();
+                for (Route route : depotRoutes) {
+                    fitness += BETA * route.getDuration();
+                }
+            }
+        }
+        return fitness;
+    }
     public  Map<Depot, List<Customer>> getChromosome() { return chromosome; }
 
     @Override
