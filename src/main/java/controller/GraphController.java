@@ -1,5 +1,6 @@
 package main.java.controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -12,10 +13,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.MDVRP;
 import main.java.MDVRPSerializer;
-import main.java.Main;
+import main.java.App;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
-import main.java.ga.Chromosome;
 import main.java.ga.Population;
 
 import java.util.List;
@@ -56,28 +56,44 @@ public class GraphController {
     @FXML
     public CheckBox elitismCheckBox;
 
+    private boolean running = false;
+    private AnimationTimer animationTimer;
+
     private int populationSize = 100;
     private float mutationRate = 0.05F;
     private float crossoverRate = 0.8F;
     private boolean elitism = false;
 
-    private boolean isRunning = false;
+    private Population population;
     private MDVRP problemInstance = null;
 
     @FXML
     public void initialize() {
         setFXMLParameters();
         setProblem();
+        animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                render(population);
+                population.update();
+            }
+        };
     }
 
     public void run() {
-        isRunning = !isRunning;
+        running = !running;
         changeRunButton();
-        render(new Population());
+
+        if (running) {
+            population = new Population();
+            animationTimer.start();
+        } else {
+            animationTimer.stop();
+        }
     }
 
     private void changeRunButton() {
-        if (isRunning) {
+        if (running) {
             runButton.setText("Stop");
             runButton.setStyle("-fx-background-color: red;");
         } else {
@@ -152,7 +168,7 @@ public class GraphController {
     private void transformNodes() {
         int horizontalChange = 0 - problemInstance.getMinX();
         int verticalChange = 0 - problemInstance.getMinY();
-        float scalingFactor = (float) Main.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
+        float scalingFactor = (float) App.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
 
         for (Customer customer : problemInstance.getCustomers()) {
             customer.translate(horizontalChange, verticalChange);
