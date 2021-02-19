@@ -16,14 +16,9 @@ public class RouteScheduler {
     public static final int maxRouteDuration = Integer.MAX_VALUE;
     public static final int maxVehicleLoad = 80;
 
-    private static List<List<Vehicle>> phaseOne(Chromosome chromosome) {
-        List<List<Vehicle>> routes = new ArrayList<>();
-
-        int depotIndex = -1;
+    private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
-            routes.add(new ArrayList<>());
             Vehicle vehicle = new Vehicle();
-            vehicle.setDepot(depot);
 
             Node previousNode = depot;
             float duration = 0;
@@ -41,10 +36,9 @@ public class RouteScheduler {
                 } else {
                     vehicle.setDuration(duration + previousNode.distance(depot));
                     vehicle.setLoad(load);
-                    routes.get(depotIndex++).add(vehicle);
+                    depot.addVehicle(vehicle);
 
                     vehicle = new Vehicle();
-                    vehicle.setDepot(depot);
                     previousNode = depot;
                     duration = 0;
                     load = 0;
@@ -52,31 +46,32 @@ public class RouteScheduler {
             }
         }
 
-        return routes;
+        return chromosome;
     }
 
-    private static List<List<Vehicle>> phaseTwo(final List<List<Vehicle>> routes) {
-        int depotIndex = 0;
-        for (List<Vehicle> depotRoute : routes) {
-            Vehicle vehicle = new Vehicle(depotRoute.get(0));
+    private static Chromosome phaseTwo(Chromosome chromosome) {
+        for (Depot depot : chromosome) {
+            List<Vehicle> vehicles = depot.getVehicles();
+            Vehicle vehicle = new Vehicle(vehicles.get(0));
 
-            for (int i = 1; i < depotRoute.size(); i ++) {
-                Vehicle nextVehicle = new Vehicle(depotRoute.get(i));
+            for (int i = 1; i < vehicles.size(); i ++) {
+                Vehicle nextVehicle = new Vehicle(vehicles.get(i));
+                float currentDuration = vehicle.getDuration() + nextVehicle.getDuration();
 
-                Customer lastCustomer = vehicle.getLastCustomer();
-                Depot nextRouteDepot = nextVehicle.getDepot();
-                nextVehicle.addCustomer(lastCustomer, nextRouteDepot.distance(lastCustomer), lastCustomer.getDemand());
+                Customer lastCustomer = vehicle.popLastCustomer();
+                nextVehicle.addCustomer(lastCustomer);
+                float newDuration = vehicle.getDuration() + nextVehicle.getDuration();
 
-                if (nextVehicle.getDuration() <= maxRouteDuration && nextVehicle.getLoad() <= maxVehicleLoad) {
-                    routes.get(depotIndex++).set(i, nextVehicle);
+                if (nextVehicle.getDuration() <= maxRouteDuration && nextVehicle.getLoad() <= maxVehicleLoad && currentDuration < newDuration) {
+                    vehicles.set(i, nextVehicle);
                     vehicle = nextVehicle;
                 }
             }
         }
-        return routes;
+        return chromosome;
     }
 
-    public static List<List<Vehicle>> schedule(final Chromosome chromosome) {
+    public static Chromosome schedule(final Chromosome chromosome) {
         return phaseTwo(phaseOne(chromosome));
     }
 }

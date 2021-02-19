@@ -35,9 +35,11 @@ public class Population implements Iterable<Chromosome> {
         assert parents.size() == 2;
         Chromosome parentA = parents.get(0);
         Chromosome parentB = parents.get(1);
-        int depotIndex = new Random().nextInt(parentA.getChromosome().size());
-        List<Depot> a = parentA.getRoutes().get();
-        Vehicle vehicleA = Util.randomChoice(parentA.ge, 1).get(0);
+        int depotIndex = new Random().nextInt(parentA.getRoutes().size());
+        Vehicle vehicleA = Util.randomChoice(parentA.getRoutes().get(depotIndex), 1).get(0);
+        Vehicle vehicleB = Util.randomChoice(parentB.getRoutes().get(depotIndex), 1).get(0);
+        vehicleA.removeCustomers(vehicleB.getCustomers());
+        vehicleB.removeCustomers(vehicleA.getCustomers());
         parents.get(1).getChromosome().get(depotIndex);
     }
 

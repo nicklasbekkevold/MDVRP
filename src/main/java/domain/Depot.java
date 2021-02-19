@@ -12,9 +12,12 @@ public class Depot extends Node {
         super(id, x, y);
     }
 
-    public List<Customer> getVehicles() { return customers; }
+    public List<Vehicle> getVehicles() { return vehicles; }
     public List<Customer> getCustomers() { return customers; }
 
-    public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
+    public void addVehicle(Vehicle vehicle) {
+        vehicles.add(vehicle);
+        vehicle.setDepot(this);
+    }
     public void addCustomer(Customer customer) { customers.add(customer); }
 }

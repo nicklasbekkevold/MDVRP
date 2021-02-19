@@ -4,20 +4,19 @@ import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Chromosome implements Iterable<Depot> {
 
     private static final int ALPHA = 100;
     private static final float BETA = 0.001F;
 
-    private List<Depot> chromosome; // Genotype
-    private List<List<Vehicle>> routes; // Phenotype
-
+    private List<Depot> chromosome;
     private float fitness = 0.0F;
 
     public float getFitness() {
         if (fitness == 0) {
-            for (List<Vehicle> depotVehicles : routes) {
+            for (List<Vehicle> depotVehicles : getRoutes()) {
                 fitness += ALPHA * depotVehicles.size();
                 for (Vehicle vehicle : depotVehicles) {
                     fitness += BETA * vehicle.getDuration();
@@ -26,9 +25,10 @@ public class Chromosome implements Iterable<Depot> {
         }
         return fitness;
     }
+
     public List<Depot> getChromosome() { return chromosome; }
 
-    public List<List<Vehicle>> getRoutes() { return routes; }
+    public List<List<Vehicle>> getRoutes() { return chromosome.stream().map(depot -> depot.getVehicles()).collect(Collectors.toList()); }
 
     @Override
     public Iterator<Depot> iterator() {
@@ -40,7 +40,7 @@ public class Chromosome implements Iterable<Depot> {
         for (Depot depot : this) {
             Collections.shuffle(depot.getCustomers());
         }
-        routes = RouteScheduler.schedule(this);
+        RouteScheduler.schedule(this);
     }
 
 
