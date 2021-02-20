@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MDVRP {
+public final class MDVRP {
 
     private int numberOfVehiclesPerDepot = 0; //m
     private int numberOfCustomers = 0; //n
@@ -24,38 +24,6 @@ public class MDVRP {
     private int minY = Integer.MAX_VALUE;
     private int maxX = Integer.MIN_VALUE;
     private int maxY = Integer.MIN_VALUE;
-
-    public void assignCustomersToNearestDepot() {
-        final float BOUND = 2;
-        final Set<Customer> swappableCustomerList = new HashSet<>();
-
-        for (Customer customer : customers) {
-
-            float minimumDistance = Float.MAX_VALUE;
-            Depot nearestDepot = null;
-
-            for (Depot depot : depots) {
-                float distance = customer.distance(depot);
-                if (distance < minimumDistance) {
-                    minimumDistance = distance;
-                    nearestDepot = depot;
-                }
-            }
-            nearestDepot.addCustomer(customer);
-
-            // Check for borderline customers
-            for (Depot depot : depots) {
-                if (!depot.equals(nearestDepot)) {
-                    float distance = customer.distance(depot);
-                    if ((distance - minimumDistance / minimumDistance) <= BOUND) {
-                        customer.addCandidateDepot(depot);
-                        swappableCustomerList.add(customer);
-                    }
-                }
-            }
-            customer.addCandidateDepot(nearestDepot);
-        }
-    }
 
     // Getters:
     public int getNumberOfVehiclesPerDepot() {

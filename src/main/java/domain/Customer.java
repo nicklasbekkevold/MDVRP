@@ -1,11 +1,9 @@
 package main.java.domain;
 
-import main.java.ga.Gene;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer extends Node implements Gene {
+public final class Customer extends Node {
 
     private final int serviceDuration; //d
     private final int demand; //q

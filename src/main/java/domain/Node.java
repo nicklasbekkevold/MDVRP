@@ -19,6 +19,14 @@ public abstract class Node {
         transformedY = y;
     }
 
+    public Node(Node node) {
+        this.id = node.id;
+        this.x = node.x;
+        this.y = node.y;
+        transformedX = node.transformedX;
+        transformedY = node.transformedY;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,6 +68,5 @@ public abstract class Node {
         transformedX *= scalingFactor;
         transformedY *= scalingFactor;
     }
-
 
 }

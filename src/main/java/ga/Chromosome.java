@@ -14,6 +14,14 @@ public class Chromosome implements Iterable<Depot> {
     private List<Depot> chromosome;
     private float fitness = 0.0F;
 
+    public Chromosome(final List<Depot> chromosome) {
+        this.chromosome = chromosome.stream().map(depot -> new Depot(depot)).collect(Collectors.toList());
+        for (Depot depot : this) {
+            Collections.shuffle(depot.getCustomers());
+        }
+        RouteScheduler.schedule(this);
+    }
+
     public float getFitness() {
         if (fitness == 0) {
             for (List<Vehicle> depotVehicles : getRoutes()) {
@@ -28,22 +36,14 @@ public class Chromosome implements Iterable<Depot> {
 
     public List<Depot> getChromosome() { return chromosome; }
 
-    public List<List<Vehicle>> getRoutes() { return chromosome.stream().map(depot -> depot.getVehicles()).collect(Collectors.toList()); }
+    public List<List<Vehicle>> getRoutes() {
+        return chromosome.stream().map(depot -> depot.getVehicles()).collect(Collectors.toList());
+    }
 
     @Override
     public Iterator<Depot> iterator() {
         return chromosome.iterator();
     }
-
-    public Chromosome(final List<Depot> chromosome) {
-        this.chromosome = chromosome;
-        for (Depot depot : this) {
-            Collections.shuffle(depot.getCustomers());
-        }
-        RouteScheduler.schedule(this);
-    }
-
-
 
     // public Chromosome insertion (Chromosome chromosome);
     // public Chromosome deletion (Chromosome chromosome);
@@ -55,7 +55,5 @@ public class Chromosome implements Iterable<Depot> {
     // public Chromosome swapMutation (Chromosome chromosome);
     // public Chromosome scrambleMutation (Chromosome chromosome);
     // public Chromosome inversionMutation (Chromosome chromosome);
-
-
 
 }

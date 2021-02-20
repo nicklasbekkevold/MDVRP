@@ -1,7 +1,6 @@
 package main.java.ga;
 
 import main.java.Util;
-import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
 import java.util.*;
@@ -22,6 +21,19 @@ public class Population implements Iterable<Chromosome> {
         this.population = population;
     }
 
+    public int getGeneration() { return generation; }
+
+    public float getMaxFitness() { return averageFitness; }
+
+    public float getAverageFitnessFitness() { return averageFitness; }
+
+    public float getDiversity() { return diversity; }
+
+    public Chromosome getAlpha() { return population.get(0); }
+
+    @Override
+    public Iterator<Chromosome> iterator() { return population.iterator(); }
+
     public void update() {
         generation++;
     }
@@ -35,34 +47,13 @@ public class Population implements Iterable<Chromosome> {
         assert parents.size() == 2;
         Chromosome parentA = parents.get(0);
         Chromosome parentB = parents.get(1);
-        int depotIndex = new Random().nextInt(parentA.getRoutes().size());
-        Vehicle vehicleA = Util.randomChoice(parentA.getRoutes().get(depotIndex), 1).get(0);
-        Vehicle vehicleB = Util.randomChoice(parentB.getRoutes().get(depotIndex), 1).get(0);
+        int depotIndex = new Random().nextInt(parentA.getChromosome().size());
+        Vehicle vehicleA = Util.randomChoice(parentA.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
+        Vehicle vehicleB = Util.randomChoice(parentB.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
         vehicleA.removeCustomers(vehicleB.getCustomers());
         vehicleB.removeCustomers(vehicleA.getCustomers());
         parents.get(1).getChromosome().get(depotIndex);
+        return parents;
     }
 
-    public int getGeneration() {
-        return generation;
-    }
-
-    public float getMaxFitness() {
-        return averageFitness;
-    }
-
-    public float getAverageFitnessFitness() { return averageFitness; }
-
-    public float getDiversity() {
-        return diversity;
-    }
-
-    public Chromosome getAlpha() {
-        return population.get(0);
-    }
-
-    @Override
-    public Iterator<Chromosome> iterator() {
-        return population.iterator();
-    }
 }
