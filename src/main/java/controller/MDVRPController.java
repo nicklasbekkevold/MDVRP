@@ -16,6 +16,9 @@ import main.java.ProblemSerializer;
 import main.java.App;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
+import main.java.domain.Node;
+import main.java.domain.Vehicle;
+import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
@@ -57,10 +60,11 @@ public class MDVRPController {
     @FXML
     public CheckBox elitismCheckBox;
 
-    private AnimationTimer animationTimer;
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
+    private static final float NODE_WIDTH = 5F;
+    private static final float OFFSET = NODE_WIDTH / 2;
 
-    private boolean running = false;
+    private AnimationTimer animationTimer;
     private final float FRAME_DELAY = 0.5F;
 
     private int populationSize = 100;
@@ -71,6 +75,8 @@ public class MDVRPController {
     private MDVRP problemInstance;
     private GeneticAlgorithm geneticAlgorithm;
     private Population population;
+
+    private boolean running = false;
 
     @FXML
     public void initialize() {
@@ -178,9 +184,9 @@ public class MDVRPController {
     }
 
     private void transformNodes() {
-        int horizontalChange = 0 - problemInstance.getMinX();
-        int verticalChange = 0 - problemInstance.getMinY();
-        float scalingFactor = (float) App.HEIGHT / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
+        int horizontalChange = -problemInstance.getMinX();
+        int verticalChange = -problemInstance.getMinY();
+        float scalingFactor = (float) (App.HEIGHT - 20) / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
 
         for (Customer customer : problemInstance.getCustomers()) {
             customer.translate(horizontalChange, verticalChange);
@@ -197,43 +203,55 @@ public class MDVRPController {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        renderText(population);
+        if (population != null) {
+            renderText(population);
+            renderVehicles(context, population.getAlpha());
+        }
+        renderText();
         renderCustomers(context);
         renderDepots(context);
-        // renderVehicles(context, population.getAlpha());
+    }
+
+    private void renderText() {
+        generationText.setText("Generation: ");
+        diversityText.setText("Diversity: ");
+        maxFitnessText.setText("Max fitness: ");
+        averageFitnessText.setText("Average fitness: ");
+    }
+
+    private void renderText(Population population) {
+        generationText.setText(String.format("Generation: %d", population.getGeneration()));
+        diversityText.setText(String.format("Diversity: %f", population.getDiversity()));
+        maxFitnessText.setText(String.format("Max fitness: %f", population.getMaxFitness()));
+        averageFitnessText.setText(String.format("Average fitness: %f", population.getAverageFitness()));
     }
 
     private void renderCustomers(final GraphicsContext context) {
         context.setFill(Color.BLACK);
         for (Customer customer : problemInstance.getCustomers()) {
-            context.fillOval(customer.getTransformedX(), customer.getTransformedY(), 5, 5);
+            context.fillOval(customer.getTransformedX(), customer.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
         }
     }
 
     private void renderDepots(final GraphicsContext context) {
         context.setFill(Color.RED);
         for (Depot depot : problemInstance.getDepots()) {
-            context.fillRect(depot.getTransformedX(), depot.getTransformedY(), 5, 5);
+            context.fillRect(depot.getTransformedX(), depot.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
         }
     }
 
-    private void renderText(Population population) {
-        String generationTextString = "Generation: ";
-        String diversityTextString = "Diversity: ";
-        String maxFitnessTextString = "Max fitness: ";
-        String averageFitnessTextString = "Average fitness: ";
-
-        if (population != null)  {
-            generationTextString += population.getGeneration();
-            diversityTextString += population.getDiversity();
-            maxFitnessTextString += population.getMaxFitness();
-            averageFitnessTextString += population.getAverageFitnessFitness();
+    private void renderVehicles(final GraphicsContext context, final Chromosome chromosome) {
+        context.setLineWidth(1.0);
+        context.setStroke(Color.DARKBLUE);
+        for (Vehicle vehicle : chromosome.getVehicles()) {
+            Depot depot = vehicle.getDepot();
+            Node previousNode = depot;
+            for (Customer customer : vehicle.getCustomers()) {
+                context.strokeLine(previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET, customer.getTransformedX() + OFFSET, customer.getTransformedY() + OFFSET);
+                previousNode = customer;
+            }
+            context.strokeLine(depot.getTransformedX() + OFFSET, depot.getTransformedY() + OFFSET, previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET);
         }
-
-        generationText.setText(generationTextString);
-        diversityText.setText(diversityTextString);
-        maxFitnessText.setText(maxFitnessTextString);
-        averageFitnessText.setText(averageFitnessTextString);
     }
 
 }

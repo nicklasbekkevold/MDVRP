@@ -31,7 +31,9 @@ public class RouteScheduler {
                     duration = proposedDuration;
                     load = proposedLoad;
                 } else {
-                    depot.addVehicle(vehicle);
+                    if (previousNode != depot) {
+                        depot.addVehicle(vehicle); // Add vehicle if there is at least one customer
+                    }
 
                     vehicle = new Vehicle(depot);
                     previousNode = depot;
@@ -47,20 +49,20 @@ public class RouteScheduler {
     private static Chromosome phaseTwo(Chromosome chromosome) {
         for (Depot depot : chromosome) {
             List<Vehicle> vehicles = depot.getVehicles();
-            Vehicle vehicle = new Vehicle(vehicles.get(0));
+            Vehicle previousVehicle = new Vehicle(vehicles.get(0));
 
-            for (int i = 1; i < vehicles.size(); i ++) {
-                Vehicle nextVehicle = new Vehicle(vehicles.get(i));
-                float currentDuration = vehicle.getDuration() + nextVehicle.getDuration();
+            for (int i = 1; i < vehicles.size(); i++) {
+                Vehicle vehicle = new Vehicle(vehicles.get(i));
+                float combinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
                 Customer lastCustomer = vehicle.popLastCustomer();
-                nextVehicle.addCustomer(lastCustomer);
-                float newDuration = vehicle.getDuration() + nextVehicle.getDuration();
+                vehicle.addCustomer(lastCustomer);
+                float proposedCombinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
-                if (nextVehicle.getDuration() <= maxRouteDuration && nextVehicle.getLoad() <= maxVehicleLoad && currentDuration < newDuration) {
-                    vehicles.set(i, nextVehicle);
-                    vehicle = nextVehicle;
+                if (vehicle.getDuration() <= maxRouteDuration && vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration) {
+                    vehicles.set(i, vehicle);
                 }
+                previousVehicle = vehicle;
             }
         }
         return chromosome;

@@ -38,12 +38,12 @@ public class GeneticAlgorithm {
         this.elitism = elitism;
 
         assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
-        population = new Population();
 
-        List<Chromosome> population = new ArrayList<>();
+        List<Chromosome> initialPopulation = new ArrayList<>();
         for (int i = 0; i < populationSize; i++) {
-            population.add(new Chromosome(problemInstance.getDepots()));
+            initialPopulation.add(new Chromosome(problemInstance.getDepots()));
         }
+        population = new Population(initialPopulation);
     }
 
     public Population getPopulation() {

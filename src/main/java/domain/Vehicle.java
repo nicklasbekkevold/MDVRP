@@ -1,10 +1,10 @@
 package main.java.domain;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
-public class Vehicle {
+public class Vehicle implements Iterable<Node> {
 
     private Depot depot;
     private List<Customer> customers = new ArrayList<>();
@@ -16,9 +16,10 @@ public class Vehicle {
 
     public Vehicle(final Vehicle vehicle) {
         this.depot = vehicle.depot;
-        this.customers = vehicle.getCustomers();
+        this.customers = vehicle.customers;
         this.routeDuration = vehicle.getDuration();
-        this.load = vehicle.getLoad();
+        this.load = vehicle.load;
+        modified = false;
     }
 
     public Depot getDepot() { return depot; }
@@ -52,8 +53,7 @@ public class Vehicle {
 
     public Customer popLastCustomer() {
         modified = true;
-        Customer lastCustomer = customers.remove(customers.size() - 1);
-        return lastCustomer;
+        return customers.remove(customers.size() - 1);
     }
 
     public void removeCustomers(List<Customer> customers) {
@@ -63,4 +63,12 @@ public class Vehicle {
         }
     }
 
+    @Override
+    public Iterator<Node> iterator() {
+        List<Node> route = new ArrayList<>();
+        route.add(depot);
+        route.addAll(customers);
+        route.add(depot);
+        return route.iterator();
+    }
 }

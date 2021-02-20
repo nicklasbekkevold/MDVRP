@@ -5,6 +5,7 @@ import main.java.domain.Vehicle;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Chromosome implements Iterable<Depot> {
 
@@ -26,18 +27,17 @@ public class Chromosome implements Iterable<Depot> {
 
     public float getFitness() {
         if (fitness == 0) {
-            for (List<Vehicle> depotVehicles : getRoutes()) {
-                fitness += ALPHA * depotVehicles.size();
-                for (Vehicle vehicle : depotVehicles) {
+            List<Vehicle> vehicles = getVehicles();
+            fitness += ALPHA * vehicles.size();
+            for (Vehicle vehicle : vehicles) {
                     fitness += BETA * vehicle.getDuration();
-                }
             }
         }
         return fitness;
     }
 
-    public List<List<Vehicle>> getRoutes() {
-        return chromosome.stream().map(depot -> depot.getVehicles()).collect(Collectors.toList());
+    public List<Vehicle> getVehicles() {
+        return chromosome.stream().flatMap(depot -> depot.getVehicles().stream()).collect(Collectors.toList());
     }
 
     @Override

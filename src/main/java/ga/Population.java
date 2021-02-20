@@ -25,7 +25,7 @@ public class Population implements Iterable<Chromosome> {
 
     public float getMaxFitness() { return averageFitness; }
 
-    public float getAverageFitnessFitness() { return averageFitness; }
+    public float getAverageFitness() { return averageFitness; }
 
     public float getDiversity() { return diversity; }
 
