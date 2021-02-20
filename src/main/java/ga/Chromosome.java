@@ -22,6 +22,8 @@ public class Chromosome implements Iterable<Depot> {
         RouteScheduler.schedule(this);
     }
 
+    public List<Depot> getChromosome() { return chromosome; }
+
     public float getFitness() {
         if (fitness == 0) {
             for (List<Vehicle> depotVehicles : getRoutes()) {
@@ -33,8 +35,6 @@ public class Chromosome implements Iterable<Depot> {
         }
         return fitness;
     }
-
-    public List<Depot> getChromosome() { return chromosome; }
 
     public List<List<Vehicle>> getRoutes() {
         return chromosome.stream().map(depot -> depot.getVehicles()).collect(Collectors.toList());

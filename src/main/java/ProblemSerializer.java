@@ -15,7 +15,7 @@ import java.util.Scanner;
 /**
  * Serializes data files to main.java.MDVRP java objects
  */
-public class MDVRPSerializer {
+public class ProblemSerializer {
 
     static String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
 
@@ -27,7 +27,7 @@ public class MDVRPSerializer {
 
         String problemPath = dataFilesPath + File.separator + problem;
 
-        System.out.println("Reading from file...");
+        System.out.println(String.format("Reading from file %s ...", problem));
         MDVRP mdvrp = new MDVRP();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(problemPath))) {
@@ -107,7 +107,7 @@ public class MDVRPSerializer {
         return dataFileNames;
     }
 
-    private MDVRPSerializer () {}
+    private ProblemSerializer() {}
 
 }
 

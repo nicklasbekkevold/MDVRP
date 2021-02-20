@@ -17,18 +17,24 @@ public class GeneticAlgorithm {
     private final static float BOUND = 2;
 
     // Constraints
-    public final int MAX_ROUTE_DURATION;
-    public final int MAX_VEHICLE_LOAD;
+    public final int maxRouteDuration;
+    public final int maxVehicleLoad;
 
     private Population population;
 
-    public GeneticAlgorithm(final MDVRP problemInstance, int populationSize, float crossOverRate, float mutationRate, boolean elitism) {
-        MAX_ROUTE_DURATION = problemInstance.getMaxRouteDuration();
-        MAX_VEHICLE_LOAD = problemInstance.getMaxVehicleLoad();
+    public GeneticAlgorithm(
+            final MDVRP problemInstance,
+            int populationSize,
+            float crossOverRate,
+            float mutationRate,
+            boolean elitism
+    ) {
+        maxRouteDuration = problemInstance.getMaxRouteDuration();
+        maxVehicleLoad = problemInstance.getMaxVehicleLoad();
 
-        this.populationSize = 1;
-        this.crossOverRate = 0.5F;
-        this.mutationRate = 0.01F;
+        this.populationSize = populationSize;
+        this.crossOverRate = crossOverRate;
+        this.mutationRate = mutationRate;
         this.elitism = elitism;
 
         assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
@@ -38,6 +44,10 @@ public class GeneticAlgorithm {
         for (int i = 0; i < populationSize; i++) {
             population.add(new Chromosome(problemInstance.getDepots()));
         }
+    }
+
+    public Population getPopulation() {
+        return population;
     }
 
     public Population update() {

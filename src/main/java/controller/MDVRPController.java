@@ -12,16 +12,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.MDVRP;
-import main.java.MDVRPSerializer;
+import main.java.ProblemSerializer;
 import main.java.App;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
+import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
 import java.util.List;
 
 
-public class GraphController {
+public class MDVRPController {
 
     @FXML
     public Canvas canvas;
@@ -67,8 +68,9 @@ public class GraphController {
     private float crossoverRate = 0.8F;
     private boolean elitism = false;
 
-    private Population population;
     private MDVRP problemInstance;
+    private GeneticAlgorithm geneticAlgorithm;
+    private Population population;
 
     @FXML
     public void initialize() {
@@ -84,7 +86,7 @@ public class GraphController {
                 lastUpdate = now;
 
                 render(population);
-                population.update();
+                population = geneticAlgorithm.update();
             }
         };
     }
@@ -94,7 +96,8 @@ public class GraphController {
         changeRunButton();
 
         if (running) {
-            population = new Population();
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
+            population = geneticAlgorithm.getPopulation();
             animationTimer.start();
         } else {
             animationTimer.stop();
@@ -154,7 +157,7 @@ public class GraphController {
     }
 
     private void setProblem() {
-        List<String> dataFileNames = MDVRPSerializer.getDataFileNames();
+        List<String> dataFileNames = ProblemSerializer.getDataFileNames();
         fileSelectChoiceBox.setItems(FXCollections.observableArrayList(dataFileNames));
         fileSelectChoiceBox.getSelectionModel().selectFirst();
 
@@ -168,7 +171,7 @@ public class GraphController {
 
     private void onProblemSelect(final String problem) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        problemInstance = MDVRPSerializer.readFromFile(problem);
+        problemInstance = ProblemSerializer.readFromFile(problem);
 
         transformNodes();
         render(null);

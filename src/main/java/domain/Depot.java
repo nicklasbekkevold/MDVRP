@@ -22,10 +22,7 @@ public final class Depot extends Node {
 
     public List<Customer> getCustomers() { return customers; }
 
-    public void addVehicle(Vehicle vehicle) {
-        vehicles.add(vehicle);
-        vehicle.setDepot(this);
-    }
+    public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
 
     public void addCustomer(Customer customer) { customers.add(customer); }
 

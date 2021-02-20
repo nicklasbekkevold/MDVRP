@@ -5,10 +5,7 @@ import main.java.domain.Depot;
 import main.java.domain.Node;
 import main.java.domain.Vehicle;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RouteScheduler {
 
@@ -18,7 +15,7 @@ public class RouteScheduler {
 
     private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
-            Vehicle vehicle = new Vehicle();
+            Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;
             float duration = 0;
@@ -34,11 +31,9 @@ public class RouteScheduler {
                     duration = proposedDuration;
                     load = proposedLoad;
                 } else {
-                    vehicle.setDuration(duration + previousNode.distance(depot));
-                    vehicle.setLoad(load);
                     depot.addVehicle(vehicle);
 
-                    vehicle = new Vehicle();
+                    vehicle = new Vehicle(depot);
                     previousNode = depot;
                     duration = 0;
                     load = 0;
