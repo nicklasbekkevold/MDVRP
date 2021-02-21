@@ -17,8 +17,9 @@ public class GeneticAlgorithm {
     private final static float BOUND = 2;
 
     // Constraints
-    public final int maxRouteDuration;
-    public final int maxVehicleLoad;
+    private final int numberOfVehiclesPerDepot;
+    private final int maxRouteDuration;
+    private final int maxVehicleLoad;
 
     private Population population;
 
@@ -29,6 +30,7 @@ public class GeneticAlgorithm {
             float mutationRate,
             boolean elitism
     ) {
+        numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
         maxRouteDuration = problemInstance.getMaxRouteDuration();
         maxVehicleLoad = problemInstance.getMaxVehicleLoad();
 
@@ -37,6 +39,9 @@ public class GeneticAlgorithm {
         this.mutationRate = mutationRate;
         this.elitism = elitism;
 
+        RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
+        RouteScheduler.setMaxRouteDuration(maxRouteDuration);
+        RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
         assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
 
         List<Chromosome> initialPopulation = new ArrayList<>();

@@ -61,7 +61,7 @@ public class MDVRPController {
     public CheckBox elitismCheckBox;
 
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
-    private static final float NODE_WIDTH = 5.0F;
+    private static final float NODE_WIDTH = 15.0F;
     private static final float OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
@@ -200,6 +200,7 @@ public class MDVRPController {
     }
 
     private void render(final Population population) {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -227,9 +228,10 @@ public class MDVRPController {
     }
 
     private void renderCustomers(final GraphicsContext context) {
-        context.setFill(Color.BLACK);
         for (Customer customer : problemInstance.getCustomers()) {
+            context.setFill(Color.BLACK);
             context.fillOval(customer.getTransformedX(), customer.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
+            context.strokeText(Integer.toString(customer.getId()), customer.getTransformedX(), customer.getTransformedY() - OFFSET);
         }
     }
 

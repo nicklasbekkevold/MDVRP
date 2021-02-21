@@ -9,12 +9,29 @@ import java.util.List;
 
 public class RouteScheduler {
 
-    public static final int numberOfVehiclesPerDepot = 4;
-    public static final int maxRouteDuration = Integer.MAX_VALUE;
-    public static final int maxVehicleLoad = 80;
+    public static int numberOfVehiclesPerDepot;
+    public static int maxRouteDuration;
+    public static int maxVehicleLoad;
+
+    public static void setNumberOfVehiclesPerDepot(int numberOfVehiclesPerDepot) {
+        RouteScheduler.numberOfVehiclesPerDepot = numberOfVehiclesPerDepot;
+    }
+
+    public static void setMaxRouteDuration(int maxRouteDuration) {
+        if (maxRouteDuration == 0) {
+            RouteScheduler.maxRouteDuration = Integer.MAX_VALUE;
+        } else {
+            RouteScheduler.maxRouteDuration = maxRouteDuration;
+        }
+    }
+
+    public static void setMaxVehicleLoad(int maxVehicleLoad) {
+        RouteScheduler.maxVehicleLoad = maxVehicleLoad;
+    }
 
     private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
+            System.out.println("Depot: " + depot.toString());
             Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;
@@ -22,8 +39,11 @@ public class RouteScheduler {
             int load = 0;
 
             for (Customer customer : depot.getCustomers()) {
+                System.out.println("Customer: " + customer.toString());
                 float proposedDuration = duration + customer.getServiceDuration() + previousNode.distance(customer);
                 int proposedLoad = load + customer.getDemand();
+                System.out.println(proposedDuration + previousNode.distance(depot));
+                System.out.println(proposedLoad);
 
                 if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
                     vehicle.addCustomer(customer);
@@ -32,15 +52,17 @@ public class RouteScheduler {
                     load = proposedLoad;
                 } else {
                     if (previousNode != depot) {
-                        depot.addVehicle(vehicle); // Add vehicle if there is at least one customer
+                        depot.addVehicle(vehicle); // Add vehicle if there it has at least one customer
                     }
 
                     vehicle = new Vehicle(depot);
+                    vehicle.addCustomer(customer);
                     previousNode = depot;
-                    duration = 0;
-                    load = 0;
+                    duration = customer.getServiceDuration() + previousNode.distance(customer);
+                    load = customer.getDemand();
                 }
             }
+            depot.addVehicle(vehicle); // Add last route unconditionally
         }
 
         return chromosome;
@@ -49,6 +71,9 @@ public class RouteScheduler {
     private static Chromosome phaseTwo(Chromosome chromosome) {
         for (Depot depot : chromosome) {
             List<Vehicle> vehicles = depot.getVehicles();
+            if (vehicles.size() == 0) {
+                continue;
+            }
             Vehicle previousVehicle = new Vehicle(vehicles.get(0));
 
             for (int i = 1; i < vehicles.size(); i++) {

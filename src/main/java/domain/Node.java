@@ -42,12 +42,14 @@ public abstract class Node {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d)", x, y);
+        return String.format("%d=(%d, %d)", id, x, y);
     }
 
-    public int getX() {
-        return x;
+    public int getId() {
+        return id;
     }
+
+    public int getX() { return x; }
 
     public int getY() {
         return y;
