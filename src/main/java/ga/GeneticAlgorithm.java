@@ -51,6 +51,11 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
+        // Selection
+        // Recombination (crossover)
+        // Mutation (intra-depot & inter-depot)
+        // Acceptance (replacement)
+        // Elitism step
         // Do one loop
         return population;
     }
