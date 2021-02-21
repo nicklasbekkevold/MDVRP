@@ -61,7 +61,7 @@ public class MDVRPController {
     public CheckBox elitismCheckBox;
 
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
-    private static final float NODE_WIDTH = 5F;
+    private static final float NODE_WIDTH = 5.0F;
     private static final float OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
