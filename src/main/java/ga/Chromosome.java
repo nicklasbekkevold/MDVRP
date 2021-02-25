@@ -1,5 +1,6 @@
 package main.java.ga;
 
+import main.java.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Vehicle;
@@ -57,6 +58,20 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
                 customers.set(i, customersCopy.get(cutoffPointB - i));
             }
         }
+        RouteScheduler.schedule(this);
+    }
+
+    public void singleCustomerMutation() {
+        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+        List<Customer> customers = depot.getCustomers();
+        Customer customer = customers.get(new Random().nextInt(customers.size()));
+        // Insert customer into most feasible location ...
+    }
+
+    public void swapMutation() {
+        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+        List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
+        vehicles.get(0).swapRandomCustomer(vehicles.get(1));
     }
 
     @Override
