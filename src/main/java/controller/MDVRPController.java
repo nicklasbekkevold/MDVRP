@@ -22,7 +22,6 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
-import java.io.File;
 import java.util.List;
 
 
@@ -62,15 +61,15 @@ public class MDVRPController {
     public CheckBox elitismCheckBox;
 
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
-    private static final float NODE_WIDTH = 5.0F;
-    private static final float OFFSET = NODE_WIDTH / 2;
+    private static final double NODE_WIDTH = 5.0;
+    private static final double OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
-    private final float FRAME_DELAY = 0.5F;
+    private final double FRAME_DELAY = 0.5;
 
     private int populationSize = 100;
-    private float mutationRate = 0.05F;
-    private float crossoverRate = 0.8F;
+    private double mutationRate = 0.05;
+    private double crossoverRate = 0.8;
     private boolean elitism = false;
 
     private MDVRP problemInstance;
@@ -133,32 +132,32 @@ public class MDVRPController {
                 }
             }
         });
-        mutationRateField.setPromptText(Float.toString(mutationRate));
+        mutationRateField.setPromptText(Double.toString(mutationRate));
         mutationRateField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("")) {
-                mutationRate = (float) 0.01;
+                mutationRate = 0.01;
             } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
-                mutationRate = Float.parseFloat(newValue);
+                mutationRate = Double.parseDouble(newValue);
                 if (mutationRate > 1) {
                     mutationRate = 1;
-                    mutationRateField.setText(Float.toString(mutationRate));
+                    mutationRateField.setText(Double.toString(mutationRate));
                 }
             } else {
-                mutationRateField.setText(Float.toString(mutationRate));
+                mutationRateField.setText(Double.toString(mutationRate));
             }
         });
-        crossoverRateField.setPromptText(Float.toString(crossoverRate));
+        crossoverRateField.setPromptText(Double.toString(crossoverRate));
         crossoverRateField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("")) {
-                crossoverRate = (float) 0.08;
+                crossoverRate = 0.08;
             } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
-                crossoverRate = Float.parseFloat(newValue);
+                crossoverRate = Double.parseDouble(newValue);
                 if (crossoverRate > 1) {
                     crossoverRate = 1;
-                    crossoverRateField.setText(Float.toString(crossoverRate));
+                    crossoverRateField.setText(Double.toString(crossoverRate));
                 }
             } else {
-                crossoverRateField.setText(Float.toString(crossoverRate));
+                crossoverRateField.setText(Double.toString(crossoverRate));
             }
         });
         elitismCheckBox.setSelected(elitism);
@@ -188,7 +187,7 @@ public class MDVRPController {
     private void transformNodes() {
         int horizontalChange = -problemInstance.getMinX();
         int verticalChange = -problemInstance.getMinY();
-        float scalingFactor = (float) (App.HEIGHT - 20) / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
+        double scalingFactor = (double) (App.HEIGHT - 20) / Math.max(problemInstance.getMaxX() + horizontalChange, problemInstance.getMaxY() + verticalChange);
 
         for (Customer customer : problemInstance.getCustomers()) {
             customer.translate(horizontalChange, verticalChange);

@@ -8,8 +8,8 @@ public abstract class Node {
     private final int x;
     private final int y;
 
-    private float transformedX;
-    private float transformedY;
+    private double transformedX;
+    private double transformedY;
 
     public Node(int id, int x, int y) {
         this.id = id;
@@ -55,18 +55,18 @@ public abstract class Node {
         return y;
     }
 
-    public float distance (final Node other) { return (float) Math.hypot(x - other.getX(), y - other.getY()); }
+    public double distance (final Node other) { return (double) Math.hypot(x - other.getX(), y - other.getY()); }
 
-    public float getTransformedX() { return transformedX; }
+    public double getTransformedX() { return transformedX; }
 
-    public float getTransformedY() { return transformedY; }
+    public double getTransformedY() { return transformedY; }
 
     public void translate(final int horizontalChange, final int verticalChange) {
         transformedX += horizontalChange;
         transformedY += verticalChange;
     }
 
-    public void scale(final float scalingFactor) {
+    public void scale(final double scalingFactor) {
         transformedX *= scalingFactor;
         transformedY *= scalingFactor;
     }

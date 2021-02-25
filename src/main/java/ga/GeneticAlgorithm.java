@@ -10,11 +10,11 @@ public class GeneticAlgorithm {
 
     // GA Parameters
     private final int populationSize;
-    private final float crossOverRate;
-    private final float mutationRate;
+    private final double crossOverRate;
+    private final double mutationRate;
     private final boolean elitism;
 
-    private final static float BOUND = 2;
+    private final static double BOUND = 2;
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
@@ -26,8 +26,8 @@ public class GeneticAlgorithm {
     public GeneticAlgorithm(
             final MDVRP problemInstance,
             int populationSize,
-            float crossOverRate,
-            float mutationRate,
+            double crossOverRate,
+            double mutationRate,
             boolean elitism
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
@@ -71,11 +71,11 @@ public class GeneticAlgorithm {
 
         for (Customer customer : customers) {
 
-            float minimumDistance = Float.MAX_VALUE;
+            double minimumDistance = Float.MAX_VALUE;
             Depot nearestDepot = null;
 
             for (Depot depot : depots) {
-                float distance = customer.distance(depot);
+                double distance = customer.distance(depot);
                 if (distance < minimumDistance) {
                     minimumDistance = distance;
                     nearestDepot = depot;
@@ -86,7 +86,7 @@ public class GeneticAlgorithm {
             // Check for borderline customers
             for (Depot depot : depots) {
                 if (!depot.equals(nearestDepot)) {
-                    float distance = customer.distance(depot);
+                    double distance = customer.distance(depot);
                     if ((distance - minimumDistance / minimumDistance) <= BOUND) {
                         customer.addCandidateDepot(depot);
                         swappableCustomerList.add(customer);

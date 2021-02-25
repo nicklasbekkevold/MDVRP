@@ -12,7 +12,7 @@ public class Vehicle implements Iterable<Node> {
     private final Depot depot;
     private List<Customer> customers = new ArrayList<>();
     private boolean modified = true;
-    private float routeDuration = 0.0F;
+    private double routeDuration = 0.0;
     private int load = 0;
 
     public Vehicle(Depot depot) {
@@ -37,7 +37,7 @@ public class Vehicle implements Iterable<Node> {
 
     public List<Customer> getCustomers() { return customers; }
 
-    public float getDuration() {
+    public double getDuration() {
         if (modified) {
             update();
             modified = false;

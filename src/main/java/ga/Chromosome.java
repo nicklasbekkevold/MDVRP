@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static final int ALPHA = 100;
-    private static final float BETA = 0.001F;
+    private static final double BETA = 0.001;
 
     private List<Depot> chromosome;
-    private float fitness = 0.0F;
+    private double fitness = 0.0;
 
     public Chromosome(final List<Depot> chromosome) {
         this.chromosome = chromosome.stream().map(depot -> new Depot(depot)).collect(Collectors.toList());
@@ -24,7 +24,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public List<Depot> getChromosome() { return chromosome; }
 
-    public float getFitness() {
+    public double getFitness() {
         if (fitness == 0) {
             List<Vehicle> vehicles = getVehicles();
             fitness += ALPHA * vehicles.size();
@@ -46,7 +46,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     @Override
     public int compareTo(Chromosome otherChromosome) {
-        return Float.compare(this.getFitness(), otherChromosome.getFitness());
+        return Double.compare(this.getFitness(), otherChromosome.getFitness());
     }
 
     @Override

@@ -35,11 +35,11 @@ public class RouteScheduler {
             Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;
-            float duration = 0;
+            double duration = 0;
             int load = 0;
 
             for (Customer customer : depot.getCustomers()) {
-                float proposedDuration = duration + customer.getServiceDuration() + previousNode.distance(customer);
+                double proposedDuration = duration + customer.getServiceDuration() + previousNode.distance(customer);
                 int proposedLoad = load + customer.getDemand();
 
                 if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
@@ -75,11 +75,11 @@ public class RouteScheduler {
 
             for (int i = 1; i < vehicles.size(); i++) {
                 Vehicle vehicle = new Vehicle(vehicles.get(i));
-                float combinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
+                double combinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
                 Customer lastCustomer = vehicle.popLastCustomer();
                 vehicle.addCustomer(lastCustomer);
-                float proposedCombinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
+                double proposedCombinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
                 if (vehicle.getDuration() <= maxRouteDuration && vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration) {
                     vehicles.set(i, vehicle);

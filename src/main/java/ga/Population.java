@@ -8,10 +8,10 @@ import java.util.*;
 public class Population implements Iterable<Chromosome> {
 
     private int generation = 0;
-    private float averageFitness = 0.0F;
-    private float diversity = 0.0F;
+    private double averageFitness = 0.0;
+    private double diversity = 0.0;
 
-    private List<Chromosome> population;
+    private final List<Chromosome> population;
 
     public Population() {
         this.population = null;
@@ -23,11 +23,14 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public float getMaxFitness() { return averageFitness; }
+    public double getMaxFitness() { return getAlpha().getFitness(); }
 
-    public float getAverageFitness() { return averageFitness; }
+    public double getAverageFitness() {
+        averageFitness = population.stream().mapToDouble(Chromosome::getFitness).average().getAsDouble();
+        return averageFitness;
+    }
 
-    public float getDiversity() { return diversity; }
+    public double getDiversity() { return diversity; }
 
     public Chromosome getAlpha() { return Collections.max(population); }
 
