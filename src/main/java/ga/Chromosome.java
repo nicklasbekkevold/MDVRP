@@ -1,5 +1,6 @@
 package main.java.ga;
 
+import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
@@ -39,6 +40,25 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return chromosome.stream().flatMap(depot -> depot.getVehicles().stream()).collect(Collectors.toList());
     }
 
+    public void removeCustomers(List<Customer> customers) {
+        for (Vehicle vehicle : getVehicles()) {
+            vehicle.removeCustomers(customers);
+        }
+    }
+
+    public void inverseMutation() {
+        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+        List<Customer> customers = depot.getCustomers();
+        List<Customer> customersCopy = new ArrayList<>(customers);
+        int cutoffPointA = new Random().nextInt(customers.size());
+        int cutoffPointB = new Random().nextInt(customers.size());
+        if (cutoffPointA < cutoffPointB) {
+            for (int i = cutoffPointA; i < cutoffPointB; i++) {
+                customers.set(i, customersCopy.get(cutoffPointB - i));
+            }
+        }
+    }
+
     @Override
     public Iterator<Depot> iterator() {
         return chromosome.iterator();
@@ -63,6 +83,5 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     // public Chromosome insertMutation (Chromosome chromosome);
     // public Chromosome swapMutation (Chromosome chromosome);
     // public Chromosome scrambleMutation (Chromosome chromosome);
-    // public Chromosome inversionMutation (Chromosome chromosome);
 
 }

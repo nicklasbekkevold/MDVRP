@@ -47,6 +47,16 @@ public class Vehicle implements Iterable<Node> {
 
     public int getLoad() { return load; }
 
+    public double getInsertionCost(Customer customer, int index) {
+        if (customers.size() == 1) {
+            return customers.get(0).distance(customer) - depot.distance(customers.get(0)) - depot.distance(customer);
+        } else if (index == 0 || index == customers.size()) {
+            Customer endCustomer = customers.get(index == customers.size() ? customers.size() - 1 : index);
+            return depot.distance(customer) + customer.distance(endCustomer) - depot.distance(endCustomer);
+        }
+        return customers.get(index - 1).distance(customer) + customer.distance(customers.get(index)) - customers.get(index - 1).distance(customers.get(index));
+    }
+
     public void addCustomer(Customer customer) {
         modified = true;
         load += customer.getDemand();
