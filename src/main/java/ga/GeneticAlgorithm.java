@@ -15,6 +15,7 @@ public class GeneticAlgorithm {
     private final int apprate;
     private final boolean elitism;
 
+    private final static double APPRATE = 10;
     private final static double BOUND = 2;
 
     // Constraints
@@ -45,11 +46,11 @@ public class GeneticAlgorithm {
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
         RouteScheduler.setMaxRouteDuration(maxRouteDuration);
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
-        assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
+        List<Customer> swappableCustomerList = assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
 
         List<Chromosome> initialPopulation = new ArrayList<>();
         for (int i = 0; i < populationSize; i++) {
-            initialPopulation.add(new Chromosome(problemInstance.getDepots()));
+            initialPopulation.add(new Chromosome(problemInstance.getDepots(), swappableCustomerList));
         }
         population = new Population(initialPopulation);
     }
@@ -62,6 +63,11 @@ public class GeneticAlgorithm {
         // Selection
         // Recombination (crossover)
         // Mutation (intra-depot & inter-depot)
+        if (population.getGeneration() % APPRATE == 0) {
+            // Do intra-depot clustering
+        } else {
+            // Do one type of inter-depot clustering
+        }
         // Acceptance (replacement)
         // Elitism step
         // Do one loop
@@ -69,8 +75,8 @@ public class GeneticAlgorithm {
         return population;
     }
 
-    private void assignCustomersToNearestDepot(final List<Customer> customers, final List<Depot> depots) {
-        final Set<Customer> swappableCustomerList = new HashSet<>();
+    private List<Customer> assignCustomersToNearestDepot(final List<Customer> customers, final List<Depot> depots) {
+        final List<Customer> swappableCustomerList = new ArrayList<>();
 
         for (Customer customer : customers) {
 
@@ -98,5 +104,6 @@ public class GeneticAlgorithm {
             }
             customer.addCandidateDepot(nearestDepot);
         }
+        return swappableCustomerList;
     }
 }

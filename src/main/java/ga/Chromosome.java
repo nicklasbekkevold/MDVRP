@@ -6,6 +6,7 @@ import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
@@ -14,9 +15,11 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private static final double BETA = 0.001;
 
     private List<Depot> chromosome;
+    private List<Customer> swappableCustomerList;
     private double fitness = 0.0;
 
-    public Chromosome(final List<Depot> chromosome) {
+    public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
+        this.swappableCustomerList = new ArrayList<>(swappableCustomerList);
         this.chromosome = chromosome.stream().map(depot -> new Depot(depot)).collect(Collectors.toList());
         for (Depot depot : this) {
             Collections.shuffle(depot.getCustomers());
@@ -47,7 +50,23 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         }
     }
 
-    public void inverseMutation() {
+    private void mutate(Chromosome chromosome) {
+        int randomFunction = new Random().nextInt(3);
+        switch (randomFunction) {
+            case 0: {
+                inverseMutation();
+            }
+            case 1: {
+                reRoutingMutation();
+            }
+            case 2: {
+                swapMutation();
+            }
+
+        }
+    }
+
+    private void inverseMutation() {
         Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
         List<Customer> customers = depot.getCustomers();
         List<Customer> customersCopy = new ArrayList<>(customers);
@@ -61,14 +80,14 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         RouteScheduler.schedule(this);
     }
 
-    public void singleCustomerMutation() {
+    private void reRoutingMutation() {
         Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
         List<Customer> customers = depot.getCustomers();
         Customer customer = customers.get(new Random().nextInt(customers.size()));
         // Insert customer into most feasible location ...
     }
 
-    public void swapMutation() {
+    private void swapMutation() {
         Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
         List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
         vehicles.get(0).swapRandomCustomer(vehicles.get(1));
