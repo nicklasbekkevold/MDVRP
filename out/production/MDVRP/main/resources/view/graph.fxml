@@ -17,8 +17,8 @@
                 <Canvas fx:id="canvas" height="576.0" layoutX="5.0" layoutY="5.0" width="576.0" />
             </children>
         </Pane>
-        <ChoiceBox fx:id="fileSelectChoiceBox" layoutX="600.0" layoutY="20.0" prefHeight="28.0" prefWidth="300.0" />
-        <Button fx:id="runButton" alignment="CENTER" defaultButton="true" layoutX="920.0" layoutY="20.0" mnemonicParsing="false" onAction="#run" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: green;" text="Run" textAlignment="CENTER" textFill="WHITE">
+        <ChoiceBox fx:id="fileSelectChoiceBox" layoutX="600.0" layoutY="20.0" prefHeight="28.0" prefWidth="210.0" />
+        <Button fx:id="runButton" alignment="CENTER" defaultButton="true" layoutX="825.0" layoutY="19.0" mnemonicParsing="false" onAction="#run" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: green;" text="Run" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="14.0" />
          </font></Button>
@@ -85,5 +85,10 @@
             <TextField fx:id="apprateField" layoutX="190.0" layoutY="183.0" prefHeight="26.0" prefWidth="54.0" />
             </children>
         </Pane>
+      <Button fx:id="saveButton" alignment="CENTER" disable="true" layoutX="924.0" layoutY="19.0" mnemonicParsing="false" onAction="#save" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: darkblue;" text="Save" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

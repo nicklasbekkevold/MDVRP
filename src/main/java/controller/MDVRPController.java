@@ -1,16 +1,21 @@
 package main.java.controller;
 
 import javafx.animation.AnimationTimer;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import main.java.MDVRP;
 import main.java.FileParser;
 import main.java.App;
@@ -30,10 +35,16 @@ import java.util.List;
 public class MDVRPController {
 
     @FXML
+    public Stage stage;
+
+    @FXML
     public Canvas canvas;
 
     @FXML
     public Button runButton;
+
+    @FXML
+    public Button saveButton;
 
     @FXML
     public ChoiceBox<String> fileSelectChoiceBox;
@@ -85,9 +96,10 @@ public class MDVRPController {
     private boolean running = false;
 
     @FXML
-    public void initialize() {
-        setFXMLParameters();
+    public void initialize(Stage stage) {
+        setFXMLParameters(stage);
         setProblem();
+
         animationTimer = new AnimationTimer() {
             final long sleepDuration = (long) (FRAME_DELAY * NANO_SECONDS_IN_SECOND);
             long lastUpdate = 0;
@@ -108,11 +120,18 @@ public class MDVRPController {
         changeRunButton();
 
         if (running) {
+            saveButton.setDisable(true);
             geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, apprate, elitism);
             population = geneticAlgorithm.getPopulation();
             animationTimer.start();
         } else {
             animationTimer.stop();
+            saveButton.setDisable(false);
+        }
+    }
+
+    public void save() {
+        if (!running) {
             FileParser.writeToFile(problemInstance.getProblem(), population.getAlpha());
         }
     }
@@ -127,7 +146,24 @@ public class MDVRPController {
         }
     }
 
-    private void setFXMLParameters() {
+    private void setFXMLParameters(Stage stage) {
+        runButton.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            stage.getScene().setCursor(Cursor.HAND);
+            runButton.setEffect(new DropShadow());
+        });
+        runButton.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            stage.getScene().setCursor(Cursor.DEFAULT);
+            runButton.setEffect(null);
+        });
+        saveButton.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            stage.getScene().setCursor(Cursor.HAND);
+            saveButton.setEffect(new DropShadow());
+        });
+        saveButton.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            stage.getScene().setCursor(Cursor.DEFAULT);
+            saveButton.setEffect(null);
+        });
+
         populationSizeField.setPromptText(Integer.toString(populationSize));
         populationSizeField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("")) {
