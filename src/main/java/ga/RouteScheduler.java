@@ -31,7 +31,7 @@ public class RouteScheduler {
 
     private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
-            System.out.println("Depot: " + depot.toString());
+            Vehicle.resetSerialNumber();
             Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;
@@ -39,11 +39,8 @@ public class RouteScheduler {
             int load = 0;
 
             for (Customer customer : depot.getCustomers()) {
-                System.out.println("Customer: " + customer.toString());
                 float proposedDuration = duration + customer.getServiceDuration() + previousNode.distance(customer);
                 int proposedLoad = load + customer.getDemand();
-                System.out.println(proposedDuration + previousNode.distance(depot));
-                System.out.println(proposedLoad);
 
                 if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
                     vehicle.addCustomer(customer);

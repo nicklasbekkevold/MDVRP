@@ -6,7 +6,7 @@ import main.java.domain.Vehicle;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Chromosome implements Iterable<Depot> {
+public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static final int ALPHA = 100;
     private static final float BETA = 0.001F;
@@ -42,6 +42,16 @@ public class Chromosome implements Iterable<Depot> {
     @Override
     public Iterator<Depot> iterator() {
         return chromosome.iterator();
+    }
+
+    @Override
+    public int compareTo(Chromosome otherChromosome) {
+        return Float.compare(this.getFitness(), otherChromosome.getFitness());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%.2f", getFitness());
     }
 
     // public Chromosome insertion (Chromosome chromosome);

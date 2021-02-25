@@ -10,6 +10,8 @@ import java.util.Set;
 
 public final class MDVRP {
 
+    private String problem = "p01";
+
     private int numberOfVehiclesPerDepot = 0; //m
     private int numberOfCustomers = 0; //n
     private int numberOfDepots = 0; //t
@@ -26,6 +28,8 @@ public final class MDVRP {
     private int maxY = Integer.MIN_VALUE;
 
     // Getters:
+    public String getProblem() { return problem; }
+
     public int getNumberOfVehiclesPerDepot() {
         return numberOfVehiclesPerDepot;
     }
@@ -63,6 +67,8 @@ public final class MDVRP {
     public int getMaxY() { return maxY; }
 
     // Setters:
+    public void setProblem(String problem) { this.problem = problem; }
+
     public void setNumberOfVehiclesPerDepot(int numberOfVehiclesPerDepot) {
         this.numberOfVehiclesPerDepot = numberOfVehiclesPerDepot;
     }

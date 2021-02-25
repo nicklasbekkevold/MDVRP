@@ -2,22 +2,42 @@ package main.java;
 
 import main.java.domain.Customer;
 import main.java.domain.Depot;
+import main.java.domain.Vehicle;
+import main.java.ga.Chromosome;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * Serializes data files to main.java.MDVRP java objects
+ * Serializes and Deserializes data to and from main.java.MDVRP java objects
  */
-public class ProblemSerializer {
+public class FileParser {
 
     static String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
+    static String solutionFilesPath = new File("src/main/resources/solution_files").getAbsolutePath();
+
+    // Enforces static class
+    private FileParser() {}
+
+    /**
+     * @return list of the data file names: p01, p02, ...
+     */
+    public static List<String> getDataFileNames() {
+        List<String> dataFileNames= new ArrayList<>();
+
+        final File dataFilesFolder = new File(dataFilesPath);
+        for (final File dataFile : dataFilesFolder.listFiles()) {
+            if (!dataFile.isDirectory()) {
+                dataFileNames.add(dataFile.getName());
+            }
+        }
+
+        Collections.sort(dataFileNames);
+        return dataFileNames;
+    }
 
     /**
      * @param problem Name of problem file to encode a main.java.MDVRP instance from
@@ -29,6 +49,7 @@ public class ProblemSerializer {
 
         System.out.println(String.format("Reading from file %s ...", problem));
         MDVRP mdvrp = new MDVRP();
+        mdvrp.setProblem(problem);
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(problemPath))) {
 
@@ -93,21 +114,26 @@ public class ProblemSerializer {
         return numbers;
     }
 
-    public static List<String> getDataFileNames() {
-        List<String> dataFileNames= new ArrayList<>();
+    public static void writeToFile(final String problem, Chromosome chromosome) {
+        final String solutionPath = solutionFilesPath + File.separator + problem;
 
-        final File dataFilesFolder = new File(dataFilesPath);
-        for (final File dataFile : dataFilesFolder.listFiles()) {
-            if (!dataFile.isDirectory()) {
-                dataFileNames.add(dataFile.getName());
+        System.out.println(String.format("Writing to solution file %s ...", problem));
+        final File solutionFile = new File(solutionPath);
+
+        try (PrintWriter writer = new PrintWriter(solutionFile)) {
+            writer.println(chromosome);
+            for (Vehicle vehicle : chromosome.getVehicles()) {
+                writer.println(vehicle);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        Collections.sort(dataFileNames);
-        return dataFileNames;
+        System.out.println("Writing to file successful.");
     }
 
-    private ProblemSerializer() {}
+
+
+
 
 }
 

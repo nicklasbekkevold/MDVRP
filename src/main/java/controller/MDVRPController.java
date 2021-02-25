@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.java.MDVRP;
-import main.java.ProblemSerializer;
+import main.java.FileParser;
 import main.java.App;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
@@ -22,6 +22,7 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -61,7 +62,7 @@ public class MDVRPController {
     public CheckBox elitismCheckBox;
 
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
-    private static final float NODE_WIDTH = 15.0F;
+    private static final float NODE_WIDTH = 5.0F;
     private static final float OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
@@ -107,6 +108,7 @@ public class MDVRPController {
             animationTimer.start();
         } else {
             animationTimer.stop();
+            FileParser.writeToFile(problemInstance.getProblem(), population.getAlpha());
         }
     }
 
@@ -163,7 +165,7 @@ public class MDVRPController {
     }
 
     private void setProblem() {
-        List<String> dataFileNames = ProblemSerializer.getDataFileNames();
+        List<String> dataFileNames = FileParser.getDataFileNames();
         fileSelectChoiceBox.setItems(FXCollections.observableArrayList(dataFileNames));
         fileSelectChoiceBox.getSelectionModel().selectFirst();
 
@@ -177,7 +179,7 @@ public class MDVRPController {
 
     private void onProblemSelect(final String problem) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        problemInstance = ProblemSerializer.readFromFile(problem);
+        problemInstance = FileParser.readFromFile(problem);
 
         transformNodes();
         render(null);
@@ -231,7 +233,7 @@ public class MDVRPController {
         for (Customer customer : problemInstance.getCustomers()) {
             context.setFill(Color.BLACK);
             context.fillOval(customer.getTransformedX(), customer.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
-            context.strokeText(Integer.toString(customer.getId()), customer.getTransformedX(), customer.getTransformedY() - OFFSET);
+            // context.strokeText(Integer.toString(customer.getId()), customer.getTransformedX(), customer.getTransformedY() - OFFSET);
         }
     }
 

@@ -3,23 +3,34 @@ package main.java.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Vehicle implements Iterable<Node> {
 
-    private Depot depot;
+    private static int serialNumber = 1;
+    private final int vehicleNumber;
+    private final Depot depot;
     private List<Customer> customers = new ArrayList<>();
     private boolean modified = true;
     private float routeDuration = 0.0F;
     private int load = 0;
 
-    public Vehicle(Depot depot) { this.depot = depot; }
+    public Vehicle(Depot depot) {
+        this.vehicleNumber = serialNumber++;
+        this.depot = depot;
+    }
 
     public Vehicle(final Vehicle vehicle) {
+        this.vehicleNumber = vehicle.vehicleNumber;
         this.depot = vehicle.depot;
         this.customers = vehicle.customers;
         this.routeDuration = vehicle.getDuration();
         this.load = vehicle.load;
         modified = false;
+    }
+
+    public static void resetSerialNumber() {
+        Vehicle.serialNumber = 1;
     }
 
     public Depot getDepot() { return depot; }
@@ -70,5 +81,11 @@ public class Vehicle implements Iterable<Node> {
         route.addAll(customers);
         route.add(depot);
         return route.iterator();
+    }
+
+    @Override
+    public String toString() {
+        String customerString = customers.stream().map(customer -> Integer.toString(customer.getId())).collect(Collectors.joining(" "));
+        return String.format("%d %4d %9.2f %5d    0 " + customerString, depot.getId(), vehicleNumber, getDuration(), load);
     }
 }

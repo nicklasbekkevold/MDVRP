@@ -62,6 +62,7 @@ public class GeneticAlgorithm {
         // Acceptance (replacement)
         // Elitism step
         // Do one loop
+        population.update();
         return population;
     }
 

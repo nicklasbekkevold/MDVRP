@@ -29,7 +29,7 @@ public class Population implements Iterable<Chromosome> {
 
     public float getDiversity() { return diversity; }
 
-    public Chromosome getAlpha() { return population.get(0); }
+    public Chromosome getAlpha() { return Collections.max(population); }
 
     @Override
     public Iterator<Chromosome> iterator() { return population.iterator(); }
