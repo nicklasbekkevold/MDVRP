@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import main.java.MDVRP;
 import main.java.FileParser;
 import main.java.App;
+import main.java.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Node;
@@ -22,6 +23,7 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -259,8 +261,12 @@ public class MDVRPController {
 
     private void renderVehicles(final GraphicsContext context, final Chromosome chromosome) {
         context.setLineWidth(1.0);
-        context.setStroke(Color.DARKBLUE);
-        for (Vehicle vehicle : chromosome.getVehicles()) {
+
+        List<Vehicle> vehicles = chromosome.getVehicles();
+        Iterator<Color> colors = Util.distinctColors(vehicles.size());
+
+        for (Vehicle vehicle : vehicles) {
+            context.setStroke(colors.next());
             Depot depot = vehicle.getDepot();
             Node previousNode = depot;
             for (Customer customer : vehicle.getCustomers()) {
