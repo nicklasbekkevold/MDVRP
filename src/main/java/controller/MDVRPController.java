@@ -55,6 +55,9 @@ public class MDVRPController {
     public TextField mutationRateField;
 
     @FXML
+    public TextField apprateField;
+
+    @FXML
     public TextField crossoverRateField;
 
     @FXML
@@ -70,6 +73,7 @@ public class MDVRPController {
     private int populationSize = 100;
     private double mutationRate = 0.05;
     private double crossoverRate = 0.8;
+    private int apprate = 10;
     private boolean elitism = false;
 
     private MDVRP problemInstance;
@@ -102,7 +106,7 @@ public class MDVRPController {
         changeRunButton();
 
         if (running) {
-            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, apprate, elitism);
             population = geneticAlgorithm.getPopulation();
             animationTimer.start();
         } else {
@@ -158,6 +162,16 @@ public class MDVRPController {
                 }
             } else {
                 crossoverRateField.setText(Double.toString(crossoverRate));
+            }
+        });
+        apprateField.setPromptText(Integer.toString(apprate));
+        apprateField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.equals("")) {
+                try {
+                    apprate = Integer.parseInt(newValue);
+                } catch (NumberFormatException e) {
+                    apprateField.setText(oldValue);
+                }
             }
         });
         elitismCheckBox.setSelected(elitism);

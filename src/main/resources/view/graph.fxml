@@ -71,12 +71,18 @@
                </font>
             </Text>
                 <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="145.0" prefHeight="26.0" prefWidth="54.0" />
-            <Text layoutX="40.0" layoutY="203.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+            <Text layoutX="40.0" layoutY="243.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="190.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="226.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <Text layoutX="40.0" layoutY="203.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="APPRATE:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="apprateField" layoutX="190.0" layoutY="183.0" prefHeight="26.0" prefWidth="54.0" />
             </children>
         </Pane>
     </children>

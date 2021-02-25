@@ -12,6 +12,7 @@ public class GeneticAlgorithm {
     private final int populationSize;
     private final double crossOverRate;
     private final double mutationRate;
+    private final int apprate;
     private final boolean elitism;
 
     private final static double BOUND = 2;
@@ -28,6 +29,7 @@ public class GeneticAlgorithm {
             int populationSize,
             double crossOverRate,
             double mutationRate,
+            int apprate,
             boolean elitism
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
@@ -37,6 +39,7 @@ public class GeneticAlgorithm {
         this.populationSize = populationSize;
         this.crossOverRate = crossOverRate;
         this.mutationRate = mutationRate;
+        this.apprate = apprate;
         this.elitism = elitism;
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
