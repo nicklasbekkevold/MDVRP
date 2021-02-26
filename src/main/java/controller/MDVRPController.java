@@ -228,9 +228,9 @@ public class MDVRPController {
         onProblemSelect(dataFileNames.get(0));
     }
 
-    private void onProblemSelect(final String problem) {
+    private void onProblemSelect(final String problemId) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        problemInstance = FileParser.readFromFile(problem);
+        problemInstance = FileParser.readFromFile(problemId);
 
         transformNodes();
         render(null);

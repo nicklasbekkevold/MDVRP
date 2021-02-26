@@ -44,6 +44,10 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return chromosome.stream().flatMap(depot -> depot.getVehicles().stream()).collect(Collectors.toList());
     }
 
+    public int getVehicleCount() {
+        return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum();
+    }
+
     public void removeCustomers(List<Customer> customers) {
         for (Vehicle vehicle : getVehicles()) {
             vehicle.removeCustomers(customers);

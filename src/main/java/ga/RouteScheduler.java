@@ -10,19 +10,10 @@ import java.util.List;
 public class RouteScheduler {
 
     public static int numberOfVehiclesPerDepot;
-    public static int maxRouteDuration;
     public static int maxVehicleLoad;
 
     public static void setNumberOfVehiclesPerDepot(int numberOfVehiclesPerDepot) {
         RouteScheduler.numberOfVehiclesPerDepot = numberOfVehiclesPerDepot;
-    }
-
-    public static void setMaxRouteDuration(int maxRouteDuration) {
-        if (maxRouteDuration == 0) {
-            RouteScheduler.maxRouteDuration = Integer.MAX_VALUE;
-        } else {
-            RouteScheduler.maxRouteDuration = maxRouteDuration;
-        }
     }
 
     public static void setMaxVehicleLoad(int maxVehicleLoad) {
@@ -39,10 +30,10 @@ public class RouteScheduler {
             int load = 0;
 
             for (Customer customer : depot.getCustomers()) {
-                double proposedDuration = duration + customer.getServiceDuration() + previousNode.distance(customer);
+                double proposedDuration = duration + previousNode.distance(customer);
                 int proposedLoad = load + customer.getDemand();
 
-                if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
+                if (proposedLoad <= maxVehicleLoad) {
                     vehicle.addCustomer(customer);
                     previousNode = customer;
                     duration = proposedDuration;
@@ -55,7 +46,7 @@ public class RouteScheduler {
                     vehicle = new Vehicle(depot);
                     vehicle.addCustomer(customer);
                     previousNode = depot;
-                    duration = customer.getServiceDuration() + previousNode.distance(customer);
+                    duration = previousNode.distance(customer);
                     load = customer.getDemand();
                 }
             }
@@ -75,13 +66,13 @@ public class RouteScheduler {
 
             for (int i = 1; i < vehicles.size(); i++) {
                 Vehicle vehicle = new Vehicle(vehicles.get(i));
-                double combinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
+                double combinedDuration = vehicle.getDuration();
 
                 Customer lastCustomer = vehicle.popLastCustomer();
                 vehicle.addCustomer(lastCustomer);
                 double proposedCombinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
-                if (vehicle.getDuration() <= maxRouteDuration && vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration) {
+                if (vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration) {
                     vehicles.set(i, vehicle);
                 }
                 previousVehicle = vehicle;

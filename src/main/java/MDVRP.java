@@ -10,29 +10,55 @@ import java.util.Set;
 
 public final class MDVRP {
 
-    private String problem = "p01";
+    private final String problem;
 
-    private int numberOfVehiclesPerDepot = 0; //m
-    private int numberOfCustomers = 0; //n
-    private int numberOfDepots = 0; //t
+    private final int numberOfVehiclesPerDepot; // m
+    private final int numberOfCustomers; // n
+    private final int numberOfDepots; // t
 
-    private int maxRouteDuration = 0; //D
-    private int maxVehicleLoad = 0; //Q
+    private final int maxRouteDuration; // D
+    private final int maxVehicleLoad; // Q
 
-    private final List<Depot> depots = new ArrayList<>();
-    private final List<Customer> customers = new ArrayList<>();
+    private final List<Depot> depots;
+    private final List<Customer> customers;
 
-    private int minX = Integer.MAX_VALUE;
-    private int minY = Integer.MAX_VALUE;
-    private int maxX = Integer.MIN_VALUE;
-    private int maxY = Integer.MIN_VALUE;
+    // Used for plotting:
+    private final int minX;
+    private final int minY;
+    private final int maxX;
+    private final int maxY;
 
-    // Getters:
+    public MDVRP(
+        String problem,
+        int numberOfVehiclesPerDepot,
+        int numberOfCustomers,
+        int numberOfDepots,
+        int maxRouteDuration,
+        int maxVehicleLoad,
+        List<Depot> depots,
+        List<Customer> customers,
+        int minX,
+        int minY,
+        int maxX,
+        int maxY
+    ) {
+        this.problem = problem;
+        this.numberOfVehiclesPerDepot = numberOfVehiclesPerDepot;
+        this.numberOfCustomers = numberOfCustomers;
+        this.numberOfDepots = numberOfDepots;
+        this.maxRouteDuration = maxRouteDuration;
+        this.maxVehicleLoad = maxVehicleLoad;
+        this.depots = depots;
+        this.customers = customers;
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
+    }
+
     public String getProblem() { return problem; }
 
-    public int getNumberOfVehiclesPerDepot() {
-        return numberOfVehiclesPerDepot;
-    }
+    public int getNumberOfVehiclesPerDepot() { return numberOfVehiclesPerDepot; }
 
     public int getNumberOfCustomers() {
         return numberOfCustomers;
@@ -66,44 +92,4 @@ public final class MDVRP {
 
     public int getMaxY() { return maxY; }
 
-    // Setters:
-    public void setProblem(String problem) { this.problem = problem; }
-
-    public void setNumberOfVehiclesPerDepot(int numberOfVehiclesPerDepot) {
-        this.numberOfVehiclesPerDepot = numberOfVehiclesPerDepot;
-    }
-
-    public void setNumberOfCustomers(int numberOfCustomers) {
-        this.numberOfCustomers = numberOfCustomers;
-    }
-
-    public void setNumberOfDepots(int numberOfDepots) {
-        this.numberOfDepots = numberOfDepots;
-    }
-
-    public void setMaxRouteDuration(int maxRouteDuration) {
-        this.maxRouteDuration = maxRouteDuration;
-    }
-
-    public void setMaxVehicleLoad(int maxVehicleLoad) {
-        this.maxVehicleLoad = maxVehicleLoad;
-    }
-
-    public void addDepot(Depot depot) {
-        minX = Math.min(minX, depot.getX());
-        minY = Math.min(minY, depot.getY());
-        maxX = Math.max(maxX, depot.getX());
-        maxY = Math.max(maxY, depot.getY());
-
-        depots.add(depot);
-    }
-
-    public void addCustomer(Customer customer) {
-        minX = Math.min(minX, customer.getX());
-        minY = Math.min(minY, customer.getY());
-        maxX = Math.max(maxX, customer.getX());
-        maxY = Math.max(maxY, customer.getY());
-
-        customers.add(customer);
-    }
 }

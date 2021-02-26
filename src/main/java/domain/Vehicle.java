@@ -75,7 +75,7 @@ public class Vehicle implements Iterable<Node> {
     public void update() {
         Node previousNode = depot;
         for (Customer customer : customers) {
-            routeDuration += previousNode.distance(customer) + customer.getServiceDuration();
+            routeDuration += previousNode.distance(customer);
             previousNode = customer;
         }
         routeDuration += previousNode.distance(depot);

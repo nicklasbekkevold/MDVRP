@@ -12,7 +12,6 @@ public class GeneticAlgorithm {
     private final int populationSize;
     private final double crossOverRate;
     private final double mutationRate;
-    private final int apprate;
     private final boolean elitism;
 
     private final static double APPRATE = 10;
@@ -20,7 +19,6 @@ public class GeneticAlgorithm {
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
-    private final int maxRouteDuration;
     private final int maxVehicleLoad;
 
     private Population population;
@@ -34,17 +32,14 @@ public class GeneticAlgorithm {
             boolean elitism
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
-        maxRouteDuration = problemInstance.getMaxRouteDuration();
         maxVehicleLoad = problemInstance.getMaxVehicleLoad();
 
         this.populationSize = populationSize;
         this.crossOverRate = crossOverRate;
         this.mutationRate = mutationRate;
-        this.apprate = apprate;
         this.elitism = elitism;
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
-        RouteScheduler.setMaxRouteDuration(maxRouteDuration);
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
         List<Customer> swappableCustomerList = assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
 

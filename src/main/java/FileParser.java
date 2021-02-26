@@ -19,6 +19,12 @@ public class FileParser {
     static String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
     static String solutionFilesPath = new File("src/main/resources/solution_files").getAbsolutePath();
 
+    // Used for plotting
+    static int minX;
+    static int minY;
+    static int maxX;
+    static int maxY;
+
     // Enforces static class
     private FileParser() {}
 
@@ -40,16 +46,28 @@ public class FileParser {
     }
 
     /**
-     * @param problem Name of problem file to encode a main.java.MDVRP instance from
+     * @param problemId Name of problem file to encode a main.java.MDVRP instance from
      * @return main.java.MDVRP problem instance
      */
-    public static MDVRP readFromFile(final String problem) {
+    public static MDVRP readFromFile(final String problemId) {
 
-        String problemPath = dataFilesPath + File.separator + problem;
+        minX = Integer.MAX_VALUE;
+        minY = Integer.MAX_VALUE;
+        maxX = Integer.MIN_VALUE;
+        maxY = Integer.MIN_VALUE;
 
-        System.out.println(String.format("Reading from file %s ...", problem));
-        MDVRP mdvrp = new MDVRP();
-        mdvrp.setProblem(problem);
+        String problemPath = dataFilesPath + File.separator + problemId;
+        System.out.println(String.format("Reading from file %s ...", problemId));
+
+        int numberOfVehiclesPerDepot = -1; // m
+        int numberOfCustomers = -1; // n
+        int numberOfDepots = -1; // t
+
+        int maxRouteDuration = -1; // D
+        int maxVehicleLoad = -1; // Q
+
+        List<Customer> customers = new ArrayList<>();
+        List<Depot> depots = new ArrayList<>();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(problemPath))) {
 
@@ -66,32 +84,34 @@ public class FileParser {
                     int m = constants.get(0);
                     n = constants.get(1);
                     t = constants.get(2);
-                    mdvrp.setNumberOfVehiclesPerDepot(m);
-                    mdvrp.setNumberOfCustomers(n);
-                    mdvrp.setNumberOfDepots(t);
+                    numberOfVehiclesPerDepot = m;
+                    numberOfCustomers = n;
+                    numberOfDepots = t;
                 }
 
-                else if (lineNumber > 0 && lineNumber < t + 1) {
+                else if (lineNumber > 0 && lineNumber <= t) {
                     int D = constants.get(0);
                     int Q = constants.get(1);
-                    mdvrp.setMaxRouteDuration(D);
-                    mdvrp.setMaxVehicleLoad(Q);
+                    maxRouteDuration = D;
+                    maxVehicleLoad = Q;
                 }
 
-                else if (lineNumber > t && lineNumber < n + t + 1) {
+                else if (lineNumber > t && lineNumber <= n + t) {
                     int i = constants.get(0);
                     int x = constants.get(1);
                     int y = constants.get(2);
-                    int d = constants.get(3);
+                    int d = constants.get(3); // Ignored: 0 for all files
                     int q = constants.get(4);
-                    mdvrp.addCustomer(new Customer(i, x, y, d, q));
+                    customers.add(new Customer(i, x, y, q));
+                    updateMinMax(x, y);
                 }
 
                 else {
                     int i = constants.get(0);
                     int x = constants.get(1);
                     int y = constants.get(2);
-                    mdvrp.addDepot(new Depot(i, x, y));
+                    depots.add(new Depot(i, x, y));
+                    updateMinMax(x, y);
                 }
 
                 lineNumber++;
@@ -101,8 +121,30 @@ public class FileParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         System.out.println("Reading from file successful.");
-        return mdvrp;
+
+        return new MDVRP(
+            problemId,
+            numberOfVehiclesPerDepot,
+            numberOfCustomers,
+            numberOfDepots,
+            maxRouteDuration,
+            maxVehicleLoad,
+            depots,
+            customers,
+            minX,
+            minY,
+            maxX,
+            maxY
+        );
+    }
+
+    private static void updateMinMax(int x, int y) {
+        FileParser.minX = Math.min(FileParser.minX, x);
+        FileParser.minY = Math.min(FileParser.minY, y);
+        FileParser.maxX = Math.max(FileParser.maxX, x);
+        FileParser.maxY = Math.max(FileParser.maxY, y);
     }
 
     private static List<Integer> parseLine(final String line) {
@@ -114,10 +156,10 @@ public class FileParser {
         return numbers;
     }
 
-    public static void writeToFile(final String problem, Chromosome chromosome) {
-        final String solutionPath = solutionFilesPath + File.separator + problem;
+    public static void writeToFile(final String problemId, Chromosome chromosome) {
+        final String solutionPath = solutionFilesPath + File.separator + problemId;
 
-        System.out.println(String.format("Writing to solution file %s ...", problem));
+        System.out.println(String.format("Writing to solution file %s ...", problemId));
         final File solutionFile = new File(solutionPath);
 
         try (PrintWriter writer = new PrintWriter(solutionFile)) {
