@@ -35,9 +35,6 @@ import java.util.List;
 public class MDVRPController {
 
     @FXML
-    public Stage stage;
-
-    @FXML
     public Canvas canvas;
 
     @FXML
@@ -68,9 +65,6 @@ public class MDVRPController {
     public TextField mutationRateField;
 
     @FXML
-    public TextField apprateField;
-
-    @FXML
     public TextField crossoverRateField;
 
     @FXML
@@ -81,12 +75,11 @@ public class MDVRPController {
     private static final double OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
-    private final double FRAME_DELAY = 0.5;
+    private final double FRAME_DELAY = 0;
 
     private int populationSize = 100;
     private double mutationRate = 0.05;
     private double crossoverRate = 0.8;
-    private int apprate = 10;
     private boolean elitism = false;
 
     private MDVRP problemInstance;
@@ -121,7 +114,7 @@ public class MDVRPController {
 
         if (running) {
             saveButton.setDisable(true);
-            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, apprate, elitism);
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
             population = geneticAlgorithm.getPopulation();
             animationTimer.start();
         } else {
@@ -202,16 +195,6 @@ public class MDVRPController {
                 crossoverRateField.setText(Double.toString(crossoverRate));
             }
         });
-        apprateField.setPromptText(Integer.toString(apprate));
-        apprateField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.equals("")) {
-                try {
-                    apprate = Integer.parseInt(newValue);
-                } catch (NumberFormatException e) {
-                    apprateField.setText(oldValue);
-                }
-            }
-        });
         elitismCheckBox.setSelected(elitism);
     }
 
@@ -260,8 +243,9 @@ public class MDVRPController {
         if (population != null) {
             renderText(population);
             renderVehicles(context, population.getAlpha());
+        } else {
+            renderText();
         }
-        renderText();
         renderCustomers(context);
         renderDepots(context);
     }

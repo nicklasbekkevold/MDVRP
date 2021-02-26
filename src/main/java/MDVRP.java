@@ -3,10 +3,7 @@ package main.java;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public final class MDVRP {
 

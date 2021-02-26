@@ -28,7 +28,6 @@ public class GeneticAlgorithm {
             int populationSize,
             double crossOverRate,
             double mutationRate,
-            int apprate,
             boolean elitism
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
