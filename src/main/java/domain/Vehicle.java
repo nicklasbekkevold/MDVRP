@@ -9,12 +9,14 @@ import java.util.stream.Collectors;
 public class Vehicle implements Iterable<Node> {
 
     private static int serialNumber = 1;
+
     private final int vehicleNumber;
     private final Depot depot;
+
     private List<Customer> customers = new ArrayList<>();
-    private boolean modified = true;
     private double routeDuration = 0.0;
     private int load = 0;
+    private boolean modified = true;
 
     public Vehicle(Depot depot) {
         this.vehicleNumber = serialNumber++;
@@ -48,7 +50,7 @@ public class Vehicle implements Iterable<Node> {
 
     public int getLoad() { return load; }
 
-    public double getInsertionCost(Customer customer, int index) {
+    public double getInsertionCost(int index, Customer customer) {
         if (customers.size() == 1) {
             return customers.get(0).distance(customer) - depot.distance(customers.get(0)) - depot.distance(customer);
         } else if (index == 0 || index == customers.size()) {
@@ -56,6 +58,11 @@ public class Vehicle implements Iterable<Node> {
             return depot.distance(customer) + customer.distance(endCustomer) - depot.distance(endCustomer);
         }
         return customers.get(index - 1).distance(customer) + customer.distance(customers.get(index)) - customers.get(index - 1).distance(customers.get(index));
+    }
+
+    public void insertCustomer(int index, Customer customer) {
+        modified = true;
+        customers.add(index, customer);
     }
 
     public void addCustomer(Customer customer) {
@@ -88,8 +95,9 @@ public class Vehicle implements Iterable<Node> {
 
     public void removeCustomers(List<Customer> customers) {
         modified = true;
-        for (Customer customer : customers) {
-            this.customers.remove(customer);
+        this.customers.removeAll(customers);
+        if (customers.size() == 0) {
+            depot.removeVehicle(this);
         }
     }
 

@@ -26,4 +26,6 @@ public final class Depot extends Node {
 
     public void addCustomer(Customer customer) { customers.add(customer); }
 
+    public void removeVehicle(Vehicle vehicle) { vehicles.remove(vehicle); }
+
 }

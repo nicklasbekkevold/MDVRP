@@ -14,11 +14,11 @@ public class GeneticAlgorithm {
     private final double mutationRate;
     private final boolean elitism;
 
-    private final static double APPRATE = 10;
     private final static double BOUND = 2;
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
+    private final double maxRouteDuration;
     private final int maxVehicleLoad;
 
     private Population population;
@@ -31,6 +31,7 @@ public class GeneticAlgorithm {
             boolean elitism
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
+        maxRouteDuration = problemInstance.getMaxRouteDuration();
         maxVehicleLoad = problemInstance.getMaxVehicleLoad();
 
         this.populationSize = populationSize;
@@ -55,17 +56,12 @@ public class GeneticAlgorithm {
 
     public Population update() {
         // Selection
-        // Recombination (crossover)
+        List<Chromosome> offspring = population.bestCostRouteCrossover();
         // Mutation (intra-depot & inter-depot)
-        if (population.getGeneration() % APPRATE == 0) {
-            // Do intra-depot clustering
-        } else {
-            // Do one type of inter-depot clustering
-        }
-        // Acceptance (replacement)
+        population.mutate();
+        // Acceptance (replacement), we use generational replacement here
         // Elitism step
         // Do one loop
-        population.update();
         return population;
     }
 

@@ -8,6 +8,8 @@ import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
+    private final static double APPRATE = 10;
+
     private int generation = 0;
     private double averageFitness = 0.0;
     private double diversity = 0.0;
@@ -37,56 +39,49 @@ public class Population implements Iterable<Chromosome> {
 
     public double getDiversity() { return diversity; }
 
-    public Chromosome getAlpha() { return Collections.max(population); }
+    public Chromosome getAlpha() { return Collections.min(population); }
 
-    @Override
-    public Iterator<Chromosome> iterator() { return population.iterator(); }
-
-    public void update() {
-        modified = true;
-        generation++;
-    }
-
-    public Population selection() {
+    public List<Chromosome> selection() {
+        // TODO
         return null;
     }
 
-    private List<Chromosome> BestCostRouteCrossover() {
+    public void mutate() {
+        // TODO
+        if (generation % APPRATE == 0) {
+            // Do intra-depot clustering
+        } else {
+            // Do one type of inter-depot clustering
+        }
+    }
+
+    public List<Chromosome> bestCostRouteCrossover() {
         List<Chromosome> parents = Util.randomChoice(population, 2);
-        Chromosome parentA = parents.get(0), parentB = parents.get(1);
+
+        Chromosome parentA = parents.get(0);
+        Chromosome parentB = parents.get(1);
 
         int depotIndex = new Random().nextInt(parentA.getChromosome().size());
         Vehicle vehicleA = Util.randomChoice(parentA.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
         Vehicle vehicleB = Util.randomChoice(parentB.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
-        List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers()), vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());
+
+        List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers());
+        List<Customer> vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());
 
         parentA.removeCustomers(vehicleBCustomers);
         parentB.removeCustomers(vehicleACustomers);
 
         for (Customer customer : vehicleACustomers) {
-            List<Boolean> feasibleIndices = new ArrayList<>();
-            List<Double> insertionCosts = new ArrayList<>();
-            for (Vehicle parentBVehicle : parentB.getChromosome().get(depotIndex).getVehicles()) {
-                for (int i = 0; i <= parentBVehicle.getCustomers().size(); i++) {
-                    double insertionCost = parentBVehicle.getInsertionCost(customer, i);
-                    insertionCosts.add(insertionCost);
-                    if (parentBVehicle.getDuration() + insertionCost <= 0 && parentBVehicle.getLoad() <= 0) {
-                        feasibleIndices.add(true);
-                    } else {
-                        feasibleIndices.add(false);
-                    }
-                }
-            }
-            if (new Random().nextDouble() <= 0.8) {
-                for (int i = 0; i < feasibleIndices.size(); i++) {
-                    if (feasibleIndices.get(i)) {
-
-                    }
-                }
-            }
+            RouteScheduler.insertCustomerWithBestRouteCost(parentB.getChromosome().get(depotIndex), customer);
+        }
+        for (Customer customer : vehicleBCustomers) {
+            RouteScheduler.insertCustomerWithBestRouteCost(parentA.getChromosome().get(depotIndex), customer);
         }
 
         return parents;
     }
+
+    @Override
+    public Iterator<Chromosome> iterator() { return population.iterator(); }
 
 }
