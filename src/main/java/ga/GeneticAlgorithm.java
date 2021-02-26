@@ -18,7 +18,7 @@ public class GeneticAlgorithm {
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
-    private final double maxRouteDuration;
+    private final int maxRouteDuration;
     private final int maxVehicleLoad;
 
     private Population population;
@@ -40,6 +40,7 @@ public class GeneticAlgorithm {
         this.elitism = elitism;
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
+        RouteScheduler.setMaxRouteDuration(maxRouteDuration);
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
         List<Customer> swappableCustomerList = assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
 
@@ -58,7 +59,7 @@ public class GeneticAlgorithm {
         // Selection
         List<Chromosome> offspring = population.bestCostRouteCrossover();
         // Mutation (intra-depot & inter-depot)
-        population.mutate();
+        // population.mutate();
         // Acceptance (replacement), we use generational replacement here
         // Elitism step
         // Do one loop

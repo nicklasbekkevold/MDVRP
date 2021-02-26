@@ -69,7 +69,9 @@ public class RouteScheduler {
 
         if (random.nextDouble() <= FEASIBILITY_THRESHOLD) {
             if (feasibleRouteIndex == -1) {
-                vehicles.add(new Vehicle(depot));
+                Vehicle newVehicle = new Vehicle(depot);
+                newVehicle.addCustomer(customer);
+                vehicles.add(newVehicle);
             } else {
                 vehicles.get(feasibleRouteIndex).insertCustomer(feasibleRouteInsertionIndex, customer);
             }
@@ -99,7 +101,7 @@ public class RouteScheduler {
                 double proposedDuration = duration + previousNode.distance(customer);
                 int proposedLoad = load + customer.getDemand();
 
-                if (proposedDuration <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
+                if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
                     vehicle.addCustomer(customer);
                     previousNode = customer;
                     duration = proposedDuration;
@@ -138,7 +140,7 @@ public class RouteScheduler {
                 vehicle.addCustomer(lastCustomer);
                 double proposedCombinedDuration = previousVehicle.getDuration() + vehicle.getDuration();
 
-                if (vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration && proposedCombinedDuration <= maxRouteDuration) {
+                if (vehicle.getDuration() <= maxRouteDuration && vehicle.getLoad() <= maxVehicleLoad && combinedDuration < proposedCombinedDuration) {
                     vehicles.set(i, vehicle);
                 }
                 previousVehicle = vehicle;
