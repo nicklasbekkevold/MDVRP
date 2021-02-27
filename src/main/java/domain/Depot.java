@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class Depot extends Node {
 
     private List<Vehicle> vehicles = new CopyOnWriteArrayList<>();
-    private List<Customer> customers = new ArrayList<>();
+    private List<Customer> customers = new CopyOnWriteArrayList<>();
 
     public Depot(int id, int x, int y) {
         super(id, x, y);
@@ -15,7 +15,7 @@ public final class Depot extends Node {
 
     public Depot(Depot depot) {
         super(depot);
-        this.customers = new ArrayList<>(depot.customers); // Shallow copy
+        this.customers = new CopyOnWriteArrayList<>(depot.customers); // Shallow copy
         this.vehicles = new CopyOnWriteArrayList<>(); // Reset vehicles
     }
 

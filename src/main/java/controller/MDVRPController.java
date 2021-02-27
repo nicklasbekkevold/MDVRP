@@ -28,6 +28,7 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,6 +83,7 @@ public class MDVRPController {
     private double crossoverRate = 0.8;
     private boolean elitism = false;
 
+    private String problemId = "p01";
     private MDVRP problemInstance;
     private GeneticAlgorithm geneticAlgorithm;
     private Population population;
@@ -114,6 +116,7 @@ public class MDVRPController {
 
         if (running) {
             saveButton.setDisable(true);
+            onProblemSelect(problemId); // Ensures fresh problem instance every time
             geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
             population = geneticAlgorithm.getPopulation();
             animationTimer.start();
@@ -212,6 +215,7 @@ public class MDVRPController {
     }
 
     private void onProblemSelect(final String problemId) {
+        this.problemId = problemId;
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         problemInstance = FileParser.readFromFile(problemId);
 
@@ -237,7 +241,7 @@ public class MDVRPController {
 
     private void render(final Population population) {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        GraphicsContext context = canvas.getGraphicsContext2D();
+        final GraphicsContext context = canvas.getGraphicsContext2D();
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         if (population != null) {
@@ -245,9 +249,9 @@ public class MDVRPController {
             renderVehicles(context, population.getAlpha());
         } else {
             renderText();
+            renderCustomers(context);
+            renderDepots(context);
         }
-        renderCustomers(context);
-        renderDepots(context);
     }
 
     private void renderText() {
@@ -286,14 +290,21 @@ public class MDVRPController {
         Iterator<Color> colors = Util.distinctColors(vehicles.size());
 
         for (Vehicle vehicle : vehicles) {
-            context.setStroke(colors.next());
-            Depot depot = vehicle.getDepot();
+            Color routeColor = colors.next();
+            context.setFill(routeColor);
+            context.setStroke(routeColor);
+
+            Iterator<Node> route = vehicle.iterator();
+            Node depot = route.next();
             Node previousNode = depot;
-            for (Customer customer : vehicle.getCustomers()) {
-                context.strokeLine(previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET, customer.getTransformedX() + OFFSET, customer.getTransformedY() + OFFSET);
-                previousNode = customer;
+            while (route.hasNext()) {
+                Node currentNode = route.next();
+                context.fillOval(currentNode.getTransformedX(), currentNode.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
+                context.strokeLine(previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET, currentNode.getTransformedX() + OFFSET, currentNode.getTransformedY() + OFFSET);
+                previousNode = currentNode;
             }
-            context.strokeLine(depot.getTransformedX() + OFFSET, depot.getTransformedY() + OFFSET, previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET);
+            context.setFill(Color.BLACK);
+            context.fillOval(depot.getTransformedX(), depot.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
         }
     }
 

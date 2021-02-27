@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
-    private static final int ALPHA = 100;
-    private static final double BETA = 0.001;
+    private static final int ALPHA = 0;
+    private static final double BETA = 1;
 
     private List<Depot> chromosome;
     private List<Customer> swappableCustomerList;

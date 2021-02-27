@@ -1,7 +1,6 @@
 package main.java.ga;
 
 import main.java.MDVRP;
-import main.java.domain.Customer;
 
 import java.util.*;
 
