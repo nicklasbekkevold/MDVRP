@@ -12,6 +12,7 @@ public class Population implements Iterable<Chromosome> {
     private static final Random random = new Random();
     private static final double BOUND = 2;
     private static final double APP_RATE = 10;
+    private static final double ELITE_SELECTION_RATE = 0.8;
 
     private int generation = 0;
     private double averageFitness = 0.0;
@@ -55,9 +56,17 @@ public class Population implements Iterable<Chromosome> {
         return this;
     }
 
-    public List<Chromosome> selection() {
-        // TODO
-        return null;
+    public void evaluate() {
+        getAverageFitness();
+    }
+
+    public Chromosome eliteTournamentSelection() {
+        List<Chromosome> contestants = Util.randomChoice(population, 2);
+        if (random.nextDouble() < ELITE_SELECTION_RATE) {
+            return Collections.min(contestants);
+        } else {
+            return contestants.get(random.nextInt(1));
+        }
     }
 
     public void mutate() {

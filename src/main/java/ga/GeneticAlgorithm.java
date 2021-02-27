@@ -40,6 +40,7 @@ public class GeneticAlgorithm {
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
+        population.evaluate();
     }
 
     public Population getPopulation() {
@@ -47,10 +48,9 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
-        // Selection
-        List<Chromosome> offspring = population.bestCostRouteCrossover();
+        Chromosome parent = population.eliteTournamentSelection(); // Selection
+        List<Chromosome> offspring = population.bestCostRouteCrossover(); // Recombination
         // Mutation (intra-depot & inter-depot)
-        // population.mutate();
         // Acceptance (replacement), we use generational replacement here
         // Elitism step
         // Do one loop
