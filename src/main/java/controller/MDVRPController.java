@@ -298,7 +298,11 @@ public class MDVRPController {
             Node previousNode = depot;
             while (route.hasNext()) {
                 Node currentNode = route.next();
-                context.fillOval(currentNode.getTransformedX(), currentNode.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
+                if (currentNode.isBorderLine()) {
+                    context.fillRect(currentNode.getTransformedX(), currentNode.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
+                } else {
+                    context.fillOval(currentNode.getTransformedX(), currentNode.getTransformedY(), NODE_WIDTH, NODE_WIDTH);
+                }
                 context.strokeLine(previousNode.getTransformedX() + OFFSET, previousNode.getTransformedY() + OFFSET, currentNode.getTransformedX() + OFFSET, currentNode.getTransformedY() + OFFSET);
                 previousNode = currentNode;
             }

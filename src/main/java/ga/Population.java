@@ -10,7 +10,7 @@ import java.util.*;
 public class Population implements Iterable<Chromosome> {
 
     private static final Random random = new Random();
-    private static final double BOUND = 2;
+    private static final double BOUND = 15;
     private static final double APP_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
 
@@ -57,6 +57,7 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public void evaluate() {
+        // Weighted sum or Pareto
         getAverageFitness();
     }
 
@@ -134,6 +135,7 @@ public class Population implements Iterable<Chromosome> {
                 if (!depot.equals(nearestDepot)) {
                     double distance = customer.distance(depot);
                     if ((distance - minimumDistance / minimumDistance) <= BOUND) {
+                        customer.setBorderLine();
                         customer.addCandidateDepot(depot);
                         swappableCustomerList.add(customer);
                     }

@@ -10,6 +10,7 @@ public abstract class Node {
 
     private double transformedX;
     private double transformedY;
+    private boolean isBorderLine = false;
 
     public Node(int id, int x, int y) {
         this.id = id;
@@ -43,6 +44,8 @@ public abstract class Node {
 
     public double getTransformedY() { return transformedY; }
 
+    public boolean isBorderLine() { return isBorderLine; }
+
     public void translate(final int horizontalChange, final int verticalChange) {
         transformedX += horizontalChange;
         transformedY += verticalChange;
@@ -52,6 +55,8 @@ public abstract class Node {
         transformedX *= scalingFactor;
         transformedY *= scalingFactor;
     }
+
+    public void setBorderLine() { isBorderLine = true; }
 
     @Override
     public boolean equals(Object o) {

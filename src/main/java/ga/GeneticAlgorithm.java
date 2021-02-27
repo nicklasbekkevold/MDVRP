@@ -6,6 +6,8 @@ import java.util.*;
 
 public class GeneticAlgorithm {
 
+    private static final Random random = new Random();
+
     // GA Parameters
     private final int populationSize;
     private final double crossOverRate;
@@ -48,12 +50,20 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
-        Chromosome parent = population.eliteTournamentSelection(); // Selection
-        List<Chromosome> offspring = population.bestCostRouteCrossover(); // Recombination
+        Chromosome parent = population.eliteTournamentSelection();
+        if (random.nextDouble() < crossOverRate) {
+            List<Chromosome> offspring = population.bestCostRouteCrossover();
+        }
+        if (random.nextDouble() < mutationRate) {
+            population.mutate();
+        }
+        // Initialization
+        // Evaluation
+        // Selection
+        // Recombination
         // Mutation (intra-depot & inter-depot)
         // Acceptance (replacement), we use generational replacement here
         // Elitism step
-        // Do one loop
         return population.update();
     }
 
