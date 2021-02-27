@@ -27,24 +27,6 @@ public abstract class Node {
         transformedY = node.transformedY;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Node node = (Node) o;
-        return id == node.id && x == node.x && y == node.y;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, x, y);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%d=(%d, %d)", id, x, y);
-    }
-
     public int getId() {
         return id;
     }
@@ -69,6 +51,24 @@ public abstract class Node {
     public void scale(final double scalingFactor) {
         transformedX *= scalingFactor;
         transformedY *= scalingFactor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return id == node.id && x == node.x && y == node.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, x, y);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d=(%d, %d)", id, x, y);
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class Vehicle implements Iterable<Node> {
@@ -13,7 +14,7 @@ public class Vehicle implements Iterable<Node> {
     private final int vehicleNumber;
     private final Depot depot;
 
-    private List<Customer> customers = new ArrayList<>();
+    private List<Customer> customers = new CopyOnWriteArrayList<>();
     private double routeDuration = 0.0;
     private int load = 0;
     private boolean modified = true;
@@ -26,7 +27,7 @@ public class Vehicle implements Iterable<Node> {
     public Vehicle(final Vehicle vehicle) {
         this.vehicleNumber = vehicle.vehicleNumber;
         this.depot = vehicle.depot;
-        this.customers = vehicle.customers;
+        this.customers = new CopyOnWriteArrayList<>(vehicle.customers);
         this.routeDuration = vehicle.getDuration();
         this.load = vehicle.load;
         modified = false;
@@ -62,6 +63,7 @@ public class Vehicle implements Iterable<Node> {
 
     public void insertCustomer(int index, Customer customer) {
         modified = true;
+        load += customer.getDemand();
         customers.add(index, customer);
     }
 
@@ -95,7 +97,7 @@ public class Vehicle implements Iterable<Node> {
 
     public void removeCustomers(List<Customer> customers) {
         modified = true;
-        this.customers.removeAll(customers);
+        customers.removeAll(customers);
         if (customers.size() == 0) {
             depot.removeVehicle(this);
         }

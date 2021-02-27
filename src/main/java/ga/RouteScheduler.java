@@ -107,14 +107,14 @@ public class RouteScheduler {
                     duration = proposedDuration;
                     load = proposedLoad;
                 } else {
-                    if (previousNode != depot) {
+                    if (vehicle.getCustomers().size() >= 1) {
                         depot.addVehicle(vehicle); // Add vehicle if there it has at least one customer
                     }
 
                     vehicle = new Vehicle(depot);
                     vehicle.addCustomer(customer);
-                    previousNode = depot;
-                    duration = previousNode.distance(customer);
+                    previousNode = customer;
+                    duration = depot.distance(customer);
                     load = customer.getDemand();
                 }
             }

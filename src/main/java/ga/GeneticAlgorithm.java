@@ -2,7 +2,6 @@ package main.java.ga;
 
 import main.java.MDVRP;
 import main.java.domain.Customer;
-import main.java.domain.Depot;
 
 import java.util.*;
 
@@ -13,8 +12,6 @@ public class GeneticAlgorithm {
     private final double crossOverRate;
     private final double mutationRate;
     private final boolean elitism;
-
-    private final static double BOUND = 2;
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
@@ -42,13 +39,8 @@ public class GeneticAlgorithm {
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
         RouteScheduler.setMaxRouteDuration(maxRouteDuration);
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
-        List<Customer> swappableCustomerList = assignCustomersToNearestDepot(problemInstance.getCustomers(), problemInstance.getDepots());
 
-        List<Chromosome> initialPopulation = new ArrayList<>();
-        for (int i = 0; i < populationSize; i++) {
-            initialPopulation.add(new Chromosome(problemInstance.getDepots(), swappableCustomerList));
-        }
-        population = new Population(initialPopulation);
+        population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
     }
 
     public Population getPopulation() {
@@ -63,38 +55,7 @@ public class GeneticAlgorithm {
         // Acceptance (replacement), we use generational replacement here
         // Elitism step
         // Do one loop
-        return population;
+        return population.update();
     }
 
-    private List<Customer> assignCustomersToNearestDepot(final List<Customer> customers, final List<Depot> depots) {
-        final List<Customer> swappableCustomerList = new ArrayList<>();
-
-        for (Customer customer : customers) {
-
-            double minimumDistance = Float.MAX_VALUE;
-            Depot nearestDepot = null;
-
-            for (Depot depot : depots) {
-                double distance = customer.distance(depot);
-                if (distance < minimumDistance) {
-                    minimumDistance = distance;
-                    nearestDepot = depot;
-                }
-            }
-            nearestDepot.addCustomer(customer);
-
-            // Check for borderline customers
-            for (Depot depot : depots) {
-                if (!depot.equals(nearestDepot)) {
-                    double distance = customer.distance(depot);
-                    if ((distance - minimumDistance / minimumDistance) <= BOUND) {
-                        customer.addCandidateDepot(depot);
-                        swappableCustomerList.add(customer);
-                    }
-                }
-            }
-            customer.addCandidateDepot(nearestDepot);
-        }
-        return swappableCustomerList;
-    }
 }

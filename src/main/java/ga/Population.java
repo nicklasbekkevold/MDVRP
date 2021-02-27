@@ -2,13 +2,15 @@ package main.java.ga;
 
 import main.java.Util;
 import main.java.domain.Customer;
+import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
 import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
-    private final static double APPRATE = 10;
+    private final static double BOUND = 2;
+    private final static double APP_RATE = 10;
 
     private int generation = 0;
     private double averageFitness = 0.0;
@@ -17,12 +19,18 @@ public class Population implements Iterable<Chromosome> {
 
     private final List<Chromosome> population;
 
-    public Population() {
-        this.population = null;
-    }
-
     public Population(List<Chromosome> population) {
         this.population = population;
+    }
+
+    public static Population heuristicInitialization(int populationSize, List<Depot> depots, List<Customer> customers) {
+        List<Chromosome> initialPopulation = new ArrayList<>();
+
+        List<Customer> swappableCustomerList = assignCustomersToNearestDepot(depots, customers);
+        for (int i = 0; i < populationSize; i++) {
+            initialPopulation.add(new Chromosome(depots, swappableCustomerList));
+        }
+        return new Population(initialPopulation);
     }
 
     public int getGeneration() { return generation; }
@@ -41,6 +49,12 @@ public class Population implements Iterable<Chromosome> {
 
     public Chromosome getAlpha() { return Collections.min(population); }
 
+    public Population update() {
+        generation++;
+        getAverageFitness();
+        return this;
+    }
+
     public List<Chromosome> selection() {
         // TODO
         return null;
@@ -48,7 +62,7 @@ public class Population implements Iterable<Chromosome> {
 
     public void mutate() {
         // TODO
-        if (generation % APPRATE == 0) {
+        if (generation % APP_RATE == 0) {
             // Do intra-depot clustering
         } else {
             // Do one type of inter-depot clustering
@@ -62,8 +76,15 @@ public class Population implements Iterable<Chromosome> {
         Chromosome parentB = parents.get(1);
 
         int depotIndex = new Random().nextInt(parentA.getChromosome().size());
-        Vehicle vehicleA = Util.randomChoice(parentA.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
-        Vehicle vehicleB = Util.randomChoice(parentB.getChromosome().get(depotIndex).getVehicles(), 1).get(0);
+        Depot parentADepot = parentA.getChromosome().get(depotIndex);
+        Depot parentBDepot = parentB.getChromosome().get(depotIndex);
+
+        if (parentADepot.isEmpty() || parentBDepot.isEmpty()) {
+            return null;
+        }
+
+        Vehicle vehicleA = Util.randomChoice(parentADepot.getVehicles(), 1).get(0);
+        Vehicle vehicleB = Util.randomChoice(parentBDepot.getVehicles(), 1).get(0);
 
         List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers());
         List<Customer> vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());
@@ -72,16 +93,47 @@ public class Population implements Iterable<Chromosome> {
         parentB.removeCustomers(vehicleACustomers);
 
         for (Customer customer : vehicleACustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentB.getChromosome().get(depotIndex), customer);
+            RouteScheduler.insertCustomerWithBestRouteCost(parentBDepot, customer);
         }
         for (Customer customer : vehicleBCustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentA.getChromosome().get(depotIndex), customer);
+            RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
         }
 
         return parents;
     }
 
+    private static List<Customer> assignCustomersToNearestDepot(final List<Depot> depots, final List<Customer> customers) {
+        final List<Customer> swappableCustomerList = new ArrayList<>();
+
+        for (Customer customer : customers) {
+
+            double minimumDistance = Float.MAX_VALUE;
+            Depot nearestDepot = null;
+
+            for (Depot depot : depots) {
+                double distance = customer.distance(depot);
+                if (distance < minimumDistance) {
+                    minimumDistance = distance;
+                    nearestDepot = depot;
+                }
+            }
+            nearestDepot.addCustomer(customer);
+
+            // Check for borderline customers
+            for (Depot depot : depots) {
+                if (!depot.equals(nearestDepot)) {
+                    double distance = customer.distance(depot);
+                    if ((distance - minimumDistance / minimumDistance) <= BOUND) {
+                        customer.addCandidateDepot(depot);
+                        swappableCustomerList.add(customer);
+                    }
+                }
+            }
+            customer.addCandidateDepot(nearestDepot);
+        }
+        return swappableCustomerList;
+    }
+
     @Override
     public Iterator<Chromosome> iterator() { return population.iterator(); }
-
 }

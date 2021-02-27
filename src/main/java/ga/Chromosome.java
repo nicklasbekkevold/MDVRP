@@ -6,7 +6,6 @@ import main.java.domain.Depot;
 import main.java.domain.Vehicle;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
@@ -17,6 +16,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private List<Depot> chromosome;
     private List<Customer> swappableCustomerList;
     private double fitness = 0.0;
+    private boolean modified = true;
 
     public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
         this.swappableCustomerList = new ArrayList<>(swappableCustomerList);
@@ -30,12 +30,13 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     public List<Depot> getChromosome() { return chromosome; }
 
     public double getFitness() {
-        if (fitness == 0) {
+        if (modified) {
             List<Vehicle> vehicles = getVehicles();
             fitness += ALPHA * vehicles.size();
             for (Vehicle vehicle : vehicles) {
                     fitness += BETA * vehicle.getDuration();
             }
+            modified = false;
         }
         return fitness;
     }
@@ -49,6 +50,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     }
 
     public void removeCustomers(List<Customer> customers) {
+        modified = true;
         for (Vehicle vehicle : getVehicles()) {
             vehicle.removeCustomers(customers);
         }
@@ -98,13 +100,13 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     }
 
     @Override
-    public Iterator<Depot> iterator() {
-        return chromosome.iterator();
+    public int compareTo(Chromosome otherChromosome) {
+        return Double.compare(this.getFitness(), otherChromosome.getFitness());
     }
 
     @Override
-    public int compareTo(Chromosome otherChromosome) {
-        return Double.compare(this.getFitness(), otherChromosome.getFitness());
+    public Iterator<Depot> iterator() {
+        return chromosome.iterator();
     }
 
     @Override
