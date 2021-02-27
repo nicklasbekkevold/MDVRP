@@ -263,9 +263,9 @@ public class MDVRPController {
 
     private void renderText(Population population) {
         generationText.setText(String.format("Generation: %d", population.getGeneration()));
-        diversityText.setText(String.format("Diversity: %f", population.getDiversity()));
-        maxFitnessText.setText(String.format("Max fitness: %f", population.getMaxFitness()));
-        averageFitnessText.setText(String.format("Average fitness: %f", population.getAverageFitness()));
+        diversityText.setText(String.format("Diversity: %.2f", population.getDiversity()));
+        maxFitnessText.setText(String.format("Max fitness: %.2f", population.getMaxFitness()));
+        averageFitnessText.setText(String.format("Average fitness: %.2f", population.getAverageFitness()));
     }
 
     private void renderCustomers(final GraphicsContext context) {

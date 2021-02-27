@@ -49,7 +49,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum();
     }
 
-    public void removeCustomers(List<Customer> customers) {
+    public void removeCustomers(final List<Customer> customers) {
         modified = true;
         for (Vehicle vehicle : getVehicles()) {
             vehicle.removeCustomers(customers);

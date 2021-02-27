@@ -9,8 +9,9 @@ import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
-    private final static double BOUND = 2;
-    private final static double APP_RATE = 10;
+    private static final Random random = new Random();
+    private static final double BOUND = 2;
+    private static final double APP_RATE = 10;
 
     private int generation = 0;
     private double averageFitness = 0.0;
@@ -83,8 +84,8 @@ public class Population implements Iterable<Chromosome> {
             return null;
         }
 
-        Vehicle vehicleA = Util.randomChoice(parentADepot.getVehicles(), 1).get(0);
-        Vehicle vehicleB = Util.randomChoice(parentBDepot.getVehicles(), 1).get(0);
+        Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
+        Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
 
         List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers());
         List<Customer> vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());

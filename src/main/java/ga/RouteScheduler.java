@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class RouteScheduler {
 
-    public final static double FEASIBILITY_THRESHOLD = 0.8;
-    public final static Random random = new Random();
+    public static final double FEASIBILITY_THRESHOLD = 0.8;
+    public static final Random random = new Random();
 
     public static int numberOfVehiclesPerDepot;
     public static int maxRouteDuration;
