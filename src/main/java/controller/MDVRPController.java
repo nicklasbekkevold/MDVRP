@@ -28,7 +28,6 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class MDVRPController {
     public Text diversityText;
 
     @FXML
-    public Text maxFitnessText;
+    public Text bestFitnessText;
 
     @FXML
     public Text averageFitnessText;
@@ -257,14 +256,14 @@ public class MDVRPController {
     private void renderText() {
         generationText.setText("Generation: ");
         diversityText.setText("Diversity: ");
-        maxFitnessText.setText("Max fitness: ");
+        bestFitnessText.setText("Best fitness: ");
         averageFitnessText.setText("Average fitness: ");
     }
 
     private void renderText(Population population) {
         generationText.setText(String.format("Generation: %d", population.getGeneration()));
         diversityText.setText(String.format("Diversity: %.2f", population.getDiversity()));
-        maxFitnessText.setText(String.format("Max fitness: %.2f", population.getMaxFitness()));
+        bestFitnessText.setText(String.format("Best fitness: %.2f", population.getBestFitness()));
         averageFitnessText.setText(String.format("Average fitness: %.2f", population.getAverageFitness()));
     }
 

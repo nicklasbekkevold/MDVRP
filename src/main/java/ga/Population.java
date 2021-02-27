@@ -36,7 +36,7 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public double getMaxFitness() { return getAlpha().getFitness(); }
+    public double getBestFitness() { return getAlpha().getFitness(); }
 
     public double getAverageFitness() {
         if (modified) {
@@ -52,7 +52,6 @@ public class Population implements Iterable<Chromosome> {
 
     public Population update() {
         generation++;
-        getAverageFitness();
         return this;
     }
 
@@ -71,6 +70,7 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public List<Chromosome> bestCostRouteCrossover() {
+        modified = true;
         List<Chromosome> parents = Util.randomChoice(population, 2);
 
         Chromosome parentA = parents.get(0);

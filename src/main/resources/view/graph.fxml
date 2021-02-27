@@ -29,7 +29,7 @@
                         <Font size="20.0" />
                     </font>
                 </Text>
-                <Text fx:id="maxFitnessText" layoutX="20.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max fitness:" wrappingWidth="400.4589233398438">
+                <Text fx:id="bestFitnessText" layoutX="20.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Best fitness:" wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
                     </font>

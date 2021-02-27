@@ -31,6 +31,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public double getFitness() {
         if (modified) {
+            fitness = 0.0;
             List<Vehicle> vehicles = getVehicles();
             fitness += ALPHA * vehicles.size();
             for (Vehicle vehicle : vehicles) {
