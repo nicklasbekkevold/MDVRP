@@ -10,7 +10,7 @@ import java.util.*;
 public class Population implements Iterable<Chromosome> {
 
     private static final Random random = new Random();
-    private static final double BOUND = 15;
+    private static final double BOUND = 20;
     private static final double APP_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
 
@@ -28,7 +28,7 @@ public class Population implements Iterable<Chromosome> {
     public static Population heuristicInitialization(int populationSize, List<Depot> depots, List<Customer> customers) {
         List<Chromosome> initialPopulation = new ArrayList<>();
 
-        List<Customer> swappableCustomerList = assignCustomersToNearestDepot(depots, customers);
+        List<Customer> swappableCustomerList = Population.assignCustomersToNearestDepot(depots, customers);
         for (int i = 0; i < populationSize; i++) {
             initialPopulation.add(new Chromosome(depots, swappableCustomerList));
         }
@@ -57,7 +57,7 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public void evaluate() {
-        // Weighted sum or Pareto
+        // Weighted sum or Pareto ranking
         getAverageFitness();
     }
 

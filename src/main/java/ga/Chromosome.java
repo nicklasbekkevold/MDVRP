@@ -18,6 +18,10 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private double fitness = 0.0;
     private boolean modified = true;
 
+    public Chromosome(final Chromosome chromosome) {
+        new Chromosome(chromosome.getChromosome(), chromosome.getSwappableCustomerList());
+    }
+
     public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
         this.swappableCustomerList = new ArrayList<>(swappableCustomerList);
         this.chromosome = chromosome.stream().map(depot -> new Depot(depot)).collect(Collectors.toList());
@@ -28,6 +32,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     }
 
     public List<Depot> getChromosome() { return chromosome; }
+
+    public List<Customer> getSwappableCustomerList() { return swappableCustomerList; }
 
     public double getFitness() {
         if (modified) {
@@ -57,47 +63,65 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         }
     }
 
-    private void mutate(Chromosome chromosome) {
+    public static Chromosome mutate(Chromosome chromosome) {
         int randomFunction = new Random().nextInt(3);
         switch (randomFunction) {
             case 0: {
-                inverseMutation();
+                return inverseMutation(chromosome);
             }
             case 1: {
-                reRoutingMutation();
+                return reRoutingMutation(chromosome);
             }
             case 2: {
-                swapMutation();
+                return swapMutation(chromosome);
             }
-
+            default: {
+                return null;
+            }
         }
     }
 
-    private void inverseMutation() {
-        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+    private static Chromosome inverseMutation(Chromosome chromosome) {
+        Chromosome offspring = new Chromosome(chromosome);
+        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
         List<Customer> customersCopy = new ArrayList<>(customers);
+
         int cutoffPointA = new Random().nextInt(customers.size());
         int cutoffPointB = new Random().nextInt(customers.size());
+
         if (cutoffPointA < cutoffPointB) {
             for (int i = cutoffPointA; i < cutoffPointB; i++) {
                 customers.set(i, customersCopy.get(cutoffPointB - i));
             }
+        } else {
+            for (int i = cutoffPointB; i < cutoffPointA; i++) {
+                customers.set(i, customersCopy.get(cutoffPointA - i));
+            }
         }
-        RouteScheduler.schedule(this);
+        return offspring;
     }
 
-    private void reRoutingMutation() {
-        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+    private static Chromosome reRoutingMutation(Chromosome chromosome) {
+        Chromosome offspring = new Chromosome(chromosome);
+        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
-        Customer customer = customers.get(new Random().nextInt(customers.size()));
-        // Insert customer into most feasible location ...
+
+        int randomCustomer = new Random().nextInt(customers.size());
+        List<Customer> customer = customers.subList(randomCustomer, randomCustomer);
+
+        offspring.removeCustomers(customer);
+        RouteScheduler.insertCustomerWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
+        return offspring;
     }
 
-    private void swapMutation() {
-        Depot depot = chromosome.get(new Random().nextInt(chromosome.size()));
+    private static Chromosome swapMutation(Chromosome chromosome) {
+        Chromosome offspring = new Chromosome(chromosome);
+        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
+
         List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
         vehicles.get(0).swapRandomCustomer(vehicles.get(1));
+        return offspring;
     }
 
     @Override
