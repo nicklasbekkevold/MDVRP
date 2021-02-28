@@ -1,6 +1,6 @@
 package main.java.ga;
 
-import main.java.Util;
+import main.java.utils.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Vehicle;

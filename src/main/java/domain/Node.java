@@ -1,8 +1,15 @@
 package main.java.domain;
 
+import main.java.utils.Memorandum;
+import main.java.utils.SymmetricPair;
+
 import java.util.Objects;
+import java.util.function.Function;
 
 public abstract class Node {
+
+    private final static Function<SymmetricPair<Node>, Double> euclideanDistance = nodes -> Math.hypot(nodes.first.x - nodes.second.x, nodes.first.y - nodes.second.y);
+    private final static Function<SymmetricPair<Node>, Double> memoizedDistances = Memorandum.memoize(euclideanDistance);
 
     private final int id;
     private final int x;
@@ -32,13 +39,7 @@ public abstract class Node {
         return id;
     }
 
-    public int getX() { return x; }
-
-    public int getY() {
-        return y;
-    }
-
-    public double distance (final Node other) { return (double) Math.hypot(x - other.getX(), y - other.getY()); }
+    public double distance (final Node other) { return memoizedDistances.apply(new SymmetricPair<>(this, other)); }
 
     public double getTransformedX() { return transformedX; }
 
@@ -63,12 +64,12 @@ public abstract class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return id == node.id && x == node.x && y == node.y;
+        return id == node.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, x, y);
+        return Objects.hash(id);
     }
 
     @Override

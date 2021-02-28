@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import main.java.MDVRP;
 import main.java.FileParser;
 import main.java.App;
-import main.java.Util;
+import main.java.utils.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Node;
