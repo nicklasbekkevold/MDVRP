@@ -1,5 +1,6 @@
 package main.java.ga;
 
+import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
@@ -70,21 +71,19 @@ public class Population implements Iterable<Chromosome> {
         }
     }
 
-    public void mutate() {
+    public Chromosome mutate(Chromosome chromosome) {
         // TODO
         if (generation % APP_RATE == 0) {
             // Do intra-depot clustering
+            return Chromosome.mutate(chromosome);
         } else {
             // Do one type of inter-depot clustering
+            return Chromosome.mutate(chromosome);
         }
     }
 
-    public List<Chromosome> bestCostRouteCrossover() {
+    public Crossover bestCostRouteCrossover = (parentA, parentB) -> {
         modified = true;
-        List<Chromosome> parents = Util.randomChoice(population, 2);
-
-        Chromosome parentA = parents.get(0);
-        Chromosome parentB = parents.get(1);
 
         int depotIndex = new Random().nextInt(parentA.getChromosome().size());
         Depot parentADepot = parentA.getChromosome().get(depotIndex);
@@ -109,9 +108,8 @@ public class Population implements Iterable<Chromosome> {
         for (Customer customer : vehicleBCustomers) {
             RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
         }
-
-        return parents;
-    }
+        return new SymmetricPair<>(parentA, parentB);
+    };
 
     private static List<Customer> assignCustomersToNearestDepot(final List<Depot> depots, final List<Customer> customers) {
         final List<Customer> swappableCustomerList = new ArrayList<>();

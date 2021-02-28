@@ -1,6 +1,7 @@
 package main.java.ga;
 
 import main.java.MDVRP;
+import main.java.utils.SymmetricPair;
 
 import java.util.*;
 
@@ -50,12 +51,16 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
-        Chromosome parent = population.eliteTournamentSelection();
+        Chromosome parentA = population.eliteTournamentSelection();
+        Chromosome parentB = population.eliteTournamentSelection();
         if (random.nextDouble() < crossOverRate) {
-            List<Chromosome> offspring = population.bestCostRouteCrossover();
-        }
-        if (random.nextDouble() < mutationRate) {
-            population.mutate();
+            SymmetricPair<Chromosome> offspring = population.bestCostRouteCrossover.crossover(parentA, parentB);
+            if (random.nextDouble() < mutationRate) {
+                population.mutate(offspring.first);
+            }
+            if (random.nextDouble() < mutationRate) {
+                population.mutate(offspring.second);
+            }
         }
         // Initialization
         // Evaluation
