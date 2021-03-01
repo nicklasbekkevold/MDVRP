@@ -58,19 +58,19 @@
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="populationSizeField" layoutX="190.0" layoutY="65.0" prefHeight="26.0" prefWidth="50.0" />
-                <Text layoutX="40.0" layoutY="123.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <TextField fx:id="populationSizeField" layoutX="190.0" layoutY="65.0" prefHeight="26.0" prefWidth="54.0" />
+                <Text layoutX="40.0" layoutY="123.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Crossover rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="mutationRateField" layoutX="190.0" layoutY="105.0" prefHeight="26.0" prefWidth="50.0" />
-                <Text layoutX="40.0" layoutY="163.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Crossover rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="105.0" prefHeight="26.0" prefWidth="54.0" />
+                <Text layoutX="40.0" layoutY="163.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="145.0" prefHeight="26.0" prefWidth="54.0" />
+                <TextField fx:id="mutationRateField" layoutX="190.0" layoutY="145.0" prefHeight="26.0" prefWidth="54.0" />
             <Text layoutX="40.0" layoutY="203.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />

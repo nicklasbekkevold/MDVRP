@@ -39,7 +39,12 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
-        this.eliteSize = (int) (populationSize * 0.01);
+        this.eliteSize = (int) (populationSize * 0.04);
+
+        System.out.println(populationSize);
+        System.out.println(crossoverRate);
+        System.out.println(mutationRate);
+        System.out.println(eliteSize);
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
         RouteScheduler.setMaxRouteDuration(maxRouteDuration);
