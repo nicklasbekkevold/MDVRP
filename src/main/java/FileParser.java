@@ -68,6 +68,7 @@ public class FileParser {
 
         List<Customer> customers = new ArrayList<>();
         List<Depot> depots = new ArrayList<>();
+        Depot.resetSerialNumber();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(problemPath))) {
 

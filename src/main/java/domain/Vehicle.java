@@ -119,6 +119,6 @@ public class Vehicle implements Iterable<Node> {
     @Override
     public String toString() {
         String customerString = customers.stream().map(customer -> Integer.toString(customer.getId())).collect(Collectors.joining(" "));
-        return String.format("%d %4d %9.2f %5d    0 " + customerString, depot.getId(), vehicleNumber, getDuration(), load);
+        return String.format("%d %4d %9.2f %5d    0 " + customerString, depot.getDepotNumber(), vehicleNumber, getDuration(), load);
     }
 }
