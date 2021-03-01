@@ -75,7 +75,7 @@ public class Vehicle implements Iterable<Node> {
 
     public void swapRandomCustomer(Vehicle otherVehicle) {
         int customerIndex = new Random().nextInt(customers.size());
-        int otherCustomerIndex = new Random().nextInt(customers.size());
+        int otherCustomerIndex = new Random().nextInt(otherVehicle.customers.size());
         Customer temp = otherVehicle.customers.get(otherCustomerIndex);
         otherVehicle.customers.set(otherCustomerIndex, customers.get(customerIndex));
         customers.set(customerIndex, temp);

@@ -56,10 +56,10 @@ public class GeneticAlgorithm {
         if (random.nextDouble() < crossOverRate) {
             SymmetricPair<Chromosome> offspring = population.bestCostRouteCrossover.crossover(parentA, parentB);
             if (random.nextDouble() < mutationRate) {
-                population.mutate(offspring.first);
+                Chromosome offspringA = population.mutate(offspring.first);
             }
             if (random.nextDouble() < mutationRate) {
-                population.mutate(offspring.second);
+                Chromosome offspringB = population.mutate(offspring.second);
             }
         }
         // Initialization

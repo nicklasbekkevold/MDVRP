@@ -19,7 +19,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private boolean modified = true;
 
     public Chromosome(final Chromosome chromosome) {
-        new Chromosome(chromosome.getChromosome(), chromosome.getSwappableCustomerList());
+        this(chromosome.getChromosome(), chromosome.getSwappableCustomerList());
     }
 
     public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
@@ -108,7 +108,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         List<Customer> customers = depot.getCustomers();
 
         int randomCustomer = new Random().nextInt(customers.size());
-        List<Customer> customer = customers.subList(randomCustomer, randomCustomer);
+        List<Customer> customer = customers.subList(randomCustomer, randomCustomer + 1);
 
         offspring.removeCustomers(customer);
         RouteScheduler.insertCustomerWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
