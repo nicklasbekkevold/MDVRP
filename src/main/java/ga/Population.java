@@ -20,7 +20,7 @@ public class Population implements Iterable<Chromosome> {
     private double diversity = 0.0;
     private boolean modified = true;
 
-    private final List<Chromosome> population;
+    private List<Chromosome> population;
 
     public Population(List<Chromosome> population) {
         this.population = population;
@@ -109,6 +109,11 @@ public class Population implements Iterable<Chromosome> {
             // Do one type of intra-depot clustering
             return Chromosome.mutate(chromosome);
         }
+    }
+
+    public Population replacement(List<Chromosome> population) {
+        this.population = population;
+        return this;
     }
 
     private static List<Customer> assignCustomersToNearestDepot(final List<Depot> depots, final List<Customer> customers) {

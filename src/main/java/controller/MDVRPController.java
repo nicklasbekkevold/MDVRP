@@ -197,7 +197,11 @@ public class MDVRPController {
                 mutationRateField.setText(Double.toString(mutationRate));
             }
         });
-        elitismCheckBox.setSelected(elitism);
+        elitismCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            elitism = newValue;
+            elitismCheckBox.setSelected(newValue);
+        });
+
     }
 
     private void setProblem() {

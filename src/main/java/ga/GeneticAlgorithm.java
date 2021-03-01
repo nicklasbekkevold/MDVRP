@@ -76,11 +76,12 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
+            System.out.println("Elitism on");
             for (Chromosome chromosome : population.getElite(eliteSize)) {
                 newPopulation.set(random.nextInt(populationSize), chromosome);
             }
         }
-        population = new Population(newPopulation);
+        population = oldPopulation.replacement(newPopulation);
         // Initialization
         // Evaluation
         // Selection

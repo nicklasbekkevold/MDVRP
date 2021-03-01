@@ -34,11 +34,13 @@ public class Util {
      */
     public static Iterator<Color> distinctColors(int numberOfColors) {
         List<Color> colors = new ArrayList<>();
+        double step = 180;
+        double offset = 360/numberOfColors;
         for (double i = 0; i < numberOfColors; i++) {
-            if (i % 2 == 0) {
-                colors.add(Color.hsb((i / numberOfColors) * 360, 1, 1));
+            if (i / 2 % 2 == 0.0) {
+                colors.add(Color.hsb((i * (step + offset) % 360), 1, 1));
             } else {
-                colors.add(Color.hsb((i / numberOfColors) * 360, 1, 0.6));
+                colors.add(Color.hsb((i * (step + offset) % 360), 1, 0.5));
             }
         }
         return colors.iterator();
