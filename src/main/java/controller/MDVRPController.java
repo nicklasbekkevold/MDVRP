@@ -62,10 +62,10 @@ public class MDVRPController {
     public TextField populationSizeField;
 
     @FXML
-    public TextField mutationRateField;
+    public TextField crossoverRateField;
 
     @FXML
-    public TextField crossoverRateField;
+    public TextField mutationRateField;
 
     @FXML
     public CheckBox elitismCheckBox;
@@ -78,8 +78,8 @@ public class MDVRPController {
     private final double FRAME_DELAY = 0;
 
     private int populationSize = 100;
-    private double mutationRate = 0.05;
     private double crossoverRate = 0.8;
+    private double mutationRate = 0.05;
     private boolean elitism = false;
 
     private String problemId = "p01";
@@ -169,20 +169,6 @@ public class MDVRPController {
                 }
             }
         });
-        mutationRateField.setPromptText(Double.toString(mutationRate));
-        mutationRateField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("")) {
-                mutationRate = 0.01;
-            } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
-                mutationRate = Double.parseDouble(newValue);
-                if (mutationRate > 1) {
-                    mutationRate = 1;
-                    mutationRateField.setText(Double.toString(mutationRate));
-                }
-            } else {
-                mutationRateField.setText(Double.toString(mutationRate));
-            }
-        });
         crossoverRateField.setPromptText(Double.toString(crossoverRate));
         crossoverRateField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("")) {
@@ -195,6 +181,20 @@ public class MDVRPController {
                 }
             } else {
                 crossoverRateField.setText(Double.toString(crossoverRate));
+            }
+        });
+        mutationRateField.setPromptText(Double.toString(mutationRate));
+        mutationRateField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("")) {
+                mutationRate = 0.01;
+            } else if (newValue.matches("[-+]?[0-9]*\\.?[0-9]*")) {
+                mutationRate = Double.parseDouble(newValue);
+                if (mutationRate > 1) {
+                    mutationRate = 1;
+                    mutationRateField.setText(Double.toString(mutationRate));
+                }
+            } else {
+                mutationRateField.setText(Double.toString(mutationRate));
             }
         });
         elitismCheckBox.setSelected(elitism);

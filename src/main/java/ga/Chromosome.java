@@ -1,5 +1,6 @@
 package main.java.ga;
 
+import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
@@ -9,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
+
+    private static final Random random = Util.random;
 
     private static final int ALPHA = 0;
     private static final double BETA = 1;
@@ -63,8 +66,38 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         }
     }
 
+    public static Recombination bestCostRouteCrossover = (parentA, parentB) -> {
+        Chromosome parentACopy = new Chromosome(parentA);
+        Chromosome parentBCopy = new Chromosome(parentB);
+
+        int depotIndex = random.nextInt(parentACopy.getChromosome().size());
+        Depot parentADepot = parentACopy.getChromosome().get(depotIndex);
+        Depot parentBDepot = parentBCopy.getChromosome().get(depotIndex);
+
+        if (parentADepot.isEmpty() || parentBDepot.isEmpty()) {
+            return null;
+        }
+
+        Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
+        Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
+
+        List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers());
+        List<Customer> vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());
+
+        parentACopy.removeCustomers(vehicleBCustomers);
+        parentBCopy.removeCustomers(vehicleACustomers);
+
+        for (Customer customer : vehicleACustomers) {
+            RouteScheduler.insertCustomerWithBestRouteCost(parentBDepot, customer);
+        }
+        for (Customer customer : vehicleBCustomers) {
+            RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
+        }
+        return new SymmetricPair<>(parentACopy, parentBCopy);
+    };
+
     public static Chromosome mutate(Chromosome chromosome) {
-        int randomFunction = new Random().nextInt(3);
+        int randomFunction = random.nextInt(3);
         switch (randomFunction) {
             case 0: {
                 return inverseMutation.mutate(chromosome);
@@ -83,12 +116,12 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static Mutation inverseMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
-        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
+        Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
         List<Customer> customersCopy = new ArrayList<>(customers);
 
-        int cutoffPointA = new Random().nextInt(customers.size());
-        int cutoffPointB = new Random().nextInt(customers.size());
+        int cutoffPointA = random.nextInt(customers.size());
+        int cutoffPointB = random.nextInt(customers.size());
 
         if (cutoffPointA < cutoffPointB) {
             for (int i = cutoffPointA; i < cutoffPointB; i++) {
@@ -104,10 +137,10 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static Mutation reRoutingMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
-        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
+        Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
 
-        int randomCustomer = new Random().nextInt(customers.size());
+        int randomCustomer = random.nextInt(customers.size());
         List<Customer> customer = customers.subList(randomCustomer, randomCustomer + 1);
 
         offspring.removeCustomers(customer);
@@ -117,7 +150,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static Mutation swapMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
-        Depot depot = offspring.getChromosome().get(new Random().nextInt(offspring.getChromosome().size()));
+        Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
 
         List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
         vehicles.get(0).swapRandomCustomer(vehicles.get(1));

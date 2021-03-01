@@ -4,6 +4,7 @@ import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Node;
 import main.java.domain.Vehicle;
+import main.java.utils.Util;
 
 import java.util.List;
 import java.util.Random;
@@ -11,7 +12,7 @@ import java.util.Random;
 public class RouteScheduler {
 
     public static final double FEASIBILITY_THRESHOLD = 0.8;
-    public static final Random random = new Random();
+    public static final Random random = Util.random;
 
     public static int numberOfVehiclesPerDepot;
     public static int maxRouteDuration;

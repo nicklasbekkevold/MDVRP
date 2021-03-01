@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Util {
 
-    private static final Random random = new Random();
+    public static final Random random = new Random();
 
     /**
      * @param list list to pick n elements from

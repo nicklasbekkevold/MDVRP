@@ -2,16 +2,17 @@ package main.java.ga;
 
 import main.java.MDVRP;
 import main.java.utils.SymmetricPair;
+import main.java.utils.Util;
 
 import java.util.*;
 
 public class GeneticAlgorithm {
 
-    private static final Random random = new Random();
+    private static final Random random = Util.random;
 
     // GA Parameters
     private final int populationSize;
-    private final double crossOverRate;
+    private final double crossoverRate;
     private final double mutationRate;
     private final boolean elitism;
 
@@ -25,7 +26,7 @@ public class GeneticAlgorithm {
     public GeneticAlgorithm(
             final MDVRP problemInstance,
             int populationSize,
-            double crossOverRate,
+            double crossoverRate,
             double mutationRate,
             boolean elitism
     ) {
@@ -34,7 +35,7 @@ public class GeneticAlgorithm {
         maxVehicleLoad = problemInstance.getMaxVehicleLoad();
 
         this.populationSize = populationSize;
-        this.crossOverRate = crossOverRate;
+        this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
 
@@ -53,8 +54,8 @@ public class GeneticAlgorithm {
     public Population update() {
         Chromosome parentA = population.eliteTournamentSelection();
         Chromosome parentB = population.eliteTournamentSelection();
-        if (random.nextDouble() < crossOverRate) {
-            SymmetricPair<Chromosome> offspring = population.bestCostRouteCrossover.crossover(parentA, parentB);
+        if (random.nextDouble() < crossoverRate) {
+            SymmetricPair<Chromosome> offspring = population.recombination(parentA, parentB);
             if (random.nextDouble() < mutationRate) {
                 Chromosome offspringA = population.mutate(offspring.first);
             }

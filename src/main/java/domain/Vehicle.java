@@ -1,5 +1,7 @@
 package main.java.domain;
 
+import main.java.utils.Util;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class Vehicle implements Iterable<Node> {
 
+    private static final Random random = Util.random;
     private static int serialNumber = 1;
 
     private final int vehicleNumber;
@@ -74,8 +77,8 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void swapRandomCustomer(Vehicle otherVehicle) {
-        int customerIndex = new Random().nextInt(customers.size());
-        int otherCustomerIndex = new Random().nextInt(otherVehicle.customers.size());
+        int customerIndex = random.nextInt(customers.size());
+        int otherCustomerIndex = random.nextInt(otherVehicle.customers.size());
         Customer temp = otherVehicle.customers.get(otherCustomerIndex);
         otherVehicle.customers.set(otherCustomerIndex, customers.get(customerIndex));
         customers.set(customerIndex, temp);

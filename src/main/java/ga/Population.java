@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
-    private static final Random random = new Random();
+    private static final Random random = Util.random;
     private static final double BOUND = 20;
     private static final double APP_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
@@ -71,45 +71,18 @@ public class Population implements Iterable<Chromosome> {
         }
     }
 
+    public SymmetricPair<Chromosome> recombination(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); } ;
+
     public Chromosome mutate(Chromosome chromosome) {
         // TODO
         if (generation % APP_RATE == 0) {
-            // Do intra-depot clustering
+            // Do inter-depot clustering
             return Chromosome.mutate(chromosome);
         } else {
-            // Do one type of inter-depot clustering
+            // Do one type of intra-depot clustering
             return Chromosome.mutate(chromosome);
         }
     }
-
-    public Crossover bestCostRouteCrossover = (parentA, parentB) -> {
-        modified = true;
-
-        int depotIndex = new Random().nextInt(parentA.getChromosome().size());
-        Depot parentADepot = parentA.getChromosome().get(depotIndex);
-        Depot parentBDepot = parentB.getChromosome().get(depotIndex);
-
-        if (parentADepot.isEmpty() || parentBDepot.isEmpty()) {
-            return null;
-        }
-
-        Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
-        Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
-
-        List<Customer> vehicleACustomers = new ArrayList<>(vehicleA.getCustomers());
-        List<Customer> vehicleBCustomers = new ArrayList<>(vehicleB.getCustomers());
-
-        parentA.removeCustomers(vehicleBCustomers);
-        parentB.removeCustomers(vehicleACustomers);
-
-        for (Customer customer : vehicleACustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentBDepot, customer);
-        }
-        for (Customer customer : vehicleBCustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
-        }
-        return new SymmetricPair<>(parentA, parentB);
-    };
 
     private static List<Customer> assignCustomersToNearestDepot(final List<Depot> depots, final List<Customer> customers) {
         final List<Customer> swappableCustomerList = new ArrayList<>();
