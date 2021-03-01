@@ -26,6 +26,14 @@ public class Population implements Iterable<Chromosome> {
         this.population = population;
     }
 
+    public Population(Population population) {
+        this.generation = population.generation;
+        this.averageFitness = population.averageFitness;
+        this.diversity = population.diversity;
+        this.modified = true;
+        this.population = new ArrayList<>(population.population);
+    }
+
     public static Population heuristicInitialization(int populationSize, List<Depot> depots, List<Customer> customers) {
         List<Chromosome> initialPopulation = new ArrayList<>();
 
@@ -52,9 +60,18 @@ public class Population implements Iterable<Chromosome> {
 
     public Chromosome getAlpha() { return Collections.min(population); }
 
+    public List<Chromosome> getElite(int eliteSize) {
+        Collections.sort(population);
+        return population.subList(0, eliteSize - 1);
+    }
+
     public Population update() {
         generation++;
         return this;
+    }
+
+    public boolean removeChromosome(Chromosome chromosome) {
+        return population.remove(chromosome);
     }
 
     public void evaluate() {
@@ -62,13 +79,23 @@ public class Population implements Iterable<Chromosome> {
         getAverageFitness();
     }
 
+    public SymmetricPair<Chromosome> selection() {
+        Chromosome parentA = eliteTournamentSelection();
+        Chromosome parentB = eliteTournamentSelection();
+        removeChromosome(parentA);
+        removeChromosome(parentB);
+        return new SymmetricPair<>(parentA, parentB);
+    }
+
     public Chromosome eliteTournamentSelection() {
-        List<Chromosome> contestants = Util.randomChoice(population, 2);
+        List<Chromosome> tournamentSet = Util.randomChoice(population, 2);
+        Chromosome chosenChromosome;
         if (random.nextDouble() < ELITE_SELECTION_RATE) {
-            return Collections.min(contestants);
+            chosenChromosome = Collections.min(tournamentSet);
         } else {
-            return contestants.get(random.nextInt(1));
+            chosenChromosome = tournamentSet.get(random.nextInt(2));
         }
+        return chosenChromosome;
     }
 
     public SymmetricPair<Chromosome> recombination(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); } ;

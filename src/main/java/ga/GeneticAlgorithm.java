@@ -15,6 +15,7 @@ public class GeneticAlgorithm {
     private final double crossoverRate;
     private final double mutationRate;
     private final boolean elitism;
+    private final int eliteSize;
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
@@ -38,6 +39,7 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
+        this.eliteSize = (int) (populationSize * 0.01);
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
         RouteScheduler.setMaxRouteDuration(maxRouteDuration);
@@ -52,17 +54,33 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
-        Chromosome parentA = population.eliteTournamentSelection();
-        Chromosome parentB = population.eliteTournamentSelection();
-        if (random.nextDouble() < crossoverRate) {
-            SymmetricPair<Chromosome> offspring = population.recombination(parentA, parentB);
-            if (random.nextDouble() < mutationRate) {
-                Chromosome offspringA = population.mutate(offspring.first);
+        Population oldPopulation = new Population(population);
+        List<Chromosome> newPopulation = new ArrayList<>();
+
+        while (newPopulation.size() < populationSize) {
+            SymmetricPair<Chromosome> parents = oldPopulation.selection();
+            Chromosome offspringA = parents.first;
+            Chromosome offspringB = parents.second;
+            if (random.nextDouble() < crossoverRate) {
+                SymmetricPair<Chromosome> offspring = oldPopulation.recombination(parents.first, parents.second);
+                offspringA = offspring.first;
+                offspringB = offspring.second;
             }
             if (random.nextDouble() < mutationRate) {
-                Chromosome offspringB = population.mutate(offspring.second);
+                offspringA = oldPopulation.mutate(offspringA);
+            }
+            if (random.nextDouble() < mutationRate) {
+                offspringB = oldPopulation.mutate(offspringB);
+            }
+            newPopulation.add(offspringA);
+            newPopulation.add(offspringB);
+        }
+        if (elitism) {
+            for (Chromosome chromosome : population.getElite(eliteSize)) {
+                newPopulation.set(random.nextInt(populationSize), chromosome);
             }
         }
+        population = new Population(newPopulation);
         // Initialization
         // Evaluation
         // Selection
