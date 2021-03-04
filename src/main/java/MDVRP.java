@@ -5,7 +5,7 @@ import main.java.domain.Depot;
 
 import java.util.List;
 
-public final class MDVRP {
+public class MDVRP {
 
     private final String problem;
 

@@ -3,7 +3,7 @@ package main.java.domain;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class Depot extends Node {
+public class Depot extends Node {
 
     private static int serialNumber = 1;
 

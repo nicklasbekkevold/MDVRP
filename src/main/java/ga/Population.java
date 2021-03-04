@@ -79,6 +79,29 @@ public class Population implements Iterable<Chromosome> {
         getAverageFitness();
     }
 
+    public void paretoRanking() {
+        List<Chromosome> remainingPopulation = new LinkedList<>(population);
+        int currentRank = 1;
+        while (!remainingPopulation.isEmpty()) {
+            Collection<Chromosome> rankedChromosomes = new ArrayList<>();
+            for (Chromosome chromosome : remainingPopulation) {
+                boolean isNonDominated = true;
+                for (Chromosome otherChromosome : remainingPopulation) {
+                    if (otherChromosome != chromosome && otherChromosome.dominates(chromosome)) {
+                        isNonDominated = false;
+                        break;
+                    }
+                }
+                if (isNonDominated) {
+                    chromosome.setRank(currentRank);
+                    rankedChromosomes.add(chromosome);
+                }
+            }
+            remainingPopulation.removeAll(rankedChromosomes);
+            currentRank++;
+        }
+    }
+
     public SymmetricPair<Chromosome> selection() {
         Chromosome parentA = eliteTournamentSelection();
         Chromosome parentB = eliteTournamentSelection();

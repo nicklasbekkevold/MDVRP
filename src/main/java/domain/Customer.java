@@ -3,7 +3,7 @@ package main.java.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Customer extends Node {
+public class Customer extends Node {
 
     private final int demand; //q
 

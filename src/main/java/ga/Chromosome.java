@@ -18,6 +18,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private List<Depot> chromosome;
     private List<Customer> swappableCustomerList;
+    private int rank = 0;
     private double fitness = 0.0;
     private boolean modified = true;
 
@@ -27,7 +28,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
         this.swappableCustomerList = new ArrayList<>(swappableCustomerList);
-        this.chromosome = chromosome.stream().map(depot -> new Depot(depot)).collect(Collectors.toList());
+        this.chromosome = chromosome.stream().map(Depot::new).collect(Collectors.toList());
         for (Depot depot : this) {
             Collections.shuffle(depot.getCustomers());
         }
@@ -59,6 +60,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum();
     }
 
+    public void setRank(int rank) { this.rank = rank; }
+
     public void removeCustomers(final List<Customer> customers) {
         modified = true;
         for (Vehicle vehicle : getVehicles()) {
@@ -88,10 +91,10 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         parentBCopy.removeCustomers(vehicleACustomers);
 
         for (Customer customer : vehicleACustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentBDepot, customer);
+            RouteScheduler.insertCustomersWithBestRouteCost(parentBDepot, customer);
         }
         for (Customer customer : vehicleBCustomers) {
-            RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
+            RouteScheduler.insertCustomersWithBestRouteCost(parentADepot, customer);
         }
         return new SymmetricPair<>(parentACopy, parentBCopy);
     };
@@ -144,7 +147,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         List<Customer> customer = customers.subList(randomCustomer, randomCustomer + 1);
 
         offspring.removeCustomers(customer);
-        RouteScheduler.insertCustomerWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
+        RouteScheduler.insertCustomersWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
         return offspring;
     };
 
@@ -156,6 +159,15 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         vehicles.get(0).swapRandomCustomer(vehicles.get(1));
         return offspring;
     };
+
+    public boolean dominates(Chromosome otherChromosome) {
+        return (
+                this.getFitness() <= otherChromosome.getFitness() &&
+                this.getVehicleCount() <= otherChromosome.getVehicleCount() &&
+                (this.getFitness() < otherChromosome.getFitness() ||
+                this.getVehicleCount() < otherChromosome.getVehicleCount())
+        );
+    }
 
     @Override
     public int compareTo(Chromosome otherChromosome) {
