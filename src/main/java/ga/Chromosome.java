@@ -12,22 +12,21 @@ import java.util.stream.Collectors;
 public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static final Random random = Util.random;
+    private static List<Customer> swappableCustomerList;
 
-    private static final int ALPHA = 0;
-    private static final double BETA = 1;
+    private static final int ALPHA = 100;
+    private static final double BETA = 0.01;
 
-    private List<Depot> chromosome;
-    private List<Customer> swappableCustomerList;
+    private final List<Depot> chromosome;
     private int rank = 0;
     private double fitness = 0.0;
     private boolean modified = true;
 
     public Chromosome(final Chromosome chromosome) {
-        this(chromosome.getChromosome(), chromosome.getSwappableCustomerList());
+        this(chromosome.getChromosome());
     }
 
-    public Chromosome(final List<Depot> chromosome, final List<Customer> swappableCustomerList) {
-        this.swappableCustomerList = new ArrayList<>(swappableCustomerList);
+    public Chromosome(final List<Depot> chromosome) {
         this.chromosome = chromosome.stream().map(Depot::new).collect(Collectors.toList());
         for (Depot depot : this) {
             Collections.shuffle(depot.getCustomers());
@@ -62,6 +61,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public void setRank(int rank) { this.rank = rank; }
 
+    public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; };
+
     public void removeCustomers(final List<Customer> customers) {
         modified = true;
         for (Vehicle vehicle : getVehicles()) {
@@ -77,10 +78,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         Depot parentADepot = parentACopy.getChromosome().get(depotIndex);
         Depot parentBDepot = parentBCopy.getChromosome().get(depotIndex);
 
-        if (parentADepot.isEmpty() || parentBDepot.isEmpty()) {
-            return null;
-        }
-
         Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
         Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
 
@@ -91,33 +88,15 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         parentBCopy.removeCustomers(vehicleACustomers);
 
         for (Customer customer : vehicleACustomers) {
-            RouteScheduler.insertCustomersWithBestRouteCost(parentBDepot, customer);
+            RouteScheduler.insertCustomerWithBestRouteCost(parentBDepot, customer);
         }
         for (Customer customer : vehicleBCustomers) {
-            RouteScheduler.insertCustomersWithBestRouteCost(parentADepot, customer);
+            RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
         }
         return new SymmetricPair<>(parentACopy, parentBCopy);
     };
 
-    public static Chromosome mutate(Chromosome chromosome) {
-        int randomFunction = random.nextInt(3);
-        switch (randomFunction) {
-            case 0: {
-                return inverseMutation.mutate(chromosome);
-            }
-            case 1: {
-                return reRoutingMutation.mutate(chromosome);
-            }
-            case 2: {
-                return swapMutation.mutate(chromosome);
-            }
-            default: {
-                return null;
-            }
-        }
-    }
-
-    private static Mutation inverseMutation = (chromosome) -> {
+    private static final Mutation inverseMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
@@ -135,10 +114,11 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
                 customers.set(i, customersCopy.get(cutoffPointA - i));
             }
         }
+        RouteScheduler.schedule(offspring);
         return offspring;
     };
 
-    private static Mutation reRoutingMutation = (chromosome) -> {
+    private static final Mutation reRoutingMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
@@ -147,17 +127,53 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         List<Customer> customer = customers.subList(randomCustomer, randomCustomer + 1);
 
         offspring.removeCustomers(customer);
-        RouteScheduler.insertCustomersWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
+        RouteScheduler.insertCustomerWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
         return offspring;
     };
 
-    private static Mutation swapMutation = (chromosome) -> {
+    private static final Mutation swapMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
 
         List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
         vehicles.get(0).swapRandomCustomer(vehicles.get(1));
         return offspring;
+    };
+
+    public static final Mutation intraDepotMutation = (chromosome) -> {
+        int randomFunction = random.nextInt(3);
+        switch (randomFunction) {
+            case 0 -> {
+                return inverseMutation.mutate(chromosome);
+            }
+            case 1 -> {
+                return chromosome; // return reRoutingMutation.mutate(chromosome);
+            }
+            case 2 -> {
+                return swapMutation.mutate(chromosome);
+            }
+            default -> {
+                return null;
+            }
+        }
+    };
+
+    public static final Mutation interDepotMutation = (chromosome) -> {
+        Chromosome offspring = new Chromosome(chromosome);
+        Customer customer = swappableCustomerList.get(random.nextInt(swappableCustomerList.size()));
+        List<Integer> candidateDepotIds = customer.getCandidateDepotIds();
+
+        for (Depot depot : offspring) {
+            if (depot.getCustomers().contains(customer)) {
+                candidateDepotIds.remove((Integer) depot.getId());
+                offspring.removeCustomers(Collections.singletonList(customer));
+            }
+        }
+        Integer toDepotId = candidateDepotIds.get(random.nextInt(candidateDepotIds.size()));
+        Depot toDepot = offspring.getChromosome().stream().filter(depot -> depot.getId() == toDepotId).findFirst().get();
+        toDepot.addCustomer(customer);
+        RouteScheduler.insertCustomerWithBestRouteCost(toDepot, customer);
+        return chromosome;
     };
 
     public boolean dominates(Chromosome otherChromosome) {

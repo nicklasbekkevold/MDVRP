@@ -39,12 +39,9 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
-        this.eliteSize = (int) (populationSize * 0.04);
+        this.eliteSize = (int) (populationSize * 0.01);
 
-        System.out.println(populationSize);
-        System.out.println(crossoverRate);
-        System.out.println(mutationRate);
-        System.out.println(eliteSize);
+        printParameters();
 
         RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
         RouteScheduler.setMaxRouteDuration(maxRouteDuration);
@@ -52,6 +49,13 @@ public class GeneticAlgorithm {
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
         population.evaluate();
+    }
+
+    private void printParameters() {
+        System.out.println(String.format("Population size: %d", populationSize));
+        System.out.println(String.format("Crossover rate: %.2f", crossoverRate));
+        System.out.println(String.format("Mutation rate: %.2f", mutationRate));
+        System.out.println(String.format("Number of elite: %d", eliteSize));
     }
 
     public Population getPopulation() {
@@ -81,7 +85,6 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
-            System.out.println("Elitism on");
             for (Chromosome chromosome : population.getElite(eliteSize)) {
                 newPopulation.set(random.nextInt(populationSize), chromosome);
             }

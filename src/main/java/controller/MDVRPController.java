@@ -77,9 +77,9 @@ public class MDVRPController {
     private AnimationTimer animationTimer;
     private final double FRAME_DELAY = 0;
 
-    private int populationSize = 100;
-    private double crossoverRate = 0.8;
-    private double mutationRate = 0.05;
+    private int populationSize = 400;
+    private double crossoverRate = 0.6;
+    private double mutationRate = 0.2;
     private boolean elitism = false;
 
     private String problemId = "p01";

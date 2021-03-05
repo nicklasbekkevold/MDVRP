@@ -4,14 +4,13 @@ import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
-import main.java.domain.Vehicle;
 
 import java.util.*;
 
 public class Population implements Iterable<Chromosome> {
 
     private static final Random random = Util.random;
-    private static final double BOUND = 20;
+    private static final double BOUND = 0.5;
     private static final double APP_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
 
@@ -30,7 +29,7 @@ public class Population implements Iterable<Chromosome> {
         this.generation = population.generation;
         this.averageFitness = population.averageFitness;
         this.diversity = population.diversity;
-        this.modified = true;
+        this.modified = population.modified;
         this.population = new ArrayList<>(population.population);
     }
 
@@ -38,8 +37,9 @@ public class Population implements Iterable<Chromosome> {
         List<Chromosome> initialPopulation = new ArrayList<>();
 
         List<Customer> swappableCustomerList = Population.assignCustomersToNearestDepot(depots, customers);
+        Chromosome.setSwappableCustomerList(swappableCustomerList);
         for (int i = 0; i < populationSize; i++) {
-            initialPopulation.add(new Chromosome(depots, swappableCustomerList));
+            initialPopulation.add(new Chromosome(depots));
         }
         return new Population(initialPopulation);
     }
@@ -70,8 +70,8 @@ public class Population implements Iterable<Chromosome> {
         return this;
     }
 
-    public boolean removeChromosome(Chromosome chromosome) {
-        return population.remove(chromosome);
+    public void removeChromosome(Chromosome chromosome) {
+        population. remove(chromosome);
     }
 
     public void evaluate() {
@@ -121,16 +121,15 @@ public class Population implements Iterable<Chromosome> {
         return chosenChromosome;
     }
 
-    public SymmetricPair<Chromosome> recombination(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); } ;
+    public SymmetricPair<Chromosome> recombination(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); }
 
     public Chromosome mutate(Chromosome chromosome) {
-        // TODO
         if (generation % APP_RATE == 0) {
             // Do inter-depot clustering
-            return Chromosome.mutate(chromosome);
+            return Chromosome.interDepotMutation.mutate(chromosome);
         } else {
             // Do one type of intra-depot clustering
-            return Chromosome.mutate(chromosome);
+            return Chromosome.intraDepotMutation.mutate(chromosome);
         }
     }
 
@@ -158,16 +157,16 @@ public class Population implements Iterable<Chromosome> {
 
             // Check for borderline customers
             for (Depot depot : depots) {
-                if (!depot.equals(nearestDepot)) {
+                if (depot != nearestDepot) {
                     double distance = customer.distance(depot);
-                    if ((distance - minimumDistance / minimumDistance) <= BOUND) {
+                    if ((distance / minimumDistance - 1) <= BOUND) {
                         customer.setBorderLine();
-                        customer.addCandidateDepot(depot);
+                        customer.addCandidateDepotId(depot.getId());
                         swappableCustomerList.add(customer);
                     }
                 }
             }
-            customer.addCandidateDepot(nearestDepot);
+            customer.addCandidateDepotId(nearestDepot.getId());
         }
         return swappableCustomerList;
     }

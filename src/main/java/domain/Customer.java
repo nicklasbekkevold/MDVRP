@@ -6,8 +6,7 @@ import java.util.List;
 public class Customer extends Node {
 
     private final int demand; //q
-
-    private List<Depot> candidateDepots;
+    private final List<Integer> candidateDepots;
 
     public Customer(int id, int x, int y, int demand) {
         super(id, x, y);
@@ -17,5 +16,7 @@ public class Customer extends Node {
 
     public int getDemand() { return demand; }
 
-    public void addCandidateDepot(Depot depot) { this.candidateDepots.add(depot); }
+    public List<Integer> getCandidateDepotIds() { return candidateDepots; }
+
+    public void addCandidateDepotId(Integer depotId) { this.candidateDepots.add(depotId); }
 }

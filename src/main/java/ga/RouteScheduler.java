@@ -34,7 +34,7 @@ public class RouteScheduler {
         RouteScheduler.maxVehicleLoad = maxVehicleLoad;
     }
 
-    public static void insertCustomersWithBestRouteCost(Depot depot, Customer customer) {
+    public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer) {
         List<Vehicle> vehicles = depot.getVehicles();
 
         int feasibleRouteIndex = -1;
@@ -85,8 +85,8 @@ public class RouteScheduler {
         }
     }
 
-    public static Chromosome schedule(final Chromosome chromosome) {
-        return phaseTwo(phaseOne(chromosome));
+    public static void schedule(final Chromosome chromosome) {
+        phaseTwo(phaseOne(chromosome));
     }
 
     private static Chromosome phaseOne(Chromosome chromosome) {
