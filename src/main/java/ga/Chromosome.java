@@ -39,14 +39,12 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public List<Depot> getChromosome() { return chromosome; }
 
+    public double getDuration() { return getVehicles().stream().mapToDouble(Vehicle::getDuration).sum(); }
+
     public double getFitness() {
         if (modified) {
             fitness = 0.0;
-            List<Vehicle> vehicles = getVehicles();
-            fitness += ALPHA * vehicles.size();
-            for (Vehicle vehicle : vehicles) {
-                    fitness += BETA * vehicle.getDuration();
-            }
+            fitness += ALPHA * getVehicleCount() + BETA * getDuration();
             modified = false;
         }
         return fitness;
@@ -207,7 +205,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     @Override
     public String toString() {
-        return String.format("%.2f", getFitness());
+        return String.format("%.2f", getDuration());
     }
 
     // public Chromosome insertion (Chromosome chromosome);
