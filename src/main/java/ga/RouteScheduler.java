@@ -35,6 +35,9 @@ public class RouteScheduler {
     }
 
     public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer) {
+        if (!depot.getCustomers().contains(customer)) {
+            depot.addCustomer(customer);
+        }
         List<Vehicle> vehicles = depot.getVehicles();
 
         int feasibleRouteIndex = -1;
@@ -48,20 +51,20 @@ public class RouteScheduler {
         for (int routeIndex = 0; routeIndex < vehicles.size(); routeIndex++) {
             Vehicle currentVehicle = vehicles.get(routeIndex);
 
-            for (int index = 0; index <= currentVehicle.getCustomers().size(); index++) {
-                double insertionCost = currentVehicle.getInsertionCost(index, customer);
+            for (int insertionIndex = 0; insertionIndex <= currentVehicle.getCustomers().size(); insertionIndex++) {
+                double insertionCost = currentVehicle.getInsertionCost(insertionIndex, customer);
                 int proposedLoad = currentVehicle.getLoad() + customer.getDemand();
 
                 if (currentVehicle.getDuration() + insertionCost <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
                     if (insertionCost < minFeasibleInsertionCost) {
                         feasibleRouteIndex = routeIndex;
-                        feasibleRouteInsertionIndex = index;
+                        feasibleRouteInsertionIndex = insertionIndex;
                         minFeasibleInsertionCost = insertionCost;
                     }
                 } else {
                     if (insertionCost < minInfeasibleInsertionCost) {
                         infeasibleRouteIndex = routeIndex;
-                        infeasibleRouteInsertionIndex = index;
+                        infeasibleRouteInsertionIndex = insertionIndex;
                         minInfeasibleInsertionCost = insertionCost;
                     }
                 }
@@ -69,19 +72,23 @@ public class RouteScheduler {
         }
 
         if (random.nextDouble() <= FEASIBILITY_THRESHOLD) {
-            if (feasibleRouteIndex == -1) {
-                Vehicle newVehicle = new Vehicle(depot);
-                newVehicle.addCustomer(customer);
-                vehicles.add(newVehicle);
-            } else {
-                vehicles.get(feasibleRouteIndex).insertCustomer(feasibleRouteInsertionIndex, customer);
-            }
+            insertCustomerOrCreateNewRoute(feasibleRouteIndex, feasibleRouteInsertionIndex, customer, depot);
         } else {
             if (minFeasibleInsertionCost < minInfeasibleInsertionCost) {
-                vehicles.get(feasibleRouteIndex).insertCustomer(feasibleRouteInsertionIndex, customer);
+                insertCustomerOrCreateNewRoute(feasibleRouteIndex, feasibleRouteInsertionIndex, customer, depot);
             } else {
-                vehicles.get(infeasibleRouteIndex).insertCustomer(infeasibleRouteInsertionIndex, customer);
+                insertCustomerOrCreateNewRoute(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
             }
+        }
+    }
+
+    private static void insertCustomerOrCreateNewRoute(int routeIndex, int insertionIndex, Customer customer, Depot depot) {
+        if (routeIndex == -1) {
+            Vehicle newVehicle = new Vehicle(depot);
+            newVehicle.addCustomer(customer);
+            depot.getVehicles().add(newVehicle);
+        } else {
+            depot.getVehicles().get(routeIndex).insertCustomer(insertionIndex, customer);
         }
     }
 
