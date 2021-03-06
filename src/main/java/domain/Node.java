@@ -33,6 +33,7 @@ public abstract class Node {
         this.y = node.y;
         transformedX = node.transformedX;
         transformedY = node.transformedY;
+        isBorderLine = node.isBorderLine;
     }
 
     public int getId() {

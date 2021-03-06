@@ -90,13 +90,6 @@ public class GeneticAlgorithm {
             }
         }
         population = oldPopulation.replacement(newPopulation);
-        // Initialization
-        // Evaluation
-        // Selection
-        // Recombination
-        // Mutation (intra-depot & inter-depot)
-        // Acceptance (replacement), we use generational replacement here
-        // Elitism step
         return population.update();
     }
 
