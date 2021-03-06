@@ -17,7 +17,7 @@ public class Population implements Iterable<Chromosome> {
     private int generation = 0;
     private double averageFitness = 0.0;
     private double diversity = 0.0;
-    private boolean modified = true;
+    private Chromosome alpha;
 
     private List<Chromosome> population;
 
@@ -25,12 +25,12 @@ public class Population implements Iterable<Chromosome> {
         this.population = population;
     }
 
-    public Population(Population population) {
-        this.generation = population.generation;
-        this.averageFitness = population.averageFitness;
-        this.diversity = population.diversity;
-        this.modified = population.modified;
-        this.population = new ArrayList<>(population.population);
+    public Population(Population otherPopulation) {
+        generation = otherPopulation.generation;
+        averageFitness = otherPopulation.averageFitness;
+        alpha = otherPopulation.alpha;
+        diversity = otherPopulation.diversity;
+        population = new ArrayList<>(otherPopulation.population);
     }
 
     public static Population heuristicInitialization(int populationSize, List<Depot> depots, List<Customer> customers) {
@@ -46,37 +46,30 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public double getBestFitness() { return getAlpha().getFitness(); }
+    public double getBestFitness() { return alpha.getFitness(); }
 
-    public double getAverageFitness() {
-        if (modified) {
-            averageFitness = population.stream().mapToDouble(Chromosome::getFitness).average().getAsDouble();
-            modified = false;
-        }
-        return averageFitness;
-    }
+    public double getAverageFitness() { return averageFitness; }
 
     public double getDiversity() { return diversity; }
 
-    public Chromosome getAlpha() { return Collections.min(population); }
+    public Chromosome getAlpha() { return alpha; }
 
     public List<Chromosome> getElite(int eliteSize) {
         Collections.sort(population);
         return population.subList(0, eliteSize - 1);
     }
 
-    public Population update() {
-        generation++;
-        return this;
-    }
-
     public void removeChromosome(Chromosome chromosome) {
-        population. remove(chromosome);
+        population.remove(chromosome);
     }
 
     public void evaluate() {
         // Weighted sum or Pareto ranking
-        getAverageFitness();
+        OptionalDouble result = population.stream().mapToDouble(Chromosome::getFitness).average();
+        if (result.isPresent()) {
+            averageFitness = result.getAsDouble();
+        }
+        alpha = Collections.min(population);
     }
 
     public void paretoRanking() {
@@ -135,6 +128,7 @@ public class Population implements Iterable<Chromosome> {
 
     public Population replacement(List<Chromosome> population) {
         this.population = population;
+        generation++;
         return this;
     }
 
