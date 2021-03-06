@@ -39,8 +39,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public List<Depot> getChromosome() { return chromosome; }
 
-    public List<Customer> getSwappableCustomerList() { return swappableCustomerList; }
-
     public double getFitness() {
         if (modified) {
             fitness = 0.0;
