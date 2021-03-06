@@ -51,6 +51,12 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; }
 
+    public void removeCustomer(Customer customers) {
+        for (Vehicle vehicle : getVehicles()) {
+            vehicle.removeCustomer(customers);
+        }
+    }
+
     public void removeCustomers(final List<Customer> customers) {
         for (Vehicle vehicle : getVehicles()) {
             vehicle.removeCustomers(customers);
@@ -122,11 +128,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
 
-        List<Vehicle> vehicles = Util.randomChoice(depot.getVehicles(), 2);
-        if (vehicles == null) {
-            return offspring;
-        }
-        vehicles.get(0).swapRandomCustomer(vehicles.get(1));
+        SymmetricPair<Vehicle> vehicles = Util.randomPair(depot.getVehicles());
+        vehicles.first.swapRandomCustomer(vehicles.second);
         return offspring;
     };
 
@@ -157,7 +160,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (Depot source : offspring) {
             if (source.getCustomers().contains(customer)) {
                 candidateDepotIds.remove((Integer) source.getId());
-                offspring.removeCustomers(Collections.singletonList(customer));
+                source.removeCustomer(customer);
+                offspring.removeCustomer(customer);
                 break;
             }
         }

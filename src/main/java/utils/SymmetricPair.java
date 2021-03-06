@@ -1,6 +1,6 @@
 package main.java.utils;
 
-public class SymmetricPair<A> extends Pair<A, A> {
+public class SymmetricPair<A> extends Pair<A> {
 
     public SymmetricPair(A first, A second) {
         super(first, second);
@@ -10,7 +10,7 @@ public class SymmetricPair<A> extends Pair<A, A> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Pair<?, ?> pair = (Pair<?, ?>) o;
+        SymmetricPair<?> pair = (SymmetricPair<?>) o;
         return first.equals(pair.first) && second.equals(pair.second) || first.equals(pair.second) && second.equals(pair.second);
     }
 

@@ -104,7 +104,7 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public Chromosome eliteTournamentSelection() {
-        List<Chromosome> tournamentSet = Util.randomChoice(population, 2);
+        SymmetricPair<Chromosome> tournamentSet = Util.randomPair(population);
         Chromosome chosenChromosome;
         if (random.nextDouble() < ELITE_SELECTION_RATE) {
             chosenChromosome = Collections.min(tournamentSet);

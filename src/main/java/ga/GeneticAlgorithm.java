@@ -63,7 +63,6 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
-        population.evaluate();
         Population oldPopulation = new Population(population);
         List<Chromosome> newPopulation = new ArrayList<>();
 
@@ -91,6 +90,7 @@ public class GeneticAlgorithm {
             }
         }
         population = oldPopulation.replacement(newPopulation);
+        population.evaluate();
         return population;
     }
 

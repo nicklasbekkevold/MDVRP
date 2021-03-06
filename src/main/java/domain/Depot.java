@@ -8,8 +8,8 @@ public class Depot extends Node {
     private static int serialNumber = 1;
 
     private final int depotNumber;
-    private List<Vehicle> vehicles = new CopyOnWriteArrayList<>();
     private List<Customer> customers = new CopyOnWriteArrayList<>();
+    private List<Vehicle> vehicles = new CopyOnWriteArrayList<>();
 
     public Depot(int id, int x, int y) {
         super(id, x, y);
@@ -31,11 +31,11 @@ public class Depot extends Node {
 
     public List<Customer> getCustomers() { return customers; }
 
-    public boolean isEmpty() { return vehicles.isEmpty(); }
+    public void addCustomer(Customer customer) { customers.add(customer); }
+
+    public void removeCustomer(Customer customer) { customers.remove(customer); }
 
     public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
-
-    public void addCustomer(Customer customer) { customers.add(customer); }
 
     public void removeVehicle(Vehicle vehicle) { vehicles.remove(vehicle); }
 

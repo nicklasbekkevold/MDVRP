@@ -91,6 +91,13 @@ public class Vehicle implements Iterable<Node> {
         return customer;
     }
 
+    public void removeCustomer(Customer customerToRemove) {
+        customers.remove(customerToRemove);
+        if (customers.size() == 0) {
+            depot.removeVehicle(this);
+        }
+    }
+
     public void removeCustomers(final List<Customer> customersToRemove) {
         customers.removeAll(customersToRemove);
         if (customers.size() == 0) {
