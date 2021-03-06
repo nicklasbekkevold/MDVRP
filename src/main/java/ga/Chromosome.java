@@ -19,18 +19,14 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private final List<Depot> chromosome;
     private int rank = 0;
-    private double fitness = 0.0;
-    private boolean modified = true;
 
     public Chromosome(final Chromosome chromosome) {
         this(chromosome.getChromosome());
-        this.rank = 0;
-        this.fitness = 0.0;
-        this.modified = true;
+        rank = 0;
     }
 
-    public Chromosome(final List<Depot> chromosome) {
-        this.chromosome = chromosome.stream().map(Depot::new).collect(Collectors.toList());
+    public Chromosome(final List<Depot> otherChromosome) {
+        chromosome = otherChromosome.stream().map(Depot::new).collect(Collectors.toList());
         for (Depot depot : this) {
             Collections.shuffle(depot.getCustomers());
         }
@@ -42,28 +38,20 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     public double getDuration() { return getVehicles().stream().mapToDouble(Vehicle::getDuration).sum(); }
 
     public double getFitness() {
-        if (modified) {
-            fitness = 0.0;
-            fitness += ALPHA * getVehicleCount() + BETA * getDuration();
-            modified = false;
-        }
-        return fitness;
+        return ALPHA * getVehicleCount() + BETA * getDuration();
     }
 
     public List<Vehicle> getVehicles() {
         return chromosome.stream().flatMap(depot -> depot.getVehicles().stream()).collect(Collectors.toList());
     }
 
-    public int getVehicleCount() {
-        return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum();
-    }
+    public int getVehicleCount() { return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum(); }
 
     public void setRank(int rank) { this.rank = rank; }
 
-    public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; };
+    public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; }
 
     public void removeCustomers(final List<Customer> customers) {
-        modified = true;
         for (Vehicle vehicle : getVehicles()) {
             vehicle.removeCustomers(customers);
         }
@@ -186,9 +174,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public boolean dominates(Chromosome otherChromosome) {
         return (
-                this.getFitness() <= otherChromosome.getFitness() &&
+                this.getDuration() <= otherChromosome.getDuration() &&
                 this.getVehicleCount() <= otherChromosome.getVehicleCount() &&
-                (this.getFitness() < otherChromosome.getFitness() ||
+                (this.getDuration() < otherChromosome.getDuration() ||
                 this.getVehicleCount() < otherChromosome.getVehicleCount())
         );
     }
@@ -207,15 +195,5 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     public String toString() {
         return String.format("%.2f", getDuration());
     }
-
-    // public Chromosome insertion (Chromosome chromosome);
-    // public Chromosome deletion (Chromosome chromosome);
-    // public Chromosome orderOneCrossover (Chromosome chromosome);
-    // public Chromosome partiallyMappedCrossover (Chromosome chromosome);
-    // public Chromosome cycleCrossover (Chromosome chromosome);
-
-    // public Chromosome insertMutation (Chromosome chromosome);
-    // public Chromosome swapMutation (Chromosome chromosome);
-    // public Chromosome scrambleMutation (Chromosome chromosome);
 
 }
