@@ -1,6 +1,7 @@
 package main.java.domain;
 
 import main.java.utils.Memorandum;
+import main.java.utils.Pair;
 import main.java.utils.Util;
 
 import java.util.ArrayList;
@@ -25,28 +26,20 @@ public class Vehicle implements Iterable<Node> {
     private final static Function<Vehicle, Double> memoizedDurations = Memorandum.memoize(routeDuration);
 
     private static final Random random = Util.random;
-    private static int serialNumber = 1;
 
-    private final int vehicleNumber;
     private final Depot depot;
 
     private List<Customer> customers = new CopyOnWriteArrayList<>();
     private int load = 0;
 
     public Vehicle(Depot depot) {
-        this.vehicleNumber = serialNumber++;
         this.depot = depot;
     }
 
     public Vehicle(final Vehicle vehicle) {
-        vehicleNumber = vehicle.vehicleNumber;
         depot = vehicle.depot;
         customers = new CopyOnWriteArrayList<>(vehicle.customers);
         load = vehicle.load;
-    }
-
-    public static void resetSerialNumber() {
-        Vehicle.serialNumber = 1;
     }
 
     public List<Customer> getCustomers() { return customers; }
@@ -105,6 +98,23 @@ public class Vehicle implements Iterable<Node> {
         }
     }
 
+    public Pair<Vehicle> split(int index) {
+        List<Customer> firstHalf = customers.subList(0, index);
+        List<Customer> secondHalf = customers.subList(index, customers.size());
+        Vehicle v1 = new Vehicle(this);
+        Vehicle v2 = new Vehicle(this);
+        v1.removeCustomers(secondHalf);
+        v2.removeCustomers(firstHalf);
+        depot.removeVehicle(this); // 'Delete' this
+        if (v1.customers.size() > 0) {
+            depot.addVehicle(v1);
+        }
+        if (v2.customers.size() > 0) {
+            depot.addVehicle(v2);
+        }
+        return new Pair<>(v1, v2);
+    }
+
     private List<Node> getRoute() {
         List<Node> route = new ArrayList<>();
         route.add(depot);
@@ -124,7 +134,7 @@ public class Vehicle implements Iterable<Node> {
 
     @Override
     public String toString() {
-        return String.format("%d %4d %9.2f %5d    0 " + getRouteString(customers), depot.getDepotNumber(), vehicleNumber, getDuration(), load);
+        return String.format("%d %4d %9.2f %5d    0 " + getRouteString(customers), depot.getDepotNumber(), depot.getVehicles().indexOf(this) + 1, getDuration(), load);
     }
 
     @Override

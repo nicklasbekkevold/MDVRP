@@ -4,6 +4,7 @@ import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Node;
 import main.java.domain.Vehicle;
+import main.java.utils.Pair;
 import main.java.utils.Util;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class RouteScheduler {
             if (minFeasibleInsertionCost < minInfeasibleInsertionCost) {
                 insertCustomerOrCreateNewRoute(feasibleRouteIndex, feasibleRouteInsertionIndex, customer, depot);
             } else {
-                insertCustomerOrCreateNewRoute(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
+                insertCustomerOrSplit(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
             }
         }
     }
@@ -92,13 +93,23 @@ public class RouteScheduler {
         }
     }
 
+    private static void insertCustomerOrSplit(int routeIndex, int insertionIndex, Customer customer, Depot depot) {
+        if (routeIndex == -1) {
+            Vehicle newVehicle = new Vehicle(depot);
+            newVehicle.addCustomer(customer);
+            depot.getVehicles().add(newVehicle);
+        } else {
+            depot.getVehicles().get(routeIndex).insertCustomer(insertionIndex, customer);
+            Pair<Vehicle> splitRoutes = depot.getVehicles().get(routeIndex).split(insertionIndex);
+        }
+    }
+
     public static void schedule(final Chromosome chromosome) {
         phaseTwo(phaseOne(chromosome));
     }
 
     private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
-            Vehicle.resetSerialNumber();
             Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;

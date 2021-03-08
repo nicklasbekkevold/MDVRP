@@ -3,10 +3,12 @@ package test.java.domain;
 import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Vehicle;
+import main.java.utils.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class VehicleTest {
 
@@ -62,5 +64,24 @@ public class VehicleTest {
         assertEquals(10.0, vehicle.getInsertionCost(1, c2));
         vehicle.addCustomer(c2);
         assertEquals(4.0, vehicle.getInsertionCost(1, c3));
+    }
+
+    @Test
+    public void testSplit() {
+        vehicle.addCustomer(c1);
+        vehicle.addCustomer(c2);
+        vehicle.addCustomer(c3);
+        Pair<Vehicle> split = vehicle.split(1);
+        assertEquals(1, split.first.getCustomers().size());
+        assertEquals(c1, split.first.getCustomers().get(0));
+        assertFalse(split.first.getCustomers().contains(c2));
+        assertFalse(split.first.getCustomers().contains(c3));
+
+        assertEquals(2, split.second.getCustomers().size());
+        assertEquals(c2, split.second.getCustomers().get(0));
+        assertEquals(c3, split.second.getCustomers().get(1));
+        assertFalse(split.second.getCustomers().contains(c1));
+
+        assertFalse(depot.getVehicles().contains(vehicle));
     }
 }
