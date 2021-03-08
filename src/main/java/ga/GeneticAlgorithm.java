@@ -15,7 +15,6 @@ public class GeneticAlgorithm {
     private final double crossoverRate;
     private final double mutationRate;
     private final boolean elitism;
-    private final int eliteSize;
     private final boolean useParetoRanking;
 
     // Constraints
@@ -41,7 +40,6 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
-        this.eliteSize = (int) Math.ceil(populationSize * 0.01);
         this.useParetoRanking = useParetoRanking;
 
         printParameters();
@@ -55,10 +53,9 @@ public class GeneticAlgorithm {
     }
 
     private void printParameters() {
-        System.out.println(String.format("Population size: %d", populationSize));
+        System.out.printf("Population size: %d%n", populationSize);
         System.out.println(String.format("Crossover rate: %.2f", crossoverRate));
         System.out.println(String.format("Mutation rate: %.2f", mutationRate));
-        System.out.println(String.format("Number of elite: %d", eliteSize));
         System.out.println("Evaluation function: " + (useParetoRanking ? "pareto" : "weighted sum"));
     }
 
@@ -89,9 +86,7 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
-            for (Chromosome chromosome : population.getElite(eliteSize)) {
-                newPopulation.set(random.nextInt(populationSize), chromosome);
-            }
+            newPopulation.set(random.nextInt(populationSize), population.getAlpha());
         }
         population = oldPopulation.replacement(newPopulation);
         population.evaluate(useParetoRanking);

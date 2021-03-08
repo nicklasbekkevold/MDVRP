@@ -16,7 +16,6 @@ public class Population implements Iterable<Chromosome> {
 
     private int generation = 0;
     private double averageDuration = 0.0;
-    private double diversity = 0.0;
     private Chromosome alpha;
 
     private List<Chromosome> population;
@@ -29,7 +28,6 @@ public class Population implements Iterable<Chromosome> {
         generation = otherPopulation.generation;
         averageDuration = otherPopulation.averageDuration;
         alpha = otherPopulation.alpha;
-        diversity = otherPopulation.diversity;
         population = new ArrayList<>(otherPopulation.population);
     }
 
@@ -50,14 +48,7 @@ public class Population implements Iterable<Chromosome> {
 
     public double getAverageDuration() { return averageDuration; }
 
-    public double getDiversity() { return diversity; }
-
     public Chromosome getAlpha() { return alpha; }
-
-    public List<Chromosome> getElite(int eliteSize) {
-        Collections.sort(population);
-        return population.subList(0, eliteSize);
-    }
 
     public void removeChromosome(Chromosome chromosome) {
         population.remove(chromosome);
@@ -108,7 +99,7 @@ public class Population implements Iterable<Chromosome> {
         return new SymmetricPair<>(parentA, parentB);
     }
 
-    public Chromosome eliteTournamentSelection() {
+    private Chromosome eliteTournamentSelection() {
         SymmetricPair<Chromosome> tournamentSet = Util.randomPair(population);
         Chromosome chosenChromosome;
         if (random.nextDouble() < ELITE_SELECTION_RATE) {

@@ -73,12 +73,10 @@ public class MDVRPController {
     @FXML
     public CheckBox paretoRankingCheckBox;
 
-    private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
     private static final double NODE_WIDTH = 5.0;
     private static final double OFFSET = NODE_WIDTH / 2;
 
     private AnimationTimer animationTimer;
-    private final double FRAME_DELAY = 0;
 
     private int populationSize = 400;
     private double crossoverRate = 0.6;
@@ -100,14 +98,8 @@ public class MDVRPController {
         setProblem();
 
         animationTimer = new AnimationTimer() {
-            final long sleepDuration = (long) (FRAME_DELAY * NANO_SECONDS_IN_SECOND);
-            long lastUpdate = 0;
-
             @Override
             public void handle(long now) {
-                if ((now - lastUpdate < sleepDuration)) { return; }
-                lastUpdate = now;
-
                 render(population);
                 population = geneticAlgorithm.update();
             }
