@@ -89,7 +89,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return new SymmetricPair<>(parentACopy, parentBCopy);
     };
 
-    private static final Mutation inverseMutation = (chromosome) -> {
+    private static final Mutation reversalMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
@@ -98,14 +98,11 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         int cutoffPointA = random.nextInt(customers.size());
         int cutoffPointB = random.nextInt(customers.size());
 
-        if (cutoffPointA < cutoffPointB) {
-            for (int i = cutoffPointA; i < cutoffPointB; i++) {
-                customers.set(i, customersCopy.get(cutoffPointB - i));
-            }
-        } else {
-            for (int i = cutoffPointB; i < cutoffPointA; i++) {
-                customers.set(i, customersCopy.get(cutoffPointA - i));
-            }
+        int windowSize = Math.abs(cutoffPointA - cutoffPointB);
+        int start = Math.min(cutoffPointA, cutoffPointB);
+        int end = Math.max(cutoffPointA, cutoffPointB);
+        for (int i = 0; i <= windowSize; i++) {
+            customers.set(start + i, customersCopy.get(end - i));
         }
         RouteScheduler.schedule(offspring);
         return offspring;
@@ -137,7 +134,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         int randomFunction = random.nextInt(3);
         switch (randomFunction) {
             case 0 -> {
-                return inverseMutation.mutate(chromosome);
+                return reversalMutation.mutate(chromosome);
             }
             case 1 -> {
                 return chromosome; // return reRoutingMutation.mutate(chromosome);

@@ -110,6 +110,7 @@ public class RouteScheduler {
 
     private static Chromosome phaseOne(Chromosome chromosome) {
         for (Depot depot : chromosome) {
+            depot.getVehicles().clear();
             Vehicle vehicle = new Vehicle(depot);
 
             Node previousNode = depot;
