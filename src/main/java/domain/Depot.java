@@ -2,6 +2,7 @@ package main.java.domain;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class Depot extends Node {
 
@@ -20,7 +21,7 @@ public class Depot extends Node {
         super(depot);
         this.depotNumber = depot.depotNumber;
         this.customers = new CopyOnWriteArrayList<>(depot.customers); // Shallow copy
-        this.vehicles = new CopyOnWriteArrayList<>(); // Reset vehicles
+        this.vehicles = depot.vehicles.stream().map(Vehicle::new).collect(Collectors.toList()); // Deep copy
     }
 
     public static void resetSerialNumber() { Depot.serialNumber = 1; }
@@ -31,9 +32,15 @@ public class Depot extends Node {
 
     public List<Customer> getCustomers() { return customers; }
 
+    public void arrangeCustomers() {
+        customers = vehicles.stream().flatMap(vehicle -> vehicle.getCustomers().stream()).collect(Collectors.toList());
+    }
+
     public void addCustomer(Customer customer) { customers.add(customer); }
 
-    public void removeCustomer(Customer customer) { customers.remove(customer); }
+    public void removeCustomer(Customer customerToRemove) { customers.remove(customerToRemove); }
+
+    public void removeCustomers(List<Customer> customersToRemove) { this.customers.removeAll(customersToRemove); }
 
     public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
 

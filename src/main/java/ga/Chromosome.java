@@ -15,7 +15,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private static List<Customer> swappableCustomerList;
 
     private static final int ALPHA = 100;
-    private static final double BETA = 0.001;
+    private static final double BETA = 0.01;
 
     private final List<Depot> chromosome;
     private int rank = 0;
@@ -108,16 +108,28 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return offspring;
     };
 
-    private static final Mutation reRoutingMutation = (chromosome) -> {
+    private static final Mutation singleCustomerReRoutingMutation = (chromosome) -> {
         Chromosome offspring = new Chromosome(chromosome);
         Depot depot = offspring.getChromosome().get(random.nextInt(offspring.getChromosome().size()));
         List<Customer> customers = depot.getCustomers();
 
-        int randomCustomer = random.nextInt(customers.size());
-        List<Customer> customer = customers.subList(randomCustomer, randomCustomer + 1);
+        Customer customer = depot.getCustomers().get(random.nextInt(customers.size()));
+        offspring.removeCustomer(customer);
 
-        offspring.removeCustomers(customer);
-        RouteScheduler.insertCustomerWithBestRouteCost(depot, customer.get(0)); //TODO: needs to be across all depots
+        List<Depot> candidateDepots = offspring.chromosome.stream().map(Depot::new).collect(Collectors.toList());
+        int bestFeasibleInsertLocation = -1;
+        double bestInsertionCost = Double.MAX_VALUE;
+
+        for (Depot candidateDepot : candidateDepots) {
+            double initialCost = candidateDepot.getVehicles().stream().mapToDouble(Vehicle::getDuration).sum();
+            RouteScheduler.insertCustomerWithBestRouteCost(candidateDepot, customer, 1.0);
+            double insertionCost = candidateDepot.getVehicles().stream().mapToDouble(Vehicle::getDuration).sum() - initialCost;
+            if (insertionCost < bestInsertionCost) {
+                bestInsertionCost = insertionCost;
+                bestFeasibleInsertLocation = candidateDepots.indexOf(candidateDepot);
+            }
+        }
+        offspring.getChromosome().set(bestFeasibleInsertLocation, candidateDepots.get(bestFeasibleInsertLocation));
         return offspring;
     };
 
@@ -137,7 +149,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
                 return reversalMutation.mutate(chromosome);
             }
             case 1 -> {
-                return chromosome; // return reRoutingMutation.mutate(chromosome);
+                return singleCustomerReRoutingMutation.mutate(chromosome);
             }
             case 2 -> {
                 return swapMutation.mutate(chromosome);
@@ -157,7 +169,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (Depot source : offspring) {
             if (source.getCustomers().contains(customer)) {
                 candidateDepotIds.remove((Integer) source.getId());
-                source.removeCustomer(customer);
                 offspring.removeCustomer(customer);
                 break;
             }

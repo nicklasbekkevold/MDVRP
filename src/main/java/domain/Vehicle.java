@@ -85,6 +85,7 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomer(Customer customerToRemove) {
+        depot.removeCustomer(customerToRemove);
         customers.remove(customerToRemove);
         if (customers.size() == 0) {
             depot.removeVehicle(this);
@@ -92,6 +93,7 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomers(final List<Customer> customersToRemove) {
+        depot.removeCustomers(customersToRemove);
         customers.removeAll(customersToRemove);
         if (customers.size() == 0) {
             depot.removeVehicle(this);

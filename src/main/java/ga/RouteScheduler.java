@@ -102,10 +102,11 @@ public class RouteScheduler {
         depot.addVehicle(vehicle); // Add last route unconditionally
     }
 
-        public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer) {
-        if (!depot.getCustomers().contains(customer)) {
-            depot.addCustomer(customer);
-        }
+    public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer) {
+        insertCustomerWithBestRouteCost(depot, customer, FEASIBILITY_THRESHOLD);
+    }
+
+    public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer, double feasibilityThreshold) {
         List<Vehicle> vehicles = depot.getVehicles();
 
         int feasibleRouteIndex = -1;
@@ -139,7 +140,7 @@ public class RouteScheduler {
             }
         }
 
-        if (random.nextDouble() <= FEASIBILITY_THRESHOLD) {
+        if (random.nextDouble() <= feasibilityThreshold) {
             insertCustomerOrCreateNewRoute(feasibleRouteIndex, feasibleRouteInsertionIndex, customer, depot);
         } else {
             if (minFeasibleInsertionCost < minInfeasibleInsertionCost) {
@@ -148,6 +149,7 @@ public class RouteScheduler {
                 insertCustomerOrSplit(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
             }
         }
+        depot.arrangeCustomers();
     }
 
     private static void insertCustomerOrCreateNewRoute(int routeIndex, int insertionIndex, Customer customer, Depot depot) {
