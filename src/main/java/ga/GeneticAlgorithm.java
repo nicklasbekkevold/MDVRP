@@ -39,7 +39,7 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
-        this.eliteSize = (int) (populationSize * 0.01);
+        this.eliteSize = (int) Math.ceil(populationSize * 0.01);
 
         printParameters();
 
@@ -71,7 +71,7 @@ public class GeneticAlgorithm {
             Chromosome offspringA = parents.first;
             Chromosome offspringB = parents.second;
             if (random.nextDouble() < crossoverRate) {
-                SymmetricPair<Chromosome> offspring = oldPopulation.recombination(parents.first, parents.second);
+                SymmetricPair<Chromosome> offspring = oldPopulation.crossover(parents.first, parents.second);
                 offspringA = offspring.first;
                 offspringB = offspring.second;
             }

@@ -2,7 +2,7 @@ package main.java.ga;
 
 import main.java.utils.SymmetricPair;
 
-public interface Recombination {
+public interface Crossover {
 
     SymmetricPair<Chromosome> crossover(Chromosome parentA, Chromosome parentB);
 }

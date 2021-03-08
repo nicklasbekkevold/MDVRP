@@ -10,7 +10,7 @@ import java.util.*;
 public class Population implements Iterable<Chromosome> {
 
     private static final Random random = Util.random;
-    private static final double BOUND = 0.5;
+    private static final double BOUND = 0.4;
     private static final double APP_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
 
@@ -114,7 +114,7 @@ public class Population implements Iterable<Chromosome> {
         return chosenChromosome;
     }
 
-    public SymmetricPair<Chromosome> recombination(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); }
+    public SymmetricPair<Chromosome> crossover(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); }
 
     public Chromosome mutate(Chromosome chromosome) {
         if (generation % APP_RATE == 0) {

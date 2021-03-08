@@ -63,7 +63,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         }
     }
 
-    public static Recombination bestCostRouteCrossover = (parentA, parentB) -> {
+    public static Crossover bestCostRouteCrossover = (parentA, parentB) -> {
         Chromosome parentACopy = new Chromosome(parentA);
         Chromosome parentBCopy = new Chromosome(parentB);
 
