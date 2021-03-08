@@ -17,11 +17,6 @@ public class GeneticAlgorithm {
     private final boolean elitism;
     private final boolean useParetoRanking;
 
-    // Constraints
-    private final int numberOfVehiclesPerDepot;
-    private final int maxRouteDuration;
-    private final int maxVehicleLoad;
-
     private Population population;
 
     public GeneticAlgorithm(
@@ -32,10 +27,6 @@ public class GeneticAlgorithm {
             boolean elitism,
             boolean useParetoRanking
     ) {
-        numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
-        maxRouteDuration = problemInstance.getMaxRouteDuration();
-        maxVehicleLoad = problemInstance.getMaxVehicleLoad();
-
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
@@ -44,9 +35,9 @@ public class GeneticAlgorithm {
 
         printParameters();
 
-        RouteScheduler.setNumberOfVehiclesPerDepot(numberOfVehiclesPerDepot);
-        RouteScheduler.setMaxRouteDuration(maxRouteDuration);
-        RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
+        RouteScheduler.setNumberOfVehiclesPerDepot(problemInstance.getNumberOfVehiclesPerDepot());
+        RouteScheduler.setMaxRouteDuration(problemInstance.getMaxRouteDuration());
+        RouteScheduler.setMaxVehicleLoad(problemInstance.getMaxVehicleLoad());
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
         population.evaluate(useParetoRanking);
@@ -54,16 +45,17 @@ public class GeneticAlgorithm {
 
     private void printParameters() {
         System.out.printf("Population size: %d%n", populationSize);
-        System.out.println(String.format("Crossover rate: %.2f", crossoverRate));
-        System.out.println(String.format("Mutation rate: %.2f", mutationRate));
+        System.out.printf("Crossover rate: %.2f%n", crossoverRate);
+        System.out.printf("Mutation rate: %.2f%n", mutationRate);
         System.out.println("Evaluation function: " + (useParetoRanking ? "pareto" : "weighted sum"));
     }
 
-    public Population getPopulation() {
-        return population;
-    }
+    public Population getPopulation() { return population; }
 
     public Population update() {
+        System.out.println("Update started ...");
+        long start = System.currentTimeMillis();
+
         Population oldPopulation = new Population(population);
         List<Chromosome> newPopulation = new ArrayList<>();
 
@@ -90,6 +82,8 @@ public class GeneticAlgorithm {
         }
         population = oldPopulation.replacement(newPopulation);
         population.evaluate(useParetoRanking);
+
+        System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;
     }
 

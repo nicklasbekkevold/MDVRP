@@ -71,6 +71,7 @@ public class Population implements Iterable<Chromosome> {
         int currentRank = 1;
         while (!remainingPopulation.isEmpty()) {
             Collection<Chromosome> rankedChromosomes = new ArrayList<>();
+
             for (Chromosome chromosome : remainingPopulation) {
                 boolean isNonDominated = true;
                 for (Chromosome otherChromosome : remainingPopulation) {
