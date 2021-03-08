@@ -56,7 +56,7 @@ public class Population implements Iterable<Chromosome> {
 
     public List<Chromosome> getElite(int eliteSize) {
         Collections.sort(population);
-        return population.subList(0, eliteSize - 1);
+        return population.subList(0, eliteSize);
     }
 
     public void removeChromosome(Chromosome chromosome) {
