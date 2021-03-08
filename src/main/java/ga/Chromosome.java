@@ -104,7 +104,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (int i = 0; i <= windowSize; i++) {
             customers.set(start + i, customersCopy.get(end - i));
         }
-        RouteScheduler.schedule(offspring);
+        RouteScheduler.reschedule(depot);
         return offspring;
     };
 
