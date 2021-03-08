@@ -38,25 +38,25 @@ public class MDVRPController {
     public Canvas canvas;
 
     @FXML
+    public ChoiceBox<String> fileSelectChoiceBox;
+
+    @FXML
     public Button runButton;
 
     @FXML
     public Button saveButton;
 
     @FXML
-    public ChoiceBox<String> fileSelectChoiceBox;
+    public CheckBox visualizeTrainingCheckBox;
 
     @FXML
     public Text generationText;
 
     @FXML
-    public Text diversityText;
+    public Text bestDurationText;
 
     @FXML
-    public Text bestFitnessText;
-
-    @FXML
-    public Text averageFitnessText;
+    public Text averageDurationText;
 
     @FXML
     public TextField populationSizeField;
@@ -70,6 +70,9 @@ public class MDVRPController {
     @FXML
     public CheckBox elitismCheckBox;
 
+    @FXML
+    public CheckBox paretoRankingCheckBox;
+
     private final long NANO_SECONDS_IN_SECOND = 1_000_000_000;
     private static final double NODE_WIDTH = 5.0;
     private static final double OFFSET = NODE_WIDTH / 2;
@@ -81,6 +84,7 @@ public class MDVRPController {
     private double crossoverRate = 0.6;
     private double mutationRate = 0.2;
     private boolean elitism = false;
+    private boolean useParetoRanking = false;
 
     private String problemId = "p01";
     private MDVRP problemInstance;
@@ -88,6 +92,7 @@ public class MDVRPController {
     private Population population;
 
     private boolean running = false;
+    private boolean visualize = false;
 
     @FXML
     public void initialize(Stage stage) {
@@ -116,12 +121,15 @@ public class MDVRPController {
         if (running) {
             saveButton.setDisable(true);
             onProblemSelect(problemId); // Ensures fresh problem instance every time
-            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism, useParetoRanking);
             population = geneticAlgorithm.getPopulation();
+            visualize = visualizeTrainingCheckBox.isSelected();
             animationTimer.start();
         } else {
-            animationTimer.stop();
             saveButton.setDisable(false);
+            animationTimer.stop();
+            visualize = true;
+            render(population);
         }
     }
 
@@ -158,7 +166,10 @@ public class MDVRPController {
             stage.getScene().setCursor(Cursor.DEFAULT);
             saveButton.setEffect(null);
         });
-
+        visualizeTrainingCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            visualize = newValue;
+            visualizeTrainingCheckBox.setSelected(newValue);
+        });
         populationSizeField.setPromptText(Integer.toString(populationSize));
         populationSizeField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("")) {
@@ -201,7 +212,10 @@ public class MDVRPController {
             elitism = newValue;
             elitismCheckBox.setSelected(newValue);
         });
-
+        paretoRankingCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            useParetoRanking = newValue;
+            paretoRankingCheckBox.setSelected(newValue);
+        });
     }
 
     private void setProblem() {
@@ -247,7 +261,7 @@ public class MDVRPController {
         final GraphicsContext context = canvas.getGraphicsContext2D();
         context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        if (population != null) {
+        if (population != null && visualize) {
             renderText(population);
             renderVehicles(context, population.getAlpha());
         } else {
@@ -259,16 +273,14 @@ public class MDVRPController {
 
     private void renderText() {
         generationText.setText("Generation: ");
-        diversityText.setText("Diversity: ");
-        bestFitnessText.setText("Best fitness: ");
-        averageFitnessText.setText("Average fitness: ");
+        bestDurationText.setText("Best duration: ");
+        averageDurationText.setText("Average duration: ");
     }
 
     private void renderText(Population population) {
         generationText.setText(String.format("Generation: %d", population.getGeneration()));
-        diversityText.setText(String.format("Diversity: %.2f", population.getDiversity()));
-        bestFitnessText.setText(String.format("Best fitness: %.2f", population.getBestFitness()));
-        averageFitnessText.setText(String.format("Average fitness: %.2f", population.getAverageFitness()));
+        bestDurationText.setText(String.format("Best duration: %.2f", population.getBestDuration()));
+        averageDurationText.setText(String.format("Average duration: %.2f", population.getAverageDuration()));
     }
 
     private void renderCustomers(final GraphicsContext context) {

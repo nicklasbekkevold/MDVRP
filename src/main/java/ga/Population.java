@@ -15,7 +15,7 @@ public class Population implements Iterable<Chromosome> {
     private static final double ELITE_SELECTION_RATE = 0.8;
 
     private int generation = 0;
-    private double averageFitness = 0.0;
+    private double averageDuration = 0.0;
     private double diversity = 0.0;
     private Chromosome alpha;
 
@@ -27,7 +27,7 @@ public class Population implements Iterable<Chromosome> {
 
     public Population(Population otherPopulation) {
         generation = otherPopulation.generation;
-        averageFitness = otherPopulation.averageFitness;
+        averageDuration = otherPopulation.averageDuration;
         alpha = otherPopulation.alpha;
         diversity = otherPopulation.diversity;
         population = new ArrayList<>(otherPopulation.population);
@@ -46,9 +46,9 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public double getBestFitness() { return alpha.getFitness(); }
+    public double getBestDuration() { return alpha.getDuration(); }
 
-    public double getAverageFitness() { return averageFitness; }
+    public double getAverageDuration() { return averageDuration; }
 
     public double getDiversity() { return diversity; }
 
@@ -63,16 +63,19 @@ public class Population implements Iterable<Chromosome> {
         population.remove(chromosome);
     }
 
-    public void evaluate() {
+    public void evaluate(boolean useParetoRanking) {
         // Weighted sum or Pareto ranking
-        OptionalDouble result = population.stream().mapToDouble(Chromosome::getFitness).average();
+        if (useParetoRanking) {
+            paretoRanking();
+        }
+        OptionalDouble result = population.stream().mapToDouble(Chromosome::getDuration).average();
         if (result.isPresent()) {
-            averageFitness = result.getAsDouble();
+            averageDuration = result.getAsDouble();
         }
         alpha = Collections.min(population);
     }
 
-    public void paretoRanking() {
+    private void paretoRanking() {
         List<Chromosome> remainingPopulation = new LinkedList<>(population);
         int currentRank = 1;
         while (!remainingPopulation.isEmpty()) {
@@ -95,11 +98,13 @@ public class Population implements Iterable<Chromosome> {
         }
     }
 
-    public SymmetricPair<Chromosome> selection() {
+    public SymmetricPair<Chromosome> selection(boolean replace) {
         Chromosome parentA = eliteTournamentSelection();
         Chromosome parentB = eliteTournamentSelection();
-        removeChromosome(parentA);
-        removeChromosome(parentB);
+        if (replace) {
+            removeChromosome(parentA);
+            removeChromosome(parentB);
+        }
         return new SymmetricPair<>(parentA, parentB);
     }
 

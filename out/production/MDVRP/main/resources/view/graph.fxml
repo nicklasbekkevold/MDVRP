@@ -22,24 +22,25 @@
          <font>
             <Font size="14.0" />
          </font></Button>
-        <Pane layoutX="576.0" layoutY="94.0" prefHeight="180.0" prefWidth="448.0">
+        <Pane layoutX="576.0" layoutY="61.0" prefHeight="234.0" prefWidth="448.0">
             <children>
-                <Text fx:id="generationText" layoutX="20.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Text>
-                <Text fx:id="bestFitnessText" layoutX="20.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Best fitness:" wrappingWidth="400.4589233398438">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Text>
-            <Text fx:id="averageFitnessText" layoutX="20.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average fitness:" wrappingWidth="400.4589233398438">
+            <Text layoutX="20.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize training:" wrappingWidth="157.65893554687506">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text fx:id="diversityText" layoutX="20.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diversity:" wrappingWidth="400.4589233398438">
+            <CheckBox fx:id="visualizeTrainingCheckBox" layoutX="178.0" layoutY="21.0" mnemonicParsing="false" selected="true" />
+                <Text fx:id="generationText" layoutX="20.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="bestDurationText" layoutX="20.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Best duration:" wrappingWidth="400.4589233398438">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+            <Text fx:id="averageDurationText" layoutX="20.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average duration:" wrappingWidth="400.4589233398438">
                <font>
                   <Font size="20.0" />
                </font>
@@ -76,7 +77,13 @@
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="189.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="188.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <Text layoutX="40.0" layoutY="243.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Pareto ranking:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <CheckBox fx:id="paretoRankingCheckBox" layoutX="190.0" layoutY="228.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
             </children>
         </Pane>
       <Button fx:id="saveButton" alignment="CENTER" disable="true" layoutX="926.0" layoutY="19.0" mnemonicParsing="false" onAction="#save" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: darkblue;" text="Save" textAlignment="CENTER" textFill="WHITE">

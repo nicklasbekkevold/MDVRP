@@ -38,6 +38,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     public double getDuration() { return getVehicles().stream().mapToDouble(Vehicle::getDuration).sum(); }
 
     public double getFitness() {
+        if (rank != 0) {
+            return rank;
+        }
         return ALPHA * getVehicleCount() + BETA * getDuration();
     }
 
@@ -195,6 +198,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     @Override
     public int compareTo(Chromosome otherChromosome) {
+        if (rank != 0) {
+            return Integer.compare(rank, otherChromosome.rank);
+        }
         return Double.compare(this.getFitness(), otherChromosome.getFitness());
     }
 

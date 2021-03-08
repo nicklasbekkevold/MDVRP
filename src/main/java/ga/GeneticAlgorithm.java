@@ -16,6 +16,7 @@ public class GeneticAlgorithm {
     private final double mutationRate;
     private final boolean elitism;
     private final int eliteSize;
+    private final boolean useParetoRanking;
 
     // Constraints
     private final int numberOfVehiclesPerDepot;
@@ -29,7 +30,8 @@ public class GeneticAlgorithm {
             int populationSize,
             double crossoverRate,
             double mutationRate,
-            boolean elitism
+            boolean elitism,
+            boolean useParetoRanking
     ) {
         numberOfVehiclesPerDepot = problemInstance.getNumberOfVehiclesPerDepot();
         maxRouteDuration = problemInstance.getMaxRouteDuration();
@@ -40,6 +42,7 @@ public class GeneticAlgorithm {
         this.mutationRate = mutationRate;
         this.elitism = elitism;
         this.eliteSize = (int) Math.ceil(populationSize * 0.01);
+        this.useParetoRanking = useParetoRanking;
 
         printParameters();
 
@@ -48,7 +51,7 @@ public class GeneticAlgorithm {
         RouteScheduler.setMaxVehicleLoad(maxVehicleLoad);
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
-        population.evaluate();
+        population.evaluate(useParetoRanking);
     }
 
     private void printParameters() {
@@ -56,6 +59,7 @@ public class GeneticAlgorithm {
         System.out.println(String.format("Crossover rate: %.2f", crossoverRate));
         System.out.println(String.format("Mutation rate: %.2f", mutationRate));
         System.out.println(String.format("Number of elite: %d", eliteSize));
+        System.out.println("Evaluation function: " + (useParetoRanking ? "pareto" : "weighted sum"));
     }
 
     public Population getPopulation() {
@@ -67,7 +71,7 @@ public class GeneticAlgorithm {
         List<Chromosome> newPopulation = new ArrayList<>();
 
         while (newPopulation.size() < populationSize) {
-            SymmetricPair<Chromosome> parents = oldPopulation.selection();
+            SymmetricPair<Chromosome> parents = oldPopulation.selection(false);
             Chromosome offspringA = parents.first;
             Chromosome offspringB = parents.second;
             if (random.nextDouble() < crossoverRate) {
@@ -90,7 +94,7 @@ public class GeneticAlgorithm {
             }
         }
         population = oldPopulation.replacement(newPopulation);
-        population.evaluate();
+        population.evaluate(useParetoRanking);
         return population;
     }
 
