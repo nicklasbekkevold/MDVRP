@@ -53,18 +53,18 @@ public class GeneticAlgorithm {
     public Population getPopulation() { return population; }
 
     public Population update() {
-        System.out.println("Update started ...");
+        // System.out.println("Update started ...");
         long start = System.currentTimeMillis();
 
         Population oldPopulation = new Population(population);
         List<Chromosome> newPopulation = new ArrayList<>();
 
         while (newPopulation.size() < populationSize) {
-            SymmetricPair<Chromosome> parents = oldPopulation.selection(false);
-            Chromosome offspringA = parents.first;
-            Chromosome offspringB = parents.second;
+            SymmetricPair<Chromosome> parents = oldPopulation.selection(true);
+            Chromosome offspringA = new Chromosome(parents.first);
+            Chromosome offspringB = new Chromosome(parents.second);
             if (random.nextDouble() < crossoverRate) {
-                SymmetricPair<Chromosome> offspring = oldPopulation.crossover(parents.first, parents.second);
+                SymmetricPair<Chromosome> offspring = oldPopulation.crossover(offspringA, offspringB);
                 offspringA = offspring.first;
                 offspringB = offspring.second;
             }
@@ -78,12 +78,12 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
-            newPopulation.set(random.nextInt(populationSize), population.getAlpha());
+            newPopulation.set(random.nextInt(populationSize), new Chromosome(oldPopulation.getAlpha()));
         }
         population = oldPopulation.replacement(newPopulation);
         population.evaluate(useParetoRanking);
 
-        System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
+        // System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;
     }
 

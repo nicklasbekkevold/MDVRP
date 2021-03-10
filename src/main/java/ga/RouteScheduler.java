@@ -4,7 +4,6 @@ import main.java.domain.Customer;
 import main.java.domain.Depot;
 import main.java.domain.Node;
 import main.java.domain.Vehicle;
-import main.java.utils.Pair;
 import main.java.utils.Util;
 
 import java.util.List;
@@ -169,7 +168,7 @@ public class RouteScheduler {
             depot.getVehicles().add(newVehicle);
         } else {
             depot.getVehicles().get(routeIndex).insertCustomer(insertionIndex, customer);
-            Pair<Vehicle> splitRoutes = depot.getVehicles().get(routeIndex).split(insertionIndex);
+            depot.getVehicles().get(routeIndex).split(insertionIndex);
         }
     }
 

@@ -12,7 +12,7 @@ public class Population implements Iterable<Chromosome> {
     private static final Random random = Util.random;
     private static final double BOUND = 0.4;
     private static final double APP_RATE = 10;
-    private static final double ELITE_SELECTION_RATE = 0.8;
+    private static final double ELITE_SELECTION_RATE = 0.6;
 
     private int generation = 0;
     private double averageDuration = 0.0;

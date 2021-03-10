@@ -69,6 +69,16 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void swapRandomCustomer(Vehicle otherVehicle) {
+        if (customers.size() == 0 || otherVehicle.customers.size() == 0) {
+            // TODO: This should never happen.
+            if (customers.size() == 0) {
+                depot.removeVehicle(this);
+            }
+            if (otherVehicle.customers.size() == 0) {
+                 depot.removeVehicle(otherVehicle);
+            }
+            return;
+        }
         int customerIndex = random.nextInt(customers.size());
         int otherCustomerIndex = random.nextInt(otherVehicle.customers.size());
         Customer temp = otherVehicle.customers.get(otherCustomerIndex);
