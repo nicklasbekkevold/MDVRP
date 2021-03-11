@@ -18,11 +18,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private static final double BETA = 0.001;
 
     private final List<Depot> chromosome;
-    private int rank = 0;
 
     public Chromosome(final Chromosome otherChromosome) {
         chromosome = otherChromosome.chromosome.stream().map(Depot::new).collect(Collectors.toList());
-        rank = 0;
     }
 
     public Chromosome(final List<Depot> otherChromosome) {
@@ -38,9 +36,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     public double getDuration() { return getVehicles().stream().mapToDouble(Vehicle::getDuration).sum(); }
 
     public double getFitness() {
-        if (rank != 0) {
-            return rank;
-        }
         return ALPHA * getVehicleCount() + BETA * getDuration();
     }
 
@@ -49,8 +44,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     }
 
     public int getVehicleCount() { return chromosome.stream().mapToInt(depot -> depot.getVehicles().size()).sum(); }
-
-    public void setRank(int rank) { this.rank = rank; }
 
     public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; }
 
@@ -180,20 +173,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         return chromosome;
     };
 
-    public boolean dominates(Chromosome otherChromosome) {
-        return (
-                this.getDuration() <= otherChromosome.getDuration() &&
-                this.getVehicleCount() <= otherChromosome.getVehicleCount() &&
-                (this.getDuration() < otherChromosome.getDuration() ||
-                this.getVehicleCount() < otherChromosome.getVehicleCount())
-        );
-    }
-
     @Override
     public int compareTo(Chromosome otherChromosome) {
-        if (rank != 0) {
-            return Integer.compare(rank, otherChromosome.rank);
-        }
         return Double.compare(this.getFitness(), otherChromosome.getFitness());
     }
 

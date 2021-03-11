@@ -70,9 +70,6 @@ public class MDVRPController {
     @FXML
     public CheckBox elitismCheckBox;
 
-    @FXML
-    public CheckBox paretoRankingCheckBox;
-
     private static final double NODE_WIDTH = 5.0;
     private static final double OFFSET = NODE_WIDTH / 2;
 
@@ -82,7 +79,6 @@ public class MDVRPController {
     private double crossoverRate = 0.6;
     private double mutationRate = 0.2;
     private boolean elitism = false;
-    private boolean useParetoRanking = false;
 
     private String problemId = "p01";
     private MDVRP problemInstance;
@@ -113,7 +109,7 @@ public class MDVRPController {
         if (running) {
             saveButton.setDisable(true);
             onProblemSelect(problemId); // Ensures fresh problem instance every time
-            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism, useParetoRanking);
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
             population = geneticAlgorithm.getPopulation();
             visualize = visualizeTrainingCheckBox.isSelected();
             animationTimer.start();
@@ -203,10 +199,6 @@ public class MDVRPController {
         elitismCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             elitism = newValue;
             elitismCheckBox.setSelected(newValue);
-        });
-        paretoRankingCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            useParetoRanking = newValue;
-            paretoRankingCheckBox.setSelected(newValue);
         });
     }
 

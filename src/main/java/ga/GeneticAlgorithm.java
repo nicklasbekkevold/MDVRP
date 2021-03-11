@@ -15,7 +15,6 @@ public class GeneticAlgorithm {
     private final double crossoverRate;
     private final double mutationRate;
     private final boolean elitism;
-    private final boolean useParetoRanking;
 
     private Population population;
 
@@ -24,14 +23,12 @@ public class GeneticAlgorithm {
             int populationSize,
             double crossoverRate,
             double mutationRate,
-            boolean elitism,
-            boolean useParetoRanking
+            boolean elitism
     ) {
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
-        this.useParetoRanking = useParetoRanking;
 
         printParameters();
 
@@ -40,14 +37,13 @@ public class GeneticAlgorithm {
         RouteScheduler.setMaxVehicleLoad(problemInstance.getMaxVehicleLoad());
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
-        population.evaluate(useParetoRanking);
     }
 
     private void printParameters() {
         System.out.printf("Population size: %d%n", populationSize);
         System.out.printf("Crossover rate: %.2f%n", crossoverRate);
         System.out.printf("Mutation rate: %.2f%n", mutationRate);
-        System.out.println("Evaluation function: " + (useParetoRanking ? "pareto" : "weighted sum"));
+        System.out.println("Evaluation function: weighted sum");
     }
 
     public Population getPopulation() { return population; }
@@ -55,8 +51,8 @@ public class GeneticAlgorithm {
     public Population update() {
         // System.out.println("Update started ...");
         long start = System.currentTimeMillis();
-
         Population oldPopulation = new Population(population);
+
         List<Chromosome> newPopulation = new ArrayList<>();
 
         while (newPopulation.size() < populationSize) {
@@ -78,10 +74,11 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
-            newPopulation.set(random.nextInt(populationSize), new Chromosome(oldPopulation.getAlpha()));
+            for (Chromosome elite : population.getElite(4)) {
+                newPopulation.set(random.nextInt(populationSize), new Chromosome(elite));
+            }
         }
         population = oldPopulation.replacement(newPopulation);
-        population.evaluate(useParetoRanking);
 
         // System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;

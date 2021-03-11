@@ -18,10 +18,10 @@ public class Population implements Iterable<Chromosome> {
     private double averageDuration = 0.0;
     private Chromosome alpha;
 
-    private List<Chromosome> population;
+    private ArrayList<Chromosome> population;
 
     public Population(List<Chromosome> population) {
-        this.population = population;
+        this.population = new ArrayList<>(population);
     }
 
     public Population(Population otherPopulation) {
@@ -44,50 +44,30 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public double getBestDuration() { return alpha.getDuration(); }
+    public double getBestDuration() { return getAlpha().getDuration(); }
 
-    public double getAverageDuration() { return averageDuration; }
+    public double getAverageDuration() { return population.stream().mapToDouble(Chromosome::getDuration).average().getAsDouble(); }
 
-    public Chromosome getAlpha() { return alpha; }
+    public Chromosome getAlpha() { return Collections.min(population); }
+
+    public List<Chromosome> getElite(int n) {
+        PriorityQueue<Chromosome> elite = new PriorityQueue<>(n, Comparator.reverseOrder());
+        elite.addAll(population.subList(0, n));
+        for (Chromosome chromosome : population.subList(n, population.size())) {
+            if (elite.peek().compareTo(chromosome) > 0) {
+                elite.remove();
+                elite.add(chromosome);
+            }
+        }
+        return new ArrayList<>(elite);
+    }
 
     public void removeChromosome(Chromosome chromosome) {
         population.remove(chromosome);
     }
 
-    public void evaluate(boolean useParetoRanking) {
-        // Weighted sum or Pareto ranking
-        if (useParetoRanking) {
-            paretoRanking();
-        }
-        OptionalDouble result = population.stream().mapToDouble(Chromosome::getDuration).average();
-        if (result.isPresent()) {
-            averageDuration = result.getAsDouble();
-        }
-        alpha = Collections.min(population);
-    }
-
-    private void paretoRanking() {
-        List<Chromosome> remainingPopulation = new LinkedList<>(population);
-        int currentRank = 1;
-        while (!remainingPopulation.isEmpty()) {
-            Collection<Chromosome> rankedChromosomes = new ArrayList<>();
-
-            for (Chromosome chromosome : remainingPopulation) {
-                boolean isNonDominated = true;
-                for (Chromosome otherChromosome : remainingPopulation) {
-                    if (otherChromosome != chromosome && otherChromosome.dominates(chromosome)) {
-                        isNonDominated = false;
-                        break;
-                    }
-                }
-                if (isNonDominated) {
-                    chromosome.setRank(currentRank);
-                    rankedChromosomes.add(chromosome);
-                }
-            }
-            remainingPopulation.removeAll(rankedChromosomes);
-            currentRank++;
-        }
+    public void evaluate() {
+        // Not in use anymore.
     }
 
     public SymmetricPair<Chromosome> selection(boolean replace) {
@@ -124,7 +104,7 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public Population replacement(List<Chromosome> population) {
-        this.population = population;
+        this.population = new ArrayList<>(population);
         generation++;
         return this;
     }
