@@ -78,12 +78,6 @@
                </font>
             </Text>
             <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="188.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
-            <Text layoutX="40.0" layoutY="243.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Pareto ranking:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Text>
-            <CheckBox fx:id="paretoRankingCheckBox" layoutX="190.0" layoutY="228.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
             </children>
         </Pane>
       <Button fx:id="saveButton" alignment="CENTER" disable="true" layoutX="926.0" layoutY="19.0" mnemonicParsing="false" onAction="#save" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: darkblue;" text="Save" textAlignment="CENTER" textFill="WHITE">

@@ -116,6 +116,7 @@ public class MDVRPController {
         } else {
             saveButton.setDisable(false);
             animationTimer.stop();
+            geneticAlgorithm.exit();
             visualize = true;
             render(population);
         }

@@ -174,6 +174,20 @@ public class FileParser {
         System.out.println("Writing to file successful.");
     }
 
+    public static void saveTrainingData(List<Double> bestDurations, List<Double> averageDurations) {
+        File trainingDataFile = new File("src/main/resources/training_data.txt");
+
+        System.out.println("Saving training data...");
+        try (PrintWriter writer = new PrintWriter(trainingDataFile)) {
+            for (int i = 0; i < bestDurations.size(); i++) {
+                writer.println(String.format("%d %.2f %.2f", i + 1, bestDurations.get(i), averageDurations.get(i)));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Saving training data successful.");
+    }
+
 
 
 

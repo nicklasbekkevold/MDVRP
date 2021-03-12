@@ -1,5 +1,6 @@
 package main.java.ga;
 
+import main.java.FileParser;
 import main.java.MDVRP;
 import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
@@ -9,6 +10,9 @@ import java.util.*;
 public class GeneticAlgorithm {
 
     private static final Random random = Util.random;
+
+    private final List<Double> bestDurations = new ArrayList<>();
+    private final List<Double> averageDurations = new ArrayList<>();
 
     // GA Parameters
     private final int populationSize;
@@ -49,8 +53,9 @@ public class GeneticAlgorithm {
     public Population getPopulation() { return population; }
 
     public Population update() {
-        // System.out.println("Update started ...");
-        long start = System.currentTimeMillis();
+        bestDurations.add(population.getBestDuration());
+        averageDurations.add(population.getAverageDuration());
+
         Population oldPopulation = new Population(population);
 
         List<Chromosome> newPopulation = new ArrayList<>();
@@ -82,6 +87,10 @@ public class GeneticAlgorithm {
 
         // System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;
+    }
+
+    public void exit() {
+        FileParser.saveTrainingData(bestDurations, averageDurations);
     }
 
 }
