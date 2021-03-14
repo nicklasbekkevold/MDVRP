@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Vehicle implements Iterable<Node> {
 
-    private final static Function<Vehicle, Double> routeDuration = vehicle -> {
+    private static final Function<Vehicle, Double> routeDuration = vehicle -> {
         double routeDuration = 0;
         Node previousNode = vehicle.depot;
         for (Node node : vehicle) {
@@ -23,13 +22,12 @@ public class Vehicle implements Iterable<Node> {
         }
         return routeDuration;
     };
-    private final static Function<Vehicle, Double> memoizedDurations = Memorandum.memoize(routeDuration);
+    private static final Function<Vehicle, Double> memoizedDurations = Memorandum.memoize(routeDuration);
 
     private static final Random random = Util.random;
 
     private final Depot depot;
-
-    private List<Customer> customers = new CopyOnWriteArrayList<>();
+    private List<Customer> customers = new ArrayList<>();
     private int load = 0;
 
     public Vehicle(Depot depot) {
@@ -38,7 +36,13 @@ public class Vehicle implements Iterable<Node> {
 
     public Vehicle(final Vehicle vehicle) {
         depot = vehicle.depot;
-        customers = new CopyOnWriteArrayList<>(vehicle.customers);
+        customers = new ArrayList<>(vehicle.customers);
+        load = vehicle.load;
+    }
+
+    public Vehicle(final Vehicle vehicle, final Depot depot) {
+        this.depot = depot;
+        customers = new ArrayList<>(vehicle.customers);
         load = vehicle.load;
     }
 
@@ -69,16 +73,6 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void swapRandomCustomer(Vehicle otherVehicle) {
-        if (customers.size() == 0 || otherVehicle.customers.size() == 0) {
-            // TODO: This should never happen.
-            if (customers.size() == 0) {
-                depot.removeVehicle(this);
-            }
-            if (otherVehicle.customers.size() == 0) {
-                 depot.removeVehicle(otherVehicle);
-            }
-            return;
-        }
         int customerIndex = random.nextInt(customers.size());
         int otherCustomerIndex = random.nextInt(otherVehicle.customers.size());
         Customer temp = otherVehicle.customers.get(otherCustomerIndex);
@@ -103,7 +97,6 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomers(final List<Customer> customersToRemove) {
-        depot.removeCustomers(customersToRemove);
         customers.removeAll(customersToRemove);
         if (customers.size() == 0) {
             depot.removeVehicle(this);
@@ -117,7 +110,7 @@ public class Vehicle implements Iterable<Node> {
         Vehicle v2 = new Vehicle(this);
         v1.removeCustomers(secondHalf);
         v2.removeCustomers(firstHalf);
-        depot.removeVehicle(this); // 'Delete' this
+        depot.removeVehicle(this); // Delete 'this'
         if (v1.customers.size() > 0) {
             depot.addVehicle(v1);
         }

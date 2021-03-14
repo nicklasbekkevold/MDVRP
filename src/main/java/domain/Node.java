@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 public abstract class Node {
 
-    private final static Function<SymmetricPair<Node>, Double> euclideanDistance = nodes -> Math.hypot(nodes.first.x - nodes.second.x, nodes.first.y - nodes.second.y);
-    private final static Function<SymmetricPair<Node>, Double> memoizedDistances = Memorandum.memoize(euclideanDistance);
+    private static final Function<SymmetricPair<Node>, Double> euclideanDistance = nodes -> Math.hypot(nodes.first.x - nodes.second.x, nodes.first.y - nodes.second.y);
+    private static final Function<SymmetricPair<Node>, Double> memoizedDistances = Memorandum.memoize(euclideanDistance);
 
     private final int id;
     private final int x;

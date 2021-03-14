@@ -47,15 +47,23 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public static void setSwappableCustomerList(List<Customer> swappableCustomerList) { Chromosome.swappableCustomerList = swappableCustomerList; }
 
-    public void removeCustomer(Customer customers) {
-        for (Vehicle vehicle : getVehicles()) {
-            vehicle.removeCustomer(customers);
+    public void removeCustomer(Customer customer) {
+        for (Depot depot : this) {
+            depot.removeCustomer(customer);
+            List<Vehicle> vehicles = new ArrayList<>(depot.getVehicles());
+            for (Vehicle vehicle : vehicles) {
+                vehicle.removeCustomer(customer);
+            }
         }
     }
 
     public void removeCustomers(final List<Customer> customers) {
-        for (Vehicle vehicle : getVehicles()) {
-            vehicle.removeCustomers(customers);
+        for (Depot depot : this) {
+            depot.removeCustomers(customers);
+            List<Vehicle> vehicles = new ArrayList<>(depot.getVehicles());
+            for (Vehicle vehicle : vehicles) {
+                vehicle.removeCustomers(customers);
+            }
         }
     }
 

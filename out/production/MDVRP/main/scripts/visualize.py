@@ -14,6 +14,5 @@ plt.plot(generations, average_durations, label='Average duration', color='tab:bl
 plt.plot(generations, best_durations, label='Best duration', color='tab:orange')
 
 plt.legend()
-plt.show()
 plt.savefig(plot_path)
 plt.close()

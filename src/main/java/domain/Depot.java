@@ -1,16 +1,17 @@
 package main.java.domain;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Depot extends Node {
 
+
     private static int serialNumber = 1;
 
     private final int depotNumber;
-    private List<Customer> customers = new CopyOnWriteArrayList<>();
-    private List<Vehicle> vehicles = new CopyOnWriteArrayList<>();
+    private List<Customer> customers = new ArrayList<>();
+    private List<Vehicle> vehicles = new ArrayList<>();
 
     public Depot(int id, int x, int y) {
         super(id, x, y);
@@ -20,8 +21,8 @@ public class Depot extends Node {
     public Depot(Depot depot) {
         super(depot);
         this.depotNumber = depot.depotNumber;
-        this.customers = new CopyOnWriteArrayList<>(depot.customers); // Shallow copy
-        this.vehicles = depot.vehicles.stream().map(Vehicle::new).collect(Collectors.toList()); // Deep copy
+        this.customers = new ArrayList<>(depot.customers); // Shallow copy
+        this.vehicles = depot.vehicles.stream().map(vehicle -> new Vehicle(vehicle, this)).collect(Collectors.toList()); // Deep copy
     }
 
     public static void resetSerialNumber() { Depot.serialNumber = 1; }
@@ -42,7 +43,7 @@ public class Depot extends Node {
 
     public void removeCustomers(List<Customer> customersToRemove) { this.customers.removeAll(customersToRemove); }
 
-    public void addVehicle(Vehicle vehicle) { vehicles.add(vehicle); }
+    public void addVehicle(Vehicle vehicle) { vehicles.add(new Vehicle(vehicle, this)); }
 
     public void removeVehicle(Vehicle vehicle) { vehicles.remove(vehicle); }
 
