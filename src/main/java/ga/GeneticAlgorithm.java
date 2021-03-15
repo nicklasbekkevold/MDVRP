@@ -22,6 +22,7 @@ public class GeneticAlgorithm {
     private final double crossoverRate;
     private final double mutationRate;
     private final boolean elitism;
+    private final int eliteSize;
 
     private Population population;
 
@@ -37,6 +38,7 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.elitism = elitism;
+        this.eliteSize = (int) Math.ceil(populationSize * 0.01);
 
         printParameters();
 
@@ -45,6 +47,7 @@ public class GeneticAlgorithm {
         RouteScheduler.setMaxVehicleLoad(problemInstance.getMaxVehicleLoad());
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
+        population.evaluate();
     }
 
     private void printParameters() {
@@ -87,7 +90,7 @@ public class GeneticAlgorithm {
             newPopulation.add(offspringB);
         }
         if (elitism) {
-            for (Chromosome elite : population.getElite(4)) {
+            for (Chromosome elite : population.getElite(eliteSize)) {
                 newPopulation.set(random.nextInt(populationSize), new Chromosome(elite));
             }
         }
@@ -97,6 +100,8 @@ public class GeneticAlgorithm {
     }
 
     public void exit() {
+        FileParser.saveTrainingData(bestDurations, averageDurations);
+
         // Verify that the constraints are not violated.
         Chromosome solution = population.getAlpha();
         solution.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
@@ -106,8 +111,6 @@ public class GeneticAlgorithm {
         } else {
             solution.checkRoutes(problemInstance.getMaxRouteDuration(), problemInstance.getMaxVehicleLoad());
         }
-
-        FileParser.saveTrainingData(bestDurations, averageDurations);
     }
 
 }

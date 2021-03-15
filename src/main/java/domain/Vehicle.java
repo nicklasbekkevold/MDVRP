@@ -113,23 +113,6 @@ public class Vehicle implements Iterable<Node> {
         }
     }
 
-    public Pair<Vehicle> split(int index) {
-        List<Customer> firstHalf = customers.subList(0, index);
-        List<Customer> secondHalf = customers.subList(index, customers.size());
-        Vehicle v1 = new Vehicle(this);
-        Vehicle v2 = new Vehicle(this);
-        v1.removeCustomers(secondHalf);
-        v2.removeCustomers(firstHalf);
-        depot.removeVehicle(this); // Delete 'this'
-        if (v1.customers.size() > 0) {
-            depot.addVehicle(v1);
-        }
-        if (v2.customers.size() > 0) {
-            depot.addVehicle(v2);
-        }
-        return new Pair<>(v1, v2);
-    }
-
     private List<Node> getRoute() {
         List<Node> route = new ArrayList<>();
         route.add(depot);
