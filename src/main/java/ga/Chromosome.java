@@ -72,9 +72,6 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         Depot parentADepot = parentA.getChromosome().get(depotIndex);
         Depot parentBDepot = parentB.getChromosome().get(depotIndex);
 
-        long parentACustomers = parentA.chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
-        long parentBCustomers = parentB.chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
-
         Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
         Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
 
@@ -190,9 +187,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     public void checkNumberOfCustomers(int numberOfCustomers) {
         long customerSize = chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
-        long customerSize2 = getVehicles().stream().mapToLong(vehicle -> vehicle.getCustomers().size()).sum();
         if (customerSize != numberOfCustomers) {
-            System.out.println("Wrong number of customers." + customerSize);
+            throw new IllegalStateException("Wrong number of customers.");
         }
     }
 

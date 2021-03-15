@@ -71,17 +71,22 @@ public class RouteScheduler {
 
     public static void reschedule(Depot depot) {
         depot.getVehicles().clear();
+        reschedule(depot, depot.getCustomers());
+
+    }
+
+    private static void reschedule(Depot depot, List<Customer> customers) {
         Vehicle vehicle = new Vehicle(depot);
 
         Node previousNode = depot;
         double duration = 0;
         int load = 0;
 
-        for (Customer customer : depot.getCustomers()) {
+        for (Customer customer : customers) {
             double proposedDuration = duration + previousNode.distance(customer);
             int proposedLoad = load + customer.getDemand();
 
-            if (proposedDuration + previousNode.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
+            if (proposedDuration + customer.distance(depot) <= maxRouteDuration && proposedLoad <= maxVehicleLoad) {
                 vehicle.addCustomer(customer);
                 previousNode = customer;
                 duration = proposedDuration;
@@ -170,7 +175,9 @@ public class RouteScheduler {
             depot.getVehicles().add(newVehicle);
         } else {
             depot.getVehicles().get(routeIndex).insertCustomer(insertionIndex, customer);
-            depot.getVehicles().get(routeIndex).split(insertionIndex);
+            Vehicle vehicleToSplit = depot.getVehicles().get(routeIndex);
+            depot.removeVehicle(vehicleToSplit);
+            reschedule(depot, vehicleToSplit.getCustomers());
         }
     }
 

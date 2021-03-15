@@ -93,7 +93,6 @@ public class GeneticAlgorithm {
         }
         population = oldPopulation.replacement(newPopulation);
         population.evaluate();
-        // System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;
     }
 

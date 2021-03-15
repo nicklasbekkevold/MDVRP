@@ -64,9 +64,6 @@ public class Vehicle implements Iterable<Node> {
 
     public void insertCustomer(int index, Customer customer) {
         load += customer.getDemand();
-        if (index < customers.size()) {
-            load -= customers.get(index).getDemand();
-        }
         customers.add(index, customer);
     }
 
@@ -99,8 +96,10 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomer(Customer customerToRemove) {
-        load -= customerToRemove.getDemand();
-        customers.remove(customerToRemove);
+        boolean removed = customers.remove(customerToRemove);
+        if (removed) {
+            load -= customerToRemove.getDemand();
+        }
         if (customers.size() == 0) {
             depot.removeVehicle(this);
         }
