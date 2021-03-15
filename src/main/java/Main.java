@@ -11,7 +11,7 @@ public class Main {
         double mutationRate = 0.3;
         boolean elitism = true;
 
-        String problemId = "p01";
+        String problemId = "p22";
         MDVRP problemInstance = FileParser.readFromFile(problemId);
         GeneticAlgorithm ga = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
 

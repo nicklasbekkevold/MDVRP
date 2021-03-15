@@ -65,9 +65,7 @@ public class MDVRP {
         return numberOfDepots;
     }
 
-    public int getMaxRouteDuration() {
-        return maxRouteDuration;
-    }
+    public int getMaxRouteDuration() { return maxRouteDuration; }
 
     public int getMaxVehicleLoad() {
         return maxVehicleLoad;

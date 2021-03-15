@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 public class Depot extends Node {
 
-
     private static int serialNumber = 1;
 
     private final int depotNumber;

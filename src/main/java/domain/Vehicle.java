@@ -64,6 +64,9 @@ public class Vehicle implements Iterable<Node> {
 
     public void insertCustomer(int index, Customer customer) {
         load += customer.getDemand();
+        if (index < customers.size()) {
+            load -= customers.get(index).getDemand();
+        }
         customers.add(index, customer);
     }
 
@@ -76,12 +79,19 @@ public class Vehicle implements Iterable<Node> {
         int customerIndex = random.nextInt(customers.size());
         int otherCustomerIndex = random.nextInt(otherVehicle.customers.size());
         Customer temp = otherVehicle.customers.get(otherCustomerIndex);
+
+        otherVehicle.load -= otherVehicle.customers.get(otherCustomerIndex).getDemand();
         otherVehicle.customers.set(otherCustomerIndex, customers.get(customerIndex));
+        otherVehicle.load += customers.get(customerIndex).getDemand();
+
+        load -= customers.get(customerIndex).getDemand();
         customers.set(customerIndex, temp);
+        load += temp.getDemand();
     }
 
     public Customer popLastCustomer() {
         Customer customer = customers.remove(customers.size() - 1);
+        load -= customer.getDemand();
         if (this.customers.size() == 0) {
             depot.removeVehicle(this);
         }
@@ -89,7 +99,7 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomer(Customer customerToRemove) {
-        depot.removeCustomer(customerToRemove);
+        load -= customerToRemove.getDemand();
         customers.remove(customerToRemove);
         if (customers.size() == 0) {
             depot.removeVehicle(this);
@@ -97,6 +107,7 @@ public class Vehicle implements Iterable<Node> {
     }
 
     public void removeCustomers(final List<Customer> customersToRemove) {
+        customers.stream().filter(customersToRemove::contains).forEach(customer -> load -= customer.getDemand());
         customers.removeAll(customersToRemove);
         if (customers.size() == 0) {
             depot.removeVehicle(this);

@@ -72,6 +72,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         Depot parentADepot = parentA.getChromosome().get(depotIndex);
         Depot parentBDepot = parentB.getChromosome().get(depotIndex);
 
+        long parentACustomers = parentA.chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
+        long parentBCustomers = parentB.chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
+
         Vehicle vehicleA = parentADepot.getVehicles().get(random.nextInt(parentADepot.getVehicles().size()));
         Vehicle vehicleB = parentBDepot.getVehicles().get(random.nextInt(parentBDepot.getVehicles().size()));
 
@@ -87,6 +90,8 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (Customer customer : vehicleBCustomers) {
             RouteScheduler.insertCustomerWithBestRouteCost(parentADepot, customer);
         }
+        parentADepot.arrangeCustomers();
+        parentBDepot.arrangeCustomers();
         return new SymmetricPair<>(parentA, parentB);
     };
 
@@ -122,6 +127,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (Depot candidateDepot : candidateDepots) {
             double initialCost = candidateDepot.getVehicles().stream().mapToDouble(Vehicle::getDuration).sum();
             RouteScheduler.insertCustomerWithBestRouteCost(candidateDepot, customer, 1.0);
+            candidateDepot.arrangeCustomers();
             double insertionCost = candidateDepot.getVehicles().stream().mapToDouble(Vehicle::getDuration).sum() - initialCost;
             if (insertionCost < bestInsertionCost) {
                 bestInsertionCost = insertionCost;
@@ -175,11 +181,39 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
         for (Depot destinationDepot : chromosome) {
             if (destinationDepot.getId() == destinationDepotId) {
                 RouteScheduler.insertCustomerWithBestRouteCost(destinationDepot, customer);
+                destinationDepot.arrangeCustomers();
                 break;
             }
         }
         return chromosome;
     };
+
+    public void checkNumberOfCustomers(int numberOfCustomers) {
+        long customerSize = chromosome.stream().mapToLong(depot -> depot.getCustomers().size()).sum();
+        long customerSize2 = getVehicles().stream().mapToLong(vehicle -> vehicle.getCustomers().size()).sum();
+        if (customerSize != numberOfCustomers) {
+            System.out.println("Wrong number of customers." + customerSize);
+        }
+    }
+
+    public void checkNumberOfVehiclesPerDepot (int numberOfVehiclesPerDepot) {
+        for (Depot depot : this) {
+            if (depot.getVehicles().size() > numberOfVehiclesPerDepot) {
+                 throw new IllegalStateException("Too many vehicles per depot.");
+            }
+        }
+    }
+
+    public void checkRoutes(int maxRouteDuration, int maxVehicleLoad) {
+        for (Vehicle vehicle : getVehicles()) {
+            if (vehicle.getDuration() > maxRouteDuration) {
+                throw new IllegalStateException("Vehicle route duration too long");
+            }
+            if (vehicle.getLoad() > maxVehicleLoad) {
+                throw new IllegalStateException("Vehicle load too large.");
+            }
+        }
+    }
 
     @Override
     public int compareTo(Chromosome otherChromosome) {

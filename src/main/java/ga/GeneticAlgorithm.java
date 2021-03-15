@@ -5,6 +5,7 @@ import main.java.MDVRP;
 import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 
+import java.nio.charset.CharsetEncoder;
 import java.util.*;
 
 public class GeneticAlgorithm {
@@ -13,6 +14,8 @@ public class GeneticAlgorithm {
 
     private final List<Double> bestDurations = new ArrayList<>();
     private final List<Double> averageDurations = new ArrayList<>();
+
+    private final MDVRP problemInstance;
 
     // GA Parameters
     private final int populationSize;
@@ -29,6 +32,7 @@ public class GeneticAlgorithm {
             double mutationRate,
             boolean elitism
     ) {
+        this.problemInstance = problemInstance;
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
@@ -68,6 +72,8 @@ public class GeneticAlgorithm {
                 SymmetricPair<Chromosome> offspring = oldPopulation.crossover(offspringA, offspringB);
                 offspringA = offspring.first;
                 offspringB = offspring.second;
+                offspringA.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
+                offspringB.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
             }
             if (random.nextDouble() < mutationRate) {
                 offspringA = oldPopulation.mutate(offspringA);
@@ -75,6 +81,8 @@ public class GeneticAlgorithm {
             if (random.nextDouble() < mutationRate) {
                 offspringB = oldPopulation.mutate(offspringB);
             }
+            offspringA.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
+            offspringB.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
             newPopulation.add(offspringA);
             newPopulation.add(offspringB);
         }
@@ -84,12 +92,22 @@ public class GeneticAlgorithm {
             }
         }
         population = oldPopulation.replacement(newPopulation);
-
+        population.evaluate();
         // System.out.println("Update finished. Overall time consumed: "+ (System.currentTimeMillis() - start)+" ms");
         return population;
     }
 
     public void exit() {
+        // Verify that the constraints are not violated.
+        Chromosome solution = population.getAlpha();
+        solution.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
+        solution.checkNumberOfVehiclesPerDepot(problemInstance.getNumberOfVehiclesPerDepot());
+        if (problemInstance.getMaxRouteDuration() == 0) {
+            solution.checkRoutes(Integer.MAX_VALUE, problemInstance.getMaxVehicleLoad());
+        } else {
+            solution.checkRoutes(problemInstance.getMaxRouteDuration(), problemInstance.getMaxVehicleLoad());
+        }
+
         FileParser.saveTrainingData(bestDurations, averageDurations);
     }
 

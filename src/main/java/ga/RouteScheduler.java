@@ -106,6 +106,9 @@ public class RouteScheduler {
     }
 
     public static void insertCustomerWithBestRouteCost(Depot depot, Customer customer, double feasibilityThreshold) {
+        if (!depot.getCustomers().contains(customer)) {
+            depot.addCustomer(customer);
+        }
         List<Vehicle> vehicles = depot.getVehicles();
 
         int feasibleRouteIndex = -1;
@@ -148,7 +151,6 @@ public class RouteScheduler {
                 insertCustomerOrSplit(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
             }
         }
-        depot.arrangeCustomers();
     }
 
     private static void insertCustomerOrCreateNewRoute(int routeIndex, int insertionIndex, Customer customer, Depot depot) {

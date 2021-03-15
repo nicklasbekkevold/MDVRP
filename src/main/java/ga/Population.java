@@ -15,6 +15,7 @@ public class Population implements Iterable<Chromosome> {
     private static final double ELITE_SELECTION_RATE = 0.6;
 
     private int generation = 0;
+    private double bestDuration = 0.0;
     private double averageDuration = 0.0;
     private Chromosome alpha;
 
@@ -44,9 +45,9 @@ public class Population implements Iterable<Chromosome> {
 
     public int getGeneration() { return generation; }
 
-    public double getBestDuration() { return getAlpha().getDuration(); }
+    public double getBestDuration() { return bestDuration; }
 
-    public double getAverageDuration() { return population.stream().mapToDouble(Chromosome::getDuration).average().getAsDouble(); }
+    public double getAverageDuration() { return averageDuration; }
 
     public Chromosome getAlpha() { return Collections.min(population); }
 
@@ -67,7 +68,9 @@ public class Population implements Iterable<Chromosome> {
     }
 
     public void evaluate() {
-        // Not in use anymore.
+        alpha = Collections.min(population);
+        bestDuration = alpha.getDuration();
+        averageDuration = population.stream().mapToDouble(Chromosome::getDuration).average().orElseGet(() -> -1);
     }
 
     public SymmetricPair<Chromosome> selection(boolean replace) {
