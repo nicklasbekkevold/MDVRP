@@ -11,8 +11,8 @@ public class Population implements Iterable<Chromosome> {
 
     private static final Random random = Util.random;
     private static final double BOUND = 0.4;
-    private static final double APP_RATE = 10;
-    private static final double ELITE_SELECTION_RATE = 0.6;
+    private static final double INTER_DEPOT_MUTATION_RATE = 10;
+    private static final double ELITE_SELECTION_RATE = 0.8;
 
     private int generation = 0;
     private double bestDuration = 0.0;
@@ -27,6 +27,7 @@ public class Population implements Iterable<Chromosome> {
 
     public Population(Population otherPopulation) {
         generation = otherPopulation.generation;
+        bestDuration = otherPopulation.bestDuration;
         averageDuration = otherPopulation.averageDuration;
         alpha = otherPopulation.alpha;
         population = new ArrayList<>(otherPopulation.population);
@@ -63,22 +64,17 @@ public class Population implements Iterable<Chromosome> {
         return new ArrayList<>(elite);
     }
 
-    public void removeChromosome(Chromosome chromosome) {
-        population.remove(chromosome);
-    }
-
     public void evaluate() {
         alpha = Collections.min(population);
         bestDuration = alpha.getDuration();
         averageDuration = population.stream().mapToDouble(Chromosome::getDuration).average().orElseGet(() -> -1);
     }
 
-    public SymmetricPair<Chromosome> selection(boolean replace) {
+    public SymmetricPair<Chromosome> selection() {
         Chromosome parentA = eliteTournamentSelection();
         Chromosome parentB = eliteTournamentSelection();
-        if (replace) {
-            removeChromosome(parentA);
-            removeChromosome(parentB);
+        while (parentA == parentB) {
+            parentB = eliteTournamentSelection();
         }
         return new SymmetricPair<>(parentA, parentB);
     }
@@ -97,7 +93,7 @@ public class Population implements Iterable<Chromosome> {
     public SymmetricPair<Chromosome> crossover(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); }
 
     public Chromosome mutate(Chromosome chromosome) {
-        if (generation % APP_RATE == 0) {
+        if (generation % INTER_DEPOT_MUTATION_RATE == 0) {
             // Do inter-depot clustering
             return Chromosome.interDepotMutation.mutate(chromosome);
         } else {

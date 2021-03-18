@@ -1,8 +1,5 @@
 package main.java;
-
 import main.java.ga.GeneticAlgorithm;
-
-import java.io.File;
 
 public class Main {
 

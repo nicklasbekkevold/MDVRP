@@ -75,7 +75,7 @@ public class GeneticAlgorithm {
         List<Chromosome> newPopulation = new ArrayList<>();
 
         while (newPopulation.size() < populationSize) {
-            SymmetricPair<Chromosome> parents = oldPopulation.selection(true);
+            SymmetricPair<Chromosome> parents = oldPopulation.selection();
             Chromosome offspringA = new Chromosome(parents.first);
             Chromosome offspringB = new Chromosome(parents.second);
             if (random.nextDouble() < crossoverRate) {

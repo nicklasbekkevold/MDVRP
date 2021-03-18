@@ -24,28 +24,28 @@
          </font></Button>
         <Pane layoutX="576.0" layoutY="61.0" prefHeight="234.0" prefWidth="448.0">
             <children>
-            <Text layoutX="20.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize training:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
+            <Text layoutX="20.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize training:" wrappingWidth="157.65893554687506">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="visualizeTrainingCheckBox" layoutX="187.0" layoutY="21.0" mnemonicParsing="false" selected="true" />
-                <Text fx:id="generationText" layoutX="20.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
+            <CheckBox fx:id="visualizeTrainingCheckBox" layoutX="187.0" layoutY="16.0" mnemonicParsing="false" selected="true" />
+                <Text fx:id="generationText" layoutX="20.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Text>
-                <Text fx:id="bestDurationText" layoutX="20.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Best duration:" wrappingWidth="400.4589233398438">
+                <Text fx:id="bestDurationText" layoutX="20.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Best duration:" wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Text>
-            <Text fx:id="averageDurationText" layoutX="20.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average duration:" wrappingWidth="400.4589233398438">
+            <Text fx:id="averageDurationText" layoutX="20.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Average duration:" wrappingWidth="400.4589233398438">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text layoutX="20.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early stopp on:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
+            <Text layoutX="20.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early stopp on:" wrappingWidth="157.65893554687506">
                <font>
                   <Font size="20.0" />
                </font>
@@ -60,36 +60,36 @@
                   <Font size="23.0" />
                </font>
             </Text>
-                <Text layoutX="40.0" layoutY="83.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Population size:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <Text layoutX="40.0" layoutY="80.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Population size:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="populationSizeField" layoutX="190.0" layoutY="65.0" prefHeight="26.0" prefWidth="54.0" />
-                <Text layoutX="40.0" layoutY="123.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Crossover rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <TextField fx:id="populationSizeField" layoutX="190.0" layoutY="63.0" prefHeight="26.0" prefWidth="54.0" />
+                <Text layoutX="40.0" layoutY="120.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Crossover rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="105.0" prefHeight="26.0" prefWidth="54.0" />
-                <Text layoutX="40.0" layoutY="163.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <TextField fx:id="crossoverRateField" layoutX="190.0" layoutY="103.0" prefHeight="26.0" prefWidth="54.0" />
+                <Text layoutX="40.0" layoutY="160.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation rate:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-                <TextField fx:id="mutationRateField" layoutX="190.0" layoutY="145.0" prefHeight="26.0" prefWidth="54.0" />
-            <Text layoutX="40.0" layoutY="203.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
+                <TextField fx:id="mutationRateField" layoutX="190.0" layoutY="143.0" prefHeight="26.0" prefWidth="54.0" />
+            <Text layoutX="40.0" layoutY="200.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Elitism:" textAlignment="RIGHT" wrappingWidth="140.45898437500006">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="188.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
-            <Text layoutX="22.0" layoutY="243.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Memoize rotues:" textAlignment="RIGHT" wrappingWidth="157.658935546875">
+            <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="186.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <Text layoutX="22.0" layoutY="240.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Memoize rotues:" textAlignment="RIGHT" wrappingWidth="157.658935546875">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="memoizeRoutesCheckBox" layoutX="190.0" layoutY="228.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <CheckBox fx:id="memoizeRoutesCheckBox" layoutX="190.0" layoutY="226.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
             </children>
         </Pane>
       <Button fx:id="saveButton" alignment="CENTER" disable="true" layoutX="926.0" layoutY="19.0" mnemonicParsing="false" onAction="#save" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: darkblue;" text="Save" textAlignment="CENTER" textFill="WHITE">
