@@ -2,6 +2,8 @@ package main.java;
 
 import main.java.ga.GeneticAlgorithm;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,11 +15,14 @@ public class Main {
 
         String problemId = "p22";
         MDVRP problemInstance = FileParser.readFromFile(problemId);
+        double benchmark = FileParser.getBenchmarkDistancesFromFile(problemId).get(4); // 0=0%, 1=5%, 2=10%, 3=20%, 4=30%
+        System.out.printf("Benchmark %f. %n", benchmark);
+
         GeneticAlgorithm ga = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
 
         System.out.println("---------------------------------");
-        for (int i = 1; i <= generations; i++) {
-            System.out.printf("Generation %d. %n", i);
+        while (ga.getPopulation().getGeneration() <= generations && ga.getPopulation().getBestDuration() > benchmark) {
+            System.out.printf("Generation %d. %n", ga.getPopulation().getGeneration());
             ga.update();
         }
         ga.exit();

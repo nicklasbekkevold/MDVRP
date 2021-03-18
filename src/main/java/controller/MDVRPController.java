@@ -120,6 +120,8 @@ public class MDVRPController {
             geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
             population = geneticAlgorithm.getPopulation();
             visualize = visualizeTrainingCheckBox.isSelected();
+            System.out.println(problemId);
+            System.out.println(benchmarkDistance);
             animationTimer.start();
         } else {
             saveButton.setDisable(false);
@@ -214,24 +216,25 @@ public class MDVRPController {
     private void setProblem() {
         List<String> dataFileNames = FileParser.getDataFileNames();
         fileSelectChoiceBox.setItems(FXCollections.observableArrayList(dataFileNames));
-        fileSelectChoiceBox.getSelectionModel().selectFirst();
 
         fileSelectChoiceBox
                 .getSelectionModel()
                 .selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> onProblemSelect(newValue));
+                .addListener((observableProblemId, oldProblemId, newProblemId) -> {
+                    System.out.println("Change");
+                    onProblemSelect(newProblemId);
 
-        onProblemSelect(dataFileNames.get(0));
+                    List<Double> benchmarkDistances = FileParser.getBenchmarkDistancesFromFile(newProblemId);
+                    earlyStopChoiceBox.setItems(FXCollections.observableArrayList(benchmarkDistances));
+                    earlyStopChoiceBox
+                            .getSelectionModel()
+                            .selectedItemProperty()
+                            .addListener((observableBenchmark, oldBenchmark, newBenchmark) -> onBenchmarkSelect(newBenchmark));
+                    earlyStopChoiceBox.getSelectionModel().selectFirst();
+                });
 
-        List<Double> benchmarkDistances = FileParser.getBenchmarkDistancesFromFile(problemId);
-        earlyStopChoiceBox.setItems(FXCollections.observableArrayList(benchmarkDistances));
+        fileSelectChoiceBox.getSelectionModel().selectFirst();
         earlyStopChoiceBox.getSelectionModel().selectFirst();
-        earlyStopChoiceBox
-                .getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> onBenchmarkSelect(newValue));
-
-        onBenchmarkSelect(benchmarkDistances.get(0));
     }
 
     private void onProblemSelect(final String problemId) {
