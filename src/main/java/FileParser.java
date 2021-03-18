@@ -120,7 +120,6 @@ public class FileParser {
             System.out.println("Reading from file successful.");
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
 
         return new MDVRP(

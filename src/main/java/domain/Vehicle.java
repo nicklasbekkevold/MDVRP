@@ -1,7 +1,6 @@
 package main.java.domain;
 
 import main.java.utils.Memorandum;
-import main.java.utils.Pair;
 import main.java.utils.Util;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ public class Vehicle implements Iterable<Node> {
     private static final Function<Vehicle, Double> memoizedDurations = Memorandum.memoize(routeDuration);
 
     private static final Random random = Util.random;
+    private static Function<Vehicle, Double> durationFunction;
 
     private final Depot depot;
     private List<Customer> customers = new ArrayList<>();
@@ -46,9 +46,16 @@ public class Vehicle implements Iterable<Node> {
         load = vehicle.load;
     }
 
+    public static void memoizeRoutes(boolean memoizeRoutes) {
+        if (memoizeRoutes) {
+            durationFunction = memoizedDurations;
+        }
+        durationFunction = routeDuration;
+    }
+
     public List<Customer> getCustomers() { return customers; }
 
-    public double getDuration() { return memoizedDurations.apply(this); }
+    public double getDuration() { return durationFunction.apply(this); }
 
     public int getLoad() { return load; }
 

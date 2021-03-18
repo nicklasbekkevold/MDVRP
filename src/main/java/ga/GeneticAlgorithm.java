@@ -2,10 +2,10 @@ package main.java.ga;
 
 import main.java.FileParser;
 import main.java.MDVRP;
+import main.java.domain.Vehicle;
 import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 
-import java.nio.charset.CharsetEncoder;
 import java.util.*;
 
 public class GeneticAlgorithm {
@@ -23,6 +23,7 @@ public class GeneticAlgorithm {
     private final double mutationRate;
     private final boolean elitism;
     private final int eliteSize;
+    private final boolean memoizeRoutes;
 
     private Population population;
 
@@ -31,7 +32,8 @@ public class GeneticAlgorithm {
             int populationSize,
             double crossoverRate,
             double mutationRate,
-            boolean elitism
+            boolean elitism,
+            boolean memoizeRoutes
     ) {
         this.problemInstance = problemInstance;
         this.populationSize = populationSize;
@@ -39,8 +41,11 @@ public class GeneticAlgorithm {
         this.mutationRate = mutationRate;
         this.elitism = elitism;
         this.eliteSize = (int) Math.ceil(populationSize * 0.01);
+        this.memoizeRoutes = memoizeRoutes;
 
         printParameters();
+
+        Vehicle.memoizeRoutes(memoizeRoutes);
 
         RouteScheduler.setNumberOfVehiclesPerDepot(problemInstance.getNumberOfVehiclesPerDepot());
         RouteScheduler.setMaxRouteDuration(problemInstance.getMaxRouteDuration());
@@ -54,7 +59,9 @@ public class GeneticAlgorithm {
         System.out.printf("Population size: %d%n", populationSize);
         System.out.printf("Crossover rate: %.2f%n", crossoverRate);
         System.out.printf("Mutation rate: %.2f%n", mutationRate);
+        System.out.printf("Elitism: %s (elite size = %d) %n", (elitism ? "active" : "disabled"), eliteSize);
         System.out.println("Evaluation function: weighted sum");
+        System.out.println("Memoize routes: " + (memoizeRoutes ? "on" : "off"));
     }
 
     public Population getPopulation() { return population; }

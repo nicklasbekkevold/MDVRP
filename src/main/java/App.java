@@ -17,6 +17,7 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/view/graph.fxml"));
         Parent root = loader.load();
         MDVRPController controller = loader.getController();
+        controller.setStage(stage);
         controller.initialize(stage);
         stage.setTitle("MDVRP");
         stage.setScene(new Scene(root, WIDTH, HEIGHT));

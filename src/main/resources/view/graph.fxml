@@ -45,7 +45,7 @@
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text layoutX="20.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early stopp:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
+            <Text layoutX="20.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early stopp on:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
                <font>
                   <Font size="20.0" />
                </font>
@@ -84,6 +84,12 @@
                </font>
             </Text>
             <CheckBox fx:id="elitismCheckBox" layoutX="190.0" layoutY="188.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
+            <Text layoutX="22.0" layoutY="243.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Memoize rotues:" textAlignment="RIGHT" wrappingWidth="157.658935546875">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <CheckBox fx:id="memoizeRoutesCheckBox" layoutX="190.0" layoutY="228.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="14.0" />
             </children>
         </Pane>
       <Button fx:id="saveButton" alignment="CENTER" disable="true" layoutX="926.0" layoutY="19.0" mnemonicParsing="false" onAction="#save" prefHeight="28.0" prefWidth="83.0" style="-fx-background-color: darkblue;" text="Save" textAlignment="CENTER" textFill="WHITE">

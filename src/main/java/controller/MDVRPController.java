@@ -72,15 +72,20 @@ public class MDVRPController {
     @FXML
     public CheckBox elitismCheckBox;
 
+    @FXML
+    public CheckBox memoizeRoutesCheckBox;
+
     private static final double NODE_WIDTH = 5.0;
     private static final double OFFSET = NODE_WIDTH / 2;
 
+    private Stage stage;
     private AnimationTimer animationTimer;
 
     private int populationSize = 400;
     private double crossoverRate = 0.6;
     private double mutationRate = 0.2;
     private boolean elitism = false;
+    private boolean memoizeRoutes = false;
 
     private String problemId = "p01";
     private MDVRP problemInstance;
@@ -90,6 +95,11 @@ public class MDVRPController {
 
     private boolean running = false;
     private boolean visualize = false;
+
+    @FXML
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     @FXML
     public void initialize(Stage stage) {
@@ -117,12 +127,13 @@ public class MDVRPController {
             System.out.println(); // Clear terminal
             saveButton.setDisable(true);
             onProblemSelect(problemId); // Ensures fresh problem instance every time
-            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
+            geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism, memoizeRoutes);
             population = geneticAlgorithm.getPopulation();
             visualize = visualizeTrainingCheckBox.isSelected();
             animationTimer.start();
         } else {
             System.out.println("Done!");
+            stage.requestFocus();
             saveButton.setDisable(false);
             animationTimer.stop();
             geneticAlgorithm.exit();
@@ -209,6 +220,10 @@ public class MDVRPController {
         elitismCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             elitism = newValue;
             elitismCheckBox.setSelected(newValue);
+        });
+        memoizeRoutesCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            memoizeRoutes = newValue;
+            memoizeRoutesCheckBox.setSelected(newValue);
         });
     }
 
