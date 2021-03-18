@@ -24,12 +24,12 @@
          </font></Button>
         <Pane layoutX="576.0" layoutY="61.0" prefHeight="234.0" prefWidth="448.0">
             <children>
-            <Text layoutX="20.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize training:" wrappingWidth="157.65893554687506">
+            <Text layoutX="20.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize training:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
                <font>
                   <Font size="20.0" />
                </font>
             </Text>
-            <CheckBox fx:id="visualizeTrainingCheckBox" layoutX="178.0" layoutY="21.0" mnemonicParsing="false" selected="true" />
+            <CheckBox fx:id="visualizeTrainingCheckBox" layoutX="187.0" layoutY="21.0" mnemonicParsing="false" selected="true" />
                 <Text fx:id="generationText" layoutX="20.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " wrappingWidth="400.4589233398438">
                     <font>
                         <Font size="20.0" />
@@ -45,6 +45,12 @@
                   <Font size="20.0" />
                </font>
             </Text>
+            <Text layoutX="20.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early stopp:" textAlignment="RIGHT" wrappingWidth="157.65893554687506">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <ChoiceBox fx:id="earlyStopChoiceBox" layoutX="187.0" layoutY="48.0" prefHeight="28.0" prefWidth="83.0" />
             </children>
         </Pane>
         <Pane layoutX="576.0" layoutY="307.0" prefHeight="270.0" prefWidth="448.0" style="-fx-background-color: skyblue;">

@@ -28,8 +28,8 @@ import main.java.ga.Chromosome;
 import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class MDVRPController {
@@ -48,6 +48,9 @@ public class MDVRPController {
 
     @FXML
     public CheckBox visualizeTrainingCheckBox;
+
+    @FXML
+    public ChoiceBox<Double> earlyStopChoiceBox;
 
     @FXML
     public Text generationText;
@@ -82,6 +85,7 @@ public class MDVRPController {
 
     private String problemId = "p01";
     private MDVRP problemInstance;
+    private double benchmarkDistance = 576.87;
     private GeneticAlgorithm geneticAlgorithm;
     private Population population;
 
@@ -96,6 +100,10 @@ public class MDVRPController {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (population.getBestDuration() <= benchmarkDistance) {
+                    run();
+                    return;
+                }
                 render(population);
                 population = geneticAlgorithm.update();
             }
@@ -214,6 +222,16 @@ public class MDVRPController {
                 .addListener((observable, oldValue, newValue) -> onProblemSelect(newValue));
 
         onProblemSelect(dataFileNames.get(0));
+
+        List<Double> benchmarkDistances = FileParser.getBenchmarkDistancesFromFile(problemId);
+        earlyStopChoiceBox.setItems(FXCollections.observableArrayList(benchmarkDistances));
+        earlyStopChoiceBox.getSelectionModel().selectFirst();
+        earlyStopChoiceBox
+                .getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> onBenchmarkSelect(newValue));
+
+        onBenchmarkSelect(benchmarkDistances.get(0));
     }
 
     private void onProblemSelect(final String problemId) {
@@ -223,6 +241,10 @@ public class MDVRPController {
 
         transformNodes();
         render(null);
+    }
+
+    private void onBenchmarkSelect(Double benchmarkDistance) {
+        this.benchmarkDistance = benchmarkDistance != null ? benchmarkDistance : this.benchmarkDistance;
     }
 
     private void transformNodes() {

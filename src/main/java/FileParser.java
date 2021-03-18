@@ -6,10 +6,8 @@ import main.java.domain.Vehicle;
 import main.java.ga.Chromosome;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Serializes and Deserializes data to and from main.java.MDVRP java objects
@@ -18,6 +16,7 @@ public class FileParser {
 
     static String dataFilesPath = new File("src/main/resources/data_files").getAbsolutePath();
     static String solutionFilesPath = new File("src/main/resources/solution_files").getAbsolutePath();
+    static String benchmarkFilesPath = new File("src/main/resources/benchmark_files").getAbsolutePath();
 
     // Used for plotting
     static int minX;
@@ -57,7 +56,7 @@ public class FileParser {
         maxY = Integer.MIN_VALUE;
 
         String problemPath = dataFilesPath + File.separator + problemId;
-        System.out.println(String.format("Reading from file %s ...", problemId));
+        System.out.printf("Reading from file %s ...%n", problemId);
 
         int numberOfVehiclesPerDepot = -1; // m
         int numberOfCustomers = -1; // n
@@ -118,12 +117,11 @@ public class FileParser {
                 lineNumber++;
                 line = bufferedReader.readLine();
             }
-
+            System.out.println("Reading from file successful.");
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-
-        System.out.println("Reading from file successful.");
 
         return new MDVRP(
             problemId,
@@ -168,10 +166,10 @@ public class FileParser {
             for (Vehicle vehicle : chromosome.getVehicles()) {
                 writer.println(vehicle);
             }
+            System.out.println("Writing to file successful.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Writing to file successful.");
     }
 
     public static void saveTrainingData(List<Double> bestDurations, List<Double> averageDurations) {
@@ -182,15 +180,32 @@ public class FileParser {
             for (int i = 0; i < bestDurations.size(); i++) {
                 writer.println(String.format("%d %.2f %.2f", i + 1, bestDurations.get(i), averageDurations.get(i)));
             }
+            System.out.println("Saving training data successful.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Saving training data successful.");
     }
 
+    public static List<Double> getBenchmarkDistancesFromFile(final String problemId) {
+        String benchmarkPath = benchmarkFilesPath + File.separator + problemId + ".res";
+        System.out.printf("Reading benchmark from file %s ...%n", problemId);
 
+        List<Double> percentiles = new ArrayList<Double>(Arrays.asList(0.0, 0.05, 0.1, 0.2, 0.3));
 
-
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(benchmarkPath))) {
+            String line = bufferedReader.readLine();
+            final double benchmark = Double.parseDouble(line);
+            System.out.println("Reading benchmark file successful.");
+            return percentiles
+                    .stream()
+                    .map(percentile -> benchmark * (1 + percentile))
+                    .map(benchmarkDistance -> Math.round(benchmarkDistance * 100.0) / 100.0)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
 
