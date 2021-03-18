@@ -29,7 +29,6 @@ import main.java.ga.GeneticAlgorithm;
 import main.java.ga.Population;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class MDVRPController {
@@ -115,15 +114,15 @@ public class MDVRPController {
         changeRunButton();
 
         if (running) {
+            System.out.println(); // Clear terminal
             saveButton.setDisable(true);
             onProblemSelect(problemId); // Ensures fresh problem instance every time
             geneticAlgorithm = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism);
             population = geneticAlgorithm.getPopulation();
             visualize = visualizeTrainingCheckBox.isSelected();
-            System.out.println(problemId);
-            System.out.println(benchmarkDistance);
             animationTimer.start();
         } else {
+            System.out.println("Done!");
             saveButton.setDisable(false);
             animationTimer.stop();
             geneticAlgorithm.exit();
@@ -221,7 +220,6 @@ public class MDVRPController {
                 .getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observableProblemId, oldProblemId, newProblemId) -> {
-                    System.out.println("Change");
                     onProblemSelect(newProblemId);
 
                     List<Double> benchmarkDistances = FileParser.getBenchmarkDistancesFromFile(newProblemId);
