@@ -19,7 +19,7 @@ public class Population implements Iterable<Chromosome> {
     private double averageDuration = 0.0;
     private Chromosome alpha;
 
-    private ArrayList<Chromosome> population;
+    private List<Chromosome> population;
 
     public Population(List<Chromosome> population) {
         this.population = new ArrayList<>(population);

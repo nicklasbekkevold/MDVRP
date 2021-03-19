@@ -79,20 +79,6 @@ public class Vehicle implements Iterable<Node> {
         customers.add(customer);
     }
 
-    public void swapRandomCustomer(Vehicle otherVehicle) {
-        int customerIndex = random.nextInt(customers.size());
-        int otherCustomerIndex = random.nextInt(otherVehicle.customers.size());
-        Customer temp = otherVehicle.customers.get(otherCustomerIndex);
-
-        otherVehicle.load -= otherVehicle.customers.get(otherCustomerIndex).getDemand();
-        otherVehicle.customers.set(otherCustomerIndex, customers.get(customerIndex));
-        otherVehicle.load += customers.get(customerIndex).getDemand();
-
-        load -= customers.get(customerIndex).getDemand();
-        customers.set(customerIndex, temp);
-        load += temp.getDemand();
-    }
-
     public Customer popLastCustomer() {
         Customer customer = customers.remove(customers.size() - 1);
         load -= customer.getDemand();

@@ -14,7 +14,7 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     private static final Random random = Util.random;
     private static List<Customer> swappableCustomerList;
 
-    private static final int ALPHA = 100;
+    private static final int ALPHA = 1000;
     private static final double BETA = 0.001;
 
     private final List<Depot> chromosome;
@@ -137,9 +137,17 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
 
     private static final Mutation swapMutation = (chromosome) -> {
         Depot depot = chromosome.getChromosome().get(random.nextInt(chromosome.getChromosome().size()));
+        List<Customer> customers = depot.getCustomers();
 
         SymmetricPair<Vehicle> vehicles = Util.randomPair(depot.getVehicles());
-        vehicles.first.swapRandomCustomer(vehicles.second);
+        Customer firstCustomer = vehicles.first.getCustomers().get(random.nextInt(vehicles.first.getCustomers().size()));
+        Customer secondCustomer = vehicles.second.getCustomers().get(random.nextInt(vehicles.second.getCustomers().size()));
+        int secondCustomerIndex = customers.indexOf(secondCustomer);
+
+        customers.set(customers.indexOf(firstCustomer), secondCustomer);
+        customers.set(secondCustomerIndex, firstCustomer);
+
+        RouteScheduler.reschedule(depot);
         return chromosome;
     };
 

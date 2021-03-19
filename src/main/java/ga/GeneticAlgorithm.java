@@ -7,6 +7,7 @@ import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GeneticAlgorithm {
 
@@ -66,33 +67,82 @@ public class GeneticAlgorithm {
 
     public Population getPopulation() { return population; }
 
+    public Population parallelUpdate(int number_of_threads) {
+        bestDurations.add(population.getBestDuration());
+        averageDurations.add(population.getAverageDuration());
+
+        Queue<Chromosome> intermediatePopulation = new ConcurrentLinkedDeque<>();
+
+        int chunkSize = (int) Math.ceil((double) populationSize / (double) number_of_threads);
+
+        List<Thread> threads = new ArrayList<>(number_of_threads);
+        for (int thread_id = 0; thread_id < number_of_threads; thread_id++) {
+            int start = thread_id * chunkSize;
+            int end = Math.min(start + chunkSize, populationSize);
+
+            Thread thread = new Thread(() -> {
+                int subPopulationSize = 0;
+                do {
+                    SymmetricPair<Chromosome> parents = population.selection();
+                    Chromosome offspringA = new Chromosome(parents.first);
+                    Chromosome offspringB = new Chromosome(parents.second);
+                    if (random.nextDouble() < mutationRate) {
+                        offspringA = population.mutate(offspringA);
+                    }
+                    if (random.nextDouble() < mutationRate) {
+                        offspringB = population.mutate(offspringB);
+                    }
+                    intermediatePopulation.add(offspringA);
+                    intermediatePopulation.add(offspringB);
+                    subPopulationSize += 2;
+                } while (subPopulationSize < (end-start));
+            });
+            threads.add(thread);
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        List<Chromosome> mergedPopulation = new ArrayList<>(intermediatePopulation);
+        if (elitism) {
+            for (Chromosome elite : population.getElite(eliteSize)) {
+                mergedPopulation.set(random.nextInt(populationSize), new Chromosome(elite));
+            }
+        }
+        population = population.replacement(mergedPopulation);
+        population.evaluate();
+        return population;
+    }
+
     public Population update() {
         bestDurations.add(population.getBestDuration());
         averageDurations.add(population.getAverageDuration());
 
-        Population oldPopulation = new Population(population);
-
         List<Chromosome> newPopulation = new ArrayList<>();
 
         while (newPopulation.size() < populationSize) {
-            SymmetricPair<Chromosome> parents = oldPopulation.selection();
+            SymmetricPair<Chromosome> parents = population.selection();
             Chromosome offspringA = new Chromosome(parents.first);
             Chromosome offspringB = new Chromosome(parents.second);
             if (random.nextDouble() < crossoverRate) {
-                SymmetricPair<Chromosome> offspring = oldPopulation.crossover(offspringA, offspringB);
+                SymmetricPair<Chromosome> offspring = population.crossover(offspringA, offspringB);
                 offspringA = offspring.first;
                 offspringB = offspring.second;
-                offspringA.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
-                offspringB.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
             }
             if (random.nextDouble() < mutationRate) {
-                offspringA = oldPopulation.mutate(offspringA);
+                offspringA = population.mutate(offspringA);
             }
             if (random.nextDouble() < mutationRate) {
-                offspringB = oldPopulation.mutate(offspringB);
+                offspringB = population.mutate(offspringB);
             }
-            offspringA.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
-            offspringB.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
             newPopulation.add(offspringA);
             newPopulation.add(offspringB);
         }
@@ -101,9 +151,9 @@ public class GeneticAlgorithm {
                 newPopulation.set(random.nextInt(populationSize), new Chromosome(elite));
             }
         }
-        population = oldPopulation.replacement(newPopulation);
-        population.evaluate();
-        return population;
+        this.population = population.replacement(newPopulation);
+        this.population.evaluate();
+        return this.population;
     }
 
     public void exit() {
@@ -113,9 +163,7 @@ public class GeneticAlgorithm {
         Chromosome solution = population.getAlpha();
         solution.checkNumberOfCustomers(problemInstance.getNumberOfCustomers());
         solution.checkNumberOfVehiclesPerDepot(problemInstance.getNumberOfVehiclesPerDepot());
-        if (problemInstance.getMaxRouteDuration() == 0) {
-            solution.checkRoutes(Integer.MAX_VALUE, problemInstance.getMaxVehicleLoad());
-        } else {
+        if (problemInstance.getMaxRouteDuration() != 0) {
             solution.checkRoutes(problemInstance.getMaxRouteDuration(), problemInstance.getMaxVehicleLoad());
         }
     }

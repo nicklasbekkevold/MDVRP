@@ -153,7 +153,7 @@ public class RouteScheduler {
             if (minFeasibleInsertionCost < minInfeasibleInsertionCost) {
                 insertCustomerOrCreateNewRoute(feasibleRouteIndex, feasibleRouteInsertionIndex, customer, depot);
             } else {
-                insertCustomerOrSplit(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
+                createNewRouteOrSplit(infeasibleRouteIndex, infeasibleRouteInsertionIndex, customer, depot);
             }
         }
     }
@@ -168,7 +168,7 @@ public class RouteScheduler {
         }
     }
 
-    private static void insertCustomerOrSplit(int routeIndex, int insertionIndex, Customer customer, Depot depot) {
+    private static void createNewRouteOrSplit(int routeIndex, int insertionIndex, Customer customer, Depot depot) {
         if (routeIndex == -1) {
             Vehicle newVehicle = new Vehicle(depot);
             newVehicle.addCustomer(customer);
