@@ -10,9 +10,10 @@ import java.util.*;
 public class Population implements Iterable<Chromosome> {
 
     private static final Random random = Util.random;
-    private static final double BOUND = 0.4;
+    private static final double BOUND = 0.1;
     private static final double INTER_DEPOT_MUTATION_RATE = 10;
     private static final double ELITE_SELECTION_RATE = 0.8;
+    private static boolean doInterDepotMutation = true;
 
     private int generation = 0;
     private double bestDuration = 0.0;
@@ -38,6 +39,9 @@ public class Population implements Iterable<Chromosome> {
 
         List<Customer> swappableCustomerList = Population.assignCustomersToNearestDepot(depots, customers);
         Chromosome.setSwappableCustomerList(swappableCustomerList);
+        if (swappableCustomerList.size() == 0) {
+            doInterDepotMutation = false;
+        }
         for (int i = 0; i < populationSize; i++) {
             initialPopulation.add(new Chromosome(depots));
         }
@@ -93,7 +97,7 @@ public class Population implements Iterable<Chromosome> {
     public SymmetricPair<Chromosome> crossover(Chromosome parentA, Chromosome parentB) { return Chromosome.bestCostRouteCrossover.crossover(parentA, parentB); }
 
     public Chromosome mutate(Chromosome chromosome) {
-        if (generation % INTER_DEPOT_MUTATION_RATE == 0) {
+        if (doInterDepotMutation && generation % INTER_DEPOT_MUTATION_RATE == 0) {
             // Do inter-depot clustering
             return Chromosome.interDepotMutation.mutate(chromosome);
         } else {

@@ -170,6 +170,9 @@ public class Chromosome implements Iterable<Depot>, Comparable<Chromosome> {
     };
 
     public static final Mutation interDepotMutation = (chromosome) -> {
+        if (swappableCustomerList.size() < 1) {
+            return chromosome;
+        }
         Customer customer = swappableCustomerList.get(random.nextInt(swappableCustomerList.size()));
         List<Integer> candidateDepotIds = new ArrayList<>(customer.getCandidateDepotIds());
 

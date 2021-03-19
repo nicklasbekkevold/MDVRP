@@ -19,8 +19,13 @@ public class Main {
         GeneticAlgorithm ga = new GeneticAlgorithm(problemInstance, populationSize, crossoverRate, mutationRate, elitism, memoizeRoutes);
 
         System.out.println("---------------------------------");
-        while (ga.getPopulation().getGeneration() <= generations && ga.getPopulation().getBestDuration() > benchmark) {
+        while (ga.getPopulation().getGeneration() <= generations) {
             System.out.printf("Generation %d. %n", ga.getPopulation().getGeneration());
+            if (ga.getPopulation().getBestDuration() > benchmark) {
+                System.out.println("Solution found. Stopping.");
+                FileParser.writeToFile(problemId, ga.getPopulation().getAlpha());
+                break;
+            }
             ga.update();
         }
         ga.exit();
