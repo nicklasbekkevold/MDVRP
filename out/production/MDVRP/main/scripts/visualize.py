@@ -6,14 +6,14 @@ import numpy as np
 training_data_path = '../resources/training_data.txt'
 plot_path = '../resources/training_data.jpg'
 
-generations, best_durations, average_durations = np.loadtxt(training_data_path, unpack=True)
+generations, time_stamps, best_durations, average_durations = np.loadtxt(training_data_path, unpack=True)
 
 plt.title('Training data')
 plt.xlabel('generation')
 plt.ylabel('duration')
 
-plt.plot(generations, average_durations, label='Average duration', color='k')
-plt.plot(generations, best_durations, label='Best duration', color='deepskyblue')
+plt.plot(time_stamps, average_durations, label='Average duration', color='k')
+plt.plot(time_stamps, best_durations, label='Best duration', color='deepskyblue')
 
 # Plot benchmarks if benchmark file specified
 if len(sys.argv) > 1:

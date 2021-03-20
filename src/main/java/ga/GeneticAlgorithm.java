@@ -13,10 +13,12 @@ public class GeneticAlgorithm {
 
     private static final Random random = Util.random;
 
+    private final List<Double> timeStamps = new ArrayList<>();
     private final List<Double> bestDurations = new ArrayList<>();
     private final List<Double> averageDurations = new ArrayList<>();
 
     private final MDVRP problemInstance;
+    private final double startTime;
 
     // GA Parameters
     private final int populationSize;
@@ -54,6 +56,7 @@ public class GeneticAlgorithm {
 
         population = Population.heuristicInitialization(populationSize, problemInstance.getDepots(), problemInstance.getCustomers());
         population.evaluate();
+        startTime = (double) System.currentTimeMillis() / 1000.0;
     }
 
     private void printParameters() {
@@ -123,6 +126,7 @@ public class GeneticAlgorithm {
     }
 
     public Population update() {
+        timeStamps.add((double) System.currentTimeMillis() / 1000.0 - startTime);
         bestDurations.add(population.getBestDuration());
         averageDurations.add(population.getAverageDuration());
 
@@ -157,7 +161,7 @@ public class GeneticAlgorithm {
     }
 
     public void exit() {
-        FileParser.saveTrainingData(bestDurations, averageDurations);
+        FileParser.saveTrainingData(timeStamps, bestDurations, averageDurations);
 
         // Verify that the constraints are not violated.
         Chromosome solution = population.getAlpha();
