@@ -37,8 +37,8 @@ plt.close()
 
 # -------------------------------
 
-plt.title('Training data (t)')
-plt.xlabel('time')
+plt.title('Training data')
+plt.xlabel('time / (s)')
 plt.ylabel('duration')
 
 plt.plot(time_stamps, average_durations, label='Average duration', color='k')

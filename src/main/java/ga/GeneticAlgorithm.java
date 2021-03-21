@@ -70,61 +70,6 @@ public class GeneticAlgorithm {
 
     public Population getPopulation() { return population; }
 
-    public Population parallelUpdate(int number_of_threads) {
-        bestDurations.add(population.getBestDuration());
-        averageDurations.add(population.getAverageDuration());
-
-        Queue<Chromosome> intermediatePopulation = new ConcurrentLinkedDeque<>();
-
-        int chunkSize = (int) Math.ceil((double) populationSize / (double) number_of_threads);
-
-        List<Thread> threads = new ArrayList<>(number_of_threads);
-        for (int thread_id = 0; thread_id < number_of_threads; thread_id++) {
-            int start = thread_id * chunkSize;
-            int end = Math.min(start + chunkSize, populationSize);
-
-            Thread thread = new Thread(() -> {
-                int subPopulationSize = 0;
-                do {
-                    SymmetricPair<Chromosome> parents = population.selection();
-                    Chromosome offspringA = new Chromosome(parents.first);
-                    Chromosome offspringB = new Chromosome(parents.second);
-                    if (random.nextDouble() < mutationRate) {
-                        offspringA = population.mutate(offspringA);
-                    }
-                    if (random.nextDouble() < mutationRate) {
-                        offspringB = population.mutate(offspringB);
-                    }
-                    intermediatePopulation.add(offspringA);
-                    intermediatePopulation.add(offspringB);
-                    subPopulationSize += 2;
-                } while (subPopulationSize < (end-start));
-            });
-            threads.add(thread);
-        }
-
-        for (Thread thread : threads) {
-            thread.start();
-        }
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        List<Chromosome> mergedPopulation = new ArrayList<>(intermediatePopulation);
-        if (elitism) {
-            for (Chromosome elite : population.getElite(eliteSize)) {
-                mergedPopulation.set(random.nextInt(populationSize), new Chromosome(elite));
-            }
-        }
-        population = population.replacement(mergedPopulation);
-        population.evaluate();
-        return population;
-    }
-
     public Population update() {
         timeStamps.add((double) System.currentTimeMillis() / 1000.0 - startTime);
         bestDurations.add(population.getBestDuration());
