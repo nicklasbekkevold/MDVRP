@@ -7,7 +7,6 @@ import main.java.utils.SymmetricPair;
 import main.java.utils.Util;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GeneticAlgorithm {
 
